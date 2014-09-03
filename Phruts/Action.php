@@ -27,14 +27,14 @@ class Action
     /**
 	 * The system default Locale.
 	 *
-	 * @var Locale
+	 * @var \Serphlet\Util\Locale
 	 */
     protected static $defaultLocale = null;
 
     /**
 	 * The controller servlet to which we are attached.
 	 *
-	 * @var ActionServlet
+	 * @var \Phruts\Action\ActionServlet
 	 */
     protected $servlet = null;
 
@@ -55,7 +55,7 @@ class Action
     /**
 	 * Return the controller servlet instance to which we are attached.
 	 *
-	 * @return ActionServlet
+	 * @return \Phruts\Action\ActionServlet
 	 */
     public function getServlet()
     {
@@ -66,10 +66,10 @@ class Action
 	 * Set the controller servlet instance to which we are attached (if servlet
 	 * is non-null), or release any allocated resources (if servlet is null).
 	 *
-	 * @param ActionServlet $servlet The new controller servlet, if any
+	 * @param \Phruts\Action\ActionServlet $servlet The new controller servlet, if any
 	 * @todo Check if the parameter is a ActionServlet object.
 	 */
-    public function setServlet($servlet)
+    public function setServlet(\Phruts\Action\ActionServlet $servlet)
     {
         $this->servlet = $servlet;
     }
@@ -82,18 +82,18 @@ class Action
 	 * Return an ActionForward instance describing where and how control
 	 * should be forwarded, or null if the response has already been completed.
 	 *
-	 * @param \Phruts\Config\Action $mapping The \Phruts\Config\Action used to select
+	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig used to select
 	 * this instance
-	 * @param \Phruts\Action\Action\Form $form The optional \Phruts\Action\Form bean for this
+	 * @param \Phruts\Action\AbstractActionForm $form The optional \Phruts\Action\AbstractActionForm bean for this
 	 * request (if any)
 	 * @param \Symfony\Component\HttpFoundation\Request $request The HTTP request we are
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The HTTP response we are
 	 * creating
 	 * @return \Phruts\Config\ForwardConfig
-	 * @throws Exception - if the application business logic throws an exception
+	 * @throws \Exception - if the application business logic throws an exception
 	 */
-    public function execute(\Phruts\Config\Action $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         return null; // Override this method to provide functionality
     }
@@ -106,7 +106,7 @@ class Action
 	 * @param string $key The key specified in the <data-source> element for
 	 * the requested data source
 	 * @return object
-	 * @throws Exception
+	 * @throws \Exception
 	 */
     protected function getDataSource(\Symfony\Component\HttpFoundation\Request $request, $key)
     {
@@ -121,7 +121,7 @@ class Action
 	 * Return the user's currently selected Locale.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The request we are processing
-	 * @return Locale
+	 * @return \Serphlet\Util\Locale
 	 */
     protected function getLocale(\Symfony\Component\HttpFoundation\Request $request)
     {
@@ -142,7 +142,7 @@ class Action
 	 * processing
 	 * @param string $key The key specified in the <message-resources> element
 	 * for the requested bundle
-	 * @return MessageResources
+	 * @return \Phruts\Util\MessageResources
 	 * @todo Implements the code for returning message resources for the default
 	 * module ($request = null).
 	 */
@@ -166,7 +166,7 @@ class Action
 	 * This method will check if the <samp>\Phruts\Globals::CANCEL_KEY</samp>
 	 * request attribute has been set, which normally occurs if the cancel button
 	 * was pressed by the user in the current request. If true, validation
-	 * performed by a \Phruts\Action\Form <samp>validate</samp> method will have
+	 * performed by a \Phruts\Action\AbstractActionForm <samp>validate</samp> method will have
 	 * been skipped by the controller servlet.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
@@ -186,8 +186,8 @@ class Action
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
 	 * processing
-	 * @param \Phruts\Action\Errors $errors Error messages object
-	 * @todo Check if the second parameter is a \Phruts\Action\Errors object.
+	 * @param \Phruts\Action\ActionErrors $errors Error messages object
+	 * @todo Check if the second parameter is a \Phruts\Action\ActionErrors object.
 	 */
     protected function saveErrors(\Symfony\Component\HttpFoundation\Request $request, $errors)
     {
@@ -209,9 +209,9 @@ class Action
      * ensure that the session attribute is empty.</p>
      *
      * @param \Symfony\Component\HttpFoundation\Session\Session session The session to save the error messages in.
-     * @param \Phruts\Action\Messages errors The error messages to save.
+     * @param \Phruts\Action\ActionMessages errors The error messages to save.
      * <code>null</code> or empty messages removes any existing error
-     * \Phruts\Action\Messages in the session.
+     * \Phruts\Action\ActionMessages in the session.
      *
      * @since Struts 1.2.7
      */
@@ -235,7 +235,7 @@ class Action
      * that the request attribute is not set.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request request   The servlet request we are processing
-	 * @param \Phruts\Action\Messages errors  Errors object
+	 * @param \Phruts\Action\ActionMessages errors  Errors object
 	 * @since Struts 1.2.1
 	 */
     protected function addErrors(\Symfony\Component\HttpFoundation\Request $request, $errors)
@@ -246,9 +246,9 @@ class Action
         }
 
         // get any existing errors from the request, or make a new one
-        $requestErrors = $request->getAttribute(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\Messages
+        $requestErrors = $request->getAttribute(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
         if ($requestErrors == null) {
-            $requestErrors = new \Phruts\Action\Messages();
+            $requestErrors = new \Phruts\Action\ActionMessages();
         }
         // add incoming errors
         $requestErrors->addMessages($errors);
@@ -271,8 +271,8 @@ class Action
      * ensure that the request attribute is not created.</p>
      *
      * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing.
-     * @param \Phruts\Action\Messages messages The messages to save. <code>null</code> or
-     * empty messages removes any existing \Phruts\Action\Messages in the request.
+     * @param \Phruts\Action\ActionMessages messages The messages to save. <code>null</code> or
+     * empty messages removes any existing \Phruts\Action\ActionMessages in the request.
      *
      * @since Struts 1.1
      */
@@ -296,8 +296,8 @@ class Action
      * ensure that the session attribute is not created.</p>
      *
      * @param \Symfony\Component\HttpFoundation\Session\Session session The session to save the messages in.
-     * @param \Phruts\Action\Messages messages The messages to save. <code>null</code> or
-     * empty messages removes any existing \Phruts\Action\Messages in the session.
+     * @param \Phruts\Action\ActionMessages messages The messages to save. <code>null</code> or
+     * empty messages removes any existing \Phruts\Action\ActionMessages in the session.
      *
      * @since Struts 1.2
      */
@@ -322,20 +322,15 @@ class Action
 	 * Otherwise, ensure that the request attribute is not set.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request request   The servlet request we are processing
-	 * @param \Phruts\Action\Messages messages  Messages object
+	 * @param \Phruts\Action\ActionMessages messages  Messages object
 	 * @since Struts 1.2.1
 	 */
-    protected function addMessages(\Symfony\Component\HttpFoundation\Request $request, $messages)
+    protected function addMessages(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Action\ActionMessages $messages)
     {
-        if ($messages == null) {
-            //	bad programmer! *slap*
-            return;
-        }
-
         // get any existing errors from the request, or make a new one
-        $requestMessages = $request->getAttribute(\Phruts\Globals::MESSAGE_KEY); //\Phruts\Action\Messages
+        $requestMessages = $request->getAttribute(\Phruts\Globals::MESSAGE_KEY); //\Phruts\Action\ActionMessages
         if ($requestMessages == null) {
-            $requestMessages = new \Phruts\Action\Messages();
+            $requestMessages = new \Phruts\Action\ActionMessages();
         }
         // add incoming errors
         $requestMessages->addMessages($messages);
@@ -353,19 +348,19 @@ class Action
 
     /**
      * Retrieves any existing errors placed in the request by previous actions.  This method could be called instead
-     * of creating a <code>new \Phruts\Action\Messages()<code> at the beginning of an <code>Action<code>
+     * of creating a <code>new \Phruts\Action\ActionMessages()<code> at the beginning of an <code>Action<code>
      * This will prevent saveErrors() from wiping out any existing Errors
      *
-     * @return the                     Errors that already exist in the request, or a new \Phruts\Action\Messages object if empty.
+     * @return array Errors that already exist in the request, or a new \Phruts\Action\ActionMessages object if empty.
      * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
-     * @return \Phruts\Action\Messages
+     * @return \Phruts\Action\ActionMessages
      * @since Struts 1.2.1
      */
     protected function getErrors(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $errors = $request->getAttribute(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\Messages
+        $errors = $request->getAttribute(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
         if ($errors == null) {
-            $errors = new \Phruts\Action\Messages();
+            $errors = new \Phruts\Action\ActionMessages();
         }
 
         return $errors;
@@ -373,19 +368,19 @@ class Action
 
     /**
 	 * Retrieves any existing messages placed in the request by previous actions.  This method could be called instead
-	 * of creating a <code>new \Phruts\Action\Messages()<code> at the beginning of an <code>Action<code>
+	 * of creating a <code>new \Phruts\Action\ActionMessages()<code> at the beginning of an <code>Action<code>
 	 * This will prevent saveMessages() from wiping out any existing Messages
 	 *
-	 * @return the Messages that already exist in the request, or a new \Phruts\Action\Messages object if empty.
+	 * @return array Messages that already exist in the request, or a new \Phruts\Action\ActionMessages object if empty.
 	 * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
-	 * @return \Phruts\Action\Messages
+	 * @return \Phruts\Action\ActionMessages
      * @since Struts 1.2.1
 	 */
     protected function getMessages(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $messages = $request->getAttribute(\Phruts\Globals::MESSAGE_KEY); // \Phruts\Action\Messages
+        $messages = $request->getAttribute(\Phruts\Globals::MESSAGE_KEY); // \Phruts\Action\ActionMessages
         if ($messages == null) {
-            $messages = new \Phruts\Action\Messages();
+            $messages = new \Phruts\Action\ActionMessages();
         }
 
         return $messages;
@@ -395,11 +390,11 @@ class Action
 	 * Set the user's currently selected Locale.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The request we are processing
-	 * @param Locale $locale The user's selected Locale to be set,
+	 * @param \Serphlet\Util\Locale $locale The user's selected Locale to be set,
 	 * or null to select the system's default Locale
 	 * @todo Check if the second parameter is a Locale object.
 	 */
-    protected function setLocale(\Symfony\Component\HttpFoundation\Request $request, $locale)
+    protected function setLocale(\Symfony\Component\HttpFoundation\Request $request, \Serphlet\Util\Locale $locale)
     {
         $session = $request->getSession();
         if (is_null($locale)) {
@@ -417,7 +412,7 @@ class Action
      */
     protected function generateToken(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $token = TokenProcessor::getInstance(); // not application scope
+        $token = \Phruts\Util\TokenProcessor::getInstance(); // not application scope
 
         return $token->generateToken($request);
     }
@@ -441,7 +436,7 @@ class Action
      */
     protected function isTokenValid(\Symfony\Component\HttpFoundation\Request $request, $reset = false)
     {
-        $token = TokenProcessor::getInstance(); // not application scope
+        $token = \Phruts\Util\TokenProcessor::getInstance(); // not application scope
 
         return $token->isTokenValid($request, $reset);
     }
@@ -455,7 +450,7 @@ class Action
      */
     protected function resetToken(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $token = TokenProcessor::getInstance(); // not application scope
+        $token = \Phruts\Util\TokenProcessor::getInstance(); // not application scope
         $token->resetToken($request);
     }
 
@@ -467,7 +462,7 @@ class Action
      */
     protected function saveToken(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $token = TokenProcessor::getInstance(); // not application scope
+        $token = \Phruts\Util\TokenProcessor::getInstance(); // not application scope
         $token->saveToken($request);
     }
 }

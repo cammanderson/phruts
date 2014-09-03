@@ -4,7 +4,7 @@ namespace Phruts;
 /**
  * Global manifest constants for the entire PHruts framework.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
 class Globals
@@ -40,7 +40,7 @@ class Globals
 	 * for the module selected by the request URI currently being processed will
 	 * also be exposed under this key as a request attribute.
 	 */
-    const MESSAGES_KEY = '\Phruts\Action\MESSAGES';
+    const MESSAGES_KEY = '\Phruts\Action\ActionMessageS';
 
     /**
 	 * The base of the context attribute key under which our ModuleConfig
@@ -89,7 +89,7 @@ class Globals
     const LOCALE_KEY = '\Phruts\Action\LOCALE';
 
     /**
-	 * The request attributes key under which our \Phruts\Config\Action instance is passed.
+	 * The request attributes key under which our \Phruts\Config\ActionConfig instance is passed.
 	 */
     const MAPPING_KEY = '\Phruts\Action\MAPPING_INSTANCE';
 
@@ -101,9 +101,9 @@ class Globals
 
     /**
 	 * The request attributes key under which your action should store an
-	 * \Phruts\Action\Errors object.
+	 * \Phruts\Action\ActionErrors object.
 	 */
-    const ERROR_KEY = '\Phruts\Action\ERROR';
+    const ERROR_KEY = '\Phruts\Action\ActionError';
 
     /**
      * The request attributes key under which your action should store an
@@ -112,7 +112,7 @@ class Globals
      *
      * @since Struts 1.1
      */
-    const MESSAGE_KEY = '\Phruts\Action\MESSAGE';
+    const MESSAGE_KEY = '\Phruts\Action\ActionMessage';
 
     /**
 	 * The context attribute key under which our default configured data source
@@ -131,5 +131,5 @@ class Globals
     /**
 	 * A generic attribute key for referencing form beans
 	 */
-    const FORM_BEAN = '\Phruts\Action\FORM_BEAN';
+    const FORM_BEAN = '\Phruts\Action\AbstractActionForm_BEAN';
 }

@@ -7,7 +7,7 @@ namespace Phruts\Config;
  * <code>&lt;exception&gt;</code> element from a Struts
  * configuration file.</p>
  *
- * @author Cameron Manderson (Contributor from Aloi)
+ * @author Cameron Manderson (Contributor from Phruts)
  * @author Craig R. McClanahan
  * @since Struts 1.1 */
 class ExceptionConfig
@@ -90,7 +90,7 @@ class ExceptionConfig
     }
 
     /**
-     * The scope in which we should expose the \Phruts\Action\Error for this exception
+     * The scope in which we should expose the \Phruts\Action\ActionError for this exception
      * handler.
      */
     protected $scope = "request";

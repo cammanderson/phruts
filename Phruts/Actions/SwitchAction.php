@@ -20,12 +20,12 @@ namespace Phruts\Action;
  * </ul>
  * * @since Struts 1.1
  */
-class Switch extends \Phruts\Action
+class SwitchAction extends \Phruts\Action
 {
     // See superclass for Doc
-    public function execute(\Phruts\Config\Action $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        //$log = Aloi_Util_Logger_Manager::getLogger( __CLASS__);
+        //$log = Phruts_Util_Logger_Manager::getLogger( __CLASS__);
 
         // Identify the request parameters controlling our actions
         $page = $request->getParameter("page");

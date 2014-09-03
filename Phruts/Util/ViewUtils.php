@@ -56,7 +56,7 @@ class ViewUtils
         }
 
         // Create and return a new form bean instance
-        $form = \Serphlet\ClassLoader::newInstance($type, '\Phruts\Action\Form');
+        $form = \Serphlet\ClassLoader::newInstance($type, '\Phruts\Action\AbstractActionForm');
         $mapping = self::getRequest()->getAttribute(\Phruts\Globals::MAPPING_KEY);
         if ($mapping != null && $populate) {
             $form->setServlet(self::getServlet());

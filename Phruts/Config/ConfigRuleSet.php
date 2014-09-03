@@ -6,10 +6,10 @@ namespace Phruts\Config;
  * The set of Digester rules required to parse a PHruts configuration file
  * (phruts-config.xml).
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-class ConfigRuleSet extends Aloi_Phigester_RuleSetBase
+class ConfigRuleSet extends Phruts_Phigester_RuleSetBase
 {
     private $configPrefix;
     public function __construct($configPrefix = 'phruts-config')
@@ -29,7 +29,7 @@ class ConfigRuleSet extends Aloi_Phigester_RuleSetBase
 	 * @param Digester $digester Digester instance to which the
 	 * new Rule instances should be added.
 	 */
-    public function addRuleInstances(Aloi_Phigester_Digester $digester)
+    public function addRuleInstances(Phruts_Phigester_Digester $digester)
     {
         $digester->addFactoryCreate($this->configPrefix . '/data-sources/data-source', new \Phruts\Config\DataSourceConfigFactory());
         $digester->addSetProperties($this->configPrefix . '/data-sources/data-source');
@@ -38,7 +38,7 @@ class ConfigRuleSet extends Aloi_Phigester_RuleSetBase
 
         $digester->addRule($this->configPrefix . '/action-mappings', new \Phruts\Config\SetClassRule());
 
-        $digester->addFactoryCreate($this->configPrefix . '/action-mappings/action', new \Phruts\Config\ActionFactory());
+        $digester->addFactoryCreate($this->configPrefix . '/action-mappings/action', new \Phruts\Config\ActionConfigFactory());
         $digester->addSetProperties($this->configPrefix . '/action-mappings/action');
         $digester->addSetNext($this->configPrefix . '/action-mappings/action', 'addActionConfig');
         $digester->addSetProperty($this->configPrefix . '/action-mappings/action/set-property', 'property', 'value');
@@ -99,7 +99,7 @@ class ConfigRuleSet extends Aloi_Phigester_RuleSetBase
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\SetClassRule extends Aloi_Phigester_Rule
+final class SetClassRule extends Phruts_Phigester_Rule
 {
     /**
 	 * @param array $attributes
@@ -131,7 +131,7 @@ final class \Phruts\Config\SetClassRule extends Aloi_Phigester_Rule
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\ActionFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+final class ActionConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -150,9 +150,9 @@ final class \Phruts\Config\ActionFactory extends Aloi_Phigester_AbstractObjectCr
         // Instantiate the new object and return it
         $actionConfig = null;
         try {
-            $actionConfig = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\Action');
+            $actionConfig = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\ActionConfig');
         } catch (\Exception $e) {
-            $this->digester->getLogger()->error('\Phruts\Config\ActionFactory->createObject(): ' . $e->getMessage());
+            $this->digester->getLogger()->error('\Phruts\Config\ActionConfigFactory->createObject(): ' . $e->getMessage());
         }
 
         return $actionConfig;
@@ -164,7 +164,7 @@ final class \Phruts\Config\ActionFactory extends Aloi_Phigester_AbstractObjectCr
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\ForwardConfigFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+final class ForwardConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -196,7 +196,7 @@ final class \Phruts\Config\ForwardConfigFactory extends Aloi_Phigester_AbstractO
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\ControllerConfigFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+final class ControllerConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -226,10 +226,10 @@ final class \Phruts\Config\ControllerConfigFactory extends Aloi_Phigester_Abstra
 /**
  * An object creation factory which creates form property config instances.
  *
- * @author Cameorn MANDERSON <cameronmanderson@gmail.com> (Aloi Contributor)
+ * @author Cameorn MANDERSON <cameronmanderson@gmail.com> (Phruts Contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\FormPropertyConfigFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+final class FormPropertyConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -261,7 +261,7 @@ final class \Phruts\Config\FormPropertyConfigFactory extends Aloi_Phigester_Abst
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\FormBeanConfigFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+final class FormBeanConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -293,7 +293,7 @@ final class \Phruts\Config\FormBeanConfigFactory extends Aloi_Phigester_Abstract
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\MessageResourcesConfigFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+final class MessageResourcesConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -325,7 +325,7 @@ final class \Phruts\Config\MessageResourcesConfigFactory extends Aloi_Phigester_
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\DataSourceConfigFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+final class DataSourceConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -355,8 +355,8 @@ final class \Phruts\Config\DataSourceConfigFactory extends Aloi_Phigester_Abstra
 /**
  * An object creation factory which creates exception config instances.
  *
- * @author cameron MANDERSON <cameronmanderson@gmail.com> (Aloi contributor) */
-final class \Phruts\Config\ExceptionConfigFactory extends Aloi_Phigester_AbstractObjectCreationFactory
+ * @author cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor) */
+final class ExceptionConfigFactory extends Phruts_Phigester_AbstractObjectCreationFactory
 {
     /**
 	 * @param array $attributes
@@ -389,7 +389,7 @@ final class \Phruts\Config\ExceptionConfigFactory extends Aloi_Phigester_Abstrac
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\AddDataSourcePropertyRule extends Aloi_Phigester_Rule
+final class AddDataSourcePropertyRule extends Phruts_Phigester_Rule
 {
     /**
 	 * @param array $attributes
@@ -415,7 +415,7 @@ final class \Phruts\Config\AddDataSourcePropertyRule extends Aloi_Phigester_Rule
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-final class \Phruts\Config\PlugInSetPropertyRule extends Aloi_Phigester_Rule
+final class PlugInSetPropertyRule extends Phruts_Phigester_Rule
 {
     /**
 	 * @param array $attributes

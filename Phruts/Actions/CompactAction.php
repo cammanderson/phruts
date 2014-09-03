@@ -2,16 +2,16 @@
 
 namespace Phruts\Action\Compact;
 
-use Phruts\Action;
+use Phruts\Actions;
 
 /**
  * Similar to a dispatch action, the compact action allows you
  * to write more compact actions by eliminating method parameters
  * and adopting a convention of 'actionAction' in the method name
  *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Aloi Contributor)
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
  */
-class Compact extends Action
+class CompactAction extends Action
 {
     const ACTION_METHOD_PREPEND = 'execute';
     const ACTION_PARAMETER = 'action';
@@ -23,7 +23,7 @@ class Compact extends Action
     protected $mapping;
     protected $method;
 
-    public function init(\Phruts\Config\Action $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function init(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         // Assign the local scope
         $this->request = $request;
@@ -33,13 +33,13 @@ class Compact extends Action
     }
 
     // --------------------- Execute/Dispatch --------------
-    public function execute(\Phruts\Config\Action $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         // Initialise
         $this->init($mapping, $form, $request, $response);
 
         // Log local here
-        //$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+        //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
 
         // Check for cancelled actions
         if ($this->isCancelled($request)) {
@@ -60,7 +60,7 @@ class Compact extends Action
 
     protected function dispatchCompactMethod($method)
     {
-        //$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+        //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
 
         // Look for the corresponding method
         if (!trim($method)) {
@@ -70,10 +70,10 @@ class Compact extends Action
         // Dispatch the method
         $localMethodName = self::ACTION_METHOD_PREPEND . ucfirst($method);
         if (!method_exists($this, $localMethodName)) {
-            //$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+            //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
             $message = $this->getServlet()->getInternal()->getMessage('compact.dispatchcompactmethod', $this->getMapping()->getPath(), $this->getMapping()->getParameter());
             //$log->error($message);
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
+            $this->getResponse()->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
 
             return null;
         }
@@ -90,10 +90,10 @@ class Compact extends Action
     // --------------------- Default actions --------------
     public function executeIndex()
     {
-        //$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+        //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
         $message = $this->getServlet()->getInternal()->getMessage('compact.index', $this->getMapping()->getPath(), $this->getMapping()->getParameter());
         //$log->error($message);
-        $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
+        $this->getResponse()->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
     }
     public function executeCancelled()
     {

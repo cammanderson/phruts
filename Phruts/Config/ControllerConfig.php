@@ -113,7 +113,7 @@ class ControllerConfig
     }
 
     /**
-	 * Should the input property of \Phruts\Config\Action instances associated with
+	 * Should the input property of \Phruts\Config\ActionConfig instances associated with
 	 * this module be treated as the name of a corresponding ForwardConfig.
 	 *
 	 * A false value treats them as a context-relative path.

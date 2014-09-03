@@ -2,7 +2,7 @@
 
 namespace Phruts\Action;
 
-use Phruts\Action;
+use Phruts\Actions;
 
 /**
  * <p>An abstract <strong>Action</strong> that dispatches to a public
@@ -26,13 +26,13 @@ use Phruts\Action;
  * method.  For example, you might have the following three methods in the
  * same action:</p>
  * <ul>
- * <li>public \Phruts\Config\Action delete(ActionMapping mapping, \Phruts\Action\Form form,
+ * <li>public \Phruts\Config\ActionConfig delete(ActionMapping mapping, \Phruts\Action\AbstractActionForm form,
  * \Symfony\Component\HttpFoundation\Request request, \Symfony\Component\HttpFoundation\Response response)     throws
  * Exception</li>
- * <li>public \Phruts\Config\Action insert(ActionMapping mapping, \Phruts\Action\Form form,
+ * <li>public \Phruts\Config\ActionConfig insert(ActionMapping mapping, \Phruts\Action\AbstractActionForm form,
  * \Symfony\Component\HttpFoundation\Request request, \Symfony\Component\HttpFoundation\Response response)     throws
  * Exception</li>
- * <li>public \Phruts\Config\Action update(ActionMapping mapping, \Phruts\Action\Form form,
+ * <li>public \Phruts\Config\ActionConfig update(ActionMapping mapping, \Phruts\Action\AbstractActionForm form,
  * \Symfony\Component\HttpFoundation\Request request, \Symfony\Component\HttpFoundation\Response response)     throws
  * Exception</li>
  * </ul>
@@ -46,12 +46,12 @@ use Phruts\Action;
  * constraints over what types of handlers may reasonably be packaged into
  * the same <code>DispatchAction</code> subclass.</p>
  *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Aloi Contributor)
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
  * @author Niall Pemberton <niall.pemberton@btInternet.com>
  * @author Craig R. McClanahan
  * @author Ted Husted
  */
-class Dispatch extends Action
+class ActionDispatch extends \Phruts\Action
 {
     // ----------------------------------------------------- Instance Variables
 
@@ -64,16 +64,16 @@ class Dispatch extends Action
 	 * control should be forwarded, or <code>null</code> if the response has
 	 * already been completed.
 	 *
-	 * @param mapping The \Phruts\Config\Action used to select this instance
-	 * @param form The optional \Phruts\Action\Form bean for this request (if any)
+	 * @param mapping The \Phruts\Config\ActionConfig used to select this instance
+	 * @param form The optional \Phruts\Action\AbstractActionForm bean for this request (if any)
 	 * @param request The HTTP request we are processing
 	 * @param response The HTTP response we are creating
 	 * @return ForwardConfig
 	 * @exception Exception if an exception occurs
 	 */
-    public function execute(\Phruts\Config\Action $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        //$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+        //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
 
         // See if this is cancelled
         if ($this->isCancelled($request)) {
@@ -113,10 +113,10 @@ class Dispatch extends Action
 	 * "Bad Request" error.
 	 *
 	 */
-    protected function unspecified(\Phruts\Config\Action $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    protected function unspecified(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         $message = $this->getServlet()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
-        //$log = Aloi_Util_Logger_Manager::getRootLogger();
+        //$log = Phruts_Util_Logger_Manager::getRootLogger();
         //$log->error($message);
         $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
 
@@ -127,11 +127,11 @@ class Dispatch extends Action
 
     /**
 	 * Dispatch to the specified method.
-	 * @return \Phruts\Config\Action
+	 * @return \Phruts\Config\ActionConfig
 	 */
-    protected function dispatchMethod(\Phruts\Config\Action $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $name)
+    protected function dispatchMethod(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $name)
     {
-        //$log = Aloi_Util_Logger_Manager::getRootLogger();
+        //$log = Phruts_Util_Logger_Manager::getRootLogger();
 
         // Make sure we have a valid method name to call.
         // This may be null if the user hacks the query string.

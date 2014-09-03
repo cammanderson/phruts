@@ -6,7 +6,7 @@ namespace Phruts\Action;
  * <p>A class that encapsulates messages.  Messages can be either global
  * or they are specific to a particular bean property.</p>
  *
- * <p>Each individual message is described by an <code>\Phruts\Action\Message</code>
+ * <p>Each individual message is described by an <code>\Phruts\Action\ActionMessage</code>
  * object, which contains a message key (to be looked up in an appropriate
  * message resources database), and up to four placeholder arguments used for
  * parametric substitution in the resulting message.</p>
@@ -16,7 +16,7 @@ namespace Phruts\Action;
  * Therefore, no synchronization is required for access to internal
  * collections.</p>
  *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Aloi Contributor)
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  * @author David Geary
@@ -24,7 +24,7 @@ namespace Phruts\Action;
  * @author David Winterfeldt
  * @author David Graham * @since Struts 1.1
  */
-class Messages
+class ActionMessages
 {
     /**
 	 * The "property name" marker to use for global messages, as opposed to those
@@ -33,7 +33,7 @@ class Messages
     const GLOBAL_MESSAGE = '\Phruts\Action\GLOBAL_MESSAGE';
 
     /**
-	 * The accumulated set of \Phruts\Action\Message objects for each property, keyed
+	 * The accumulated set of \Phruts\Action\ActionMessage objects for each property, keyed
 	 * by property name.
 	 *
 	 * @var array
@@ -57,10 +57,10 @@ class Messages
 	 * of the property/key.
 	 *
 	 * @param string $property Property name (or
-	 * \Phruts\Action\Messages::GLOBAL_MESSAGE)
-	 * @param \Phruts\Action\Message $message The message message to be added
+	 * \Phruts\Action\ActionMessages::GLOBAL_MESSAGE)
+	 * @param \Phruts\Action\ActionMessage $message The message message to be added
 	 */
-    public function add($property, \Phruts\Action\Message $message)
+    public function add($property, \Phruts\Action\ActionMessage $message)
     {
         $property = (string) $property;
 
@@ -73,25 +73,25 @@ class Messages
             $list = array (
                 $message
             );
-            $item = new \Phruts\Action\MessageItem($list, $this->iCount++);
+            $item = new \Phruts\Action\ActionMessageItem($list, $this->iCount++);
 
             $this->messages[$property] = $item;
         }
     }
 
     /**
-     * <p>Adds the messages from the given <code>\Phruts\Action\Messages</code> object to
+     * <p>Adds the messages from the given <code>\Phruts\Action\ActionMessages</code> object to
      * this set of messages. The messages are added in the order they are returned from
      * the <code>properties</code> method. If a message's property is already in the current
-     * <code>\Phruts\Action\Messages</code> object, it is added to the end of the list for that
+     * <code>\Phruts\Action\ActionMessages</code> object, it is added to the end of the list for that
      * property. If a message's property is not in the current list it is added to the end
      * of the properties.</p>
      *
-     * @param \Phruts\Action\Messages messages The <code>\Phruts\Action\Messages</code> object to
+     * @param \Phruts\Action\ActionMessages messages The <code>\Phruts\Action\ActionMessages</code> object to
      * be added.  This parameter can be <code>null</code>.
      * @since Struts 1.1
      */
-    public function addMessages(\Phruts\Action\Messages $messages)
+    public function addMessages(\Phruts\Action\ActionMessages $messages)
     {
         if ($messages == null) {
             return;
@@ -135,7 +135,7 @@ class Messages
 	 * If there are no such messages, an empty array is returned.
 	 *
 	 * @param string $property The property name (or
-	 * \Phruts\Action\Messages::GLOBAL_MESSAGE)
+	 * \Phruts\Action\ActionMessages::GLOBAL_MESSAGE)
 	 * @return array
 	 */
     public function get($property = '')
@@ -151,8 +151,8 @@ class Messages
 
             $messageItems = array ();
             foreach ($this->messages as $messageItem) {
-                // Sort \Phruts\Action\MessageItem based on the initial order the
-                // property/key was added to \Phruts\Action\Messages.
+                // Sort \Phruts\Action\ActionMessageItem based on the initial order the
+                // property/key was added to \Phruts\Action\ActionMessages.
                 $messageItems[$messageItem->getOrder()] = $messageItem;
             }
 
@@ -194,7 +194,7 @@ class Messages
 	 * been recorded.
 	 *
 	 * If there are no messages, an empty array is returned. If you have recorded
-	 * global messages, the String value of \Phruts\Action\Messages::GLOBAL_MESSAGE will
+	 * global messages, the String value of \Phruts\Action\ActionMessages::GLOBAL_MESSAGE will
 	 * be one of the returned property names.
 	 *
 	 * @return array
@@ -212,7 +212,7 @@ class Messages
 	 * you care about is whether or not there are any messages at all.
 	 *
 	 * @param string $property The property name (or
-	 * Actionmessages::GLOBAL_MESSAGE)
+	 * \Phruts\Action\ActionMessages::GLOBAL_MESSAGE)
 	 * @return integer
 	 */
     public function size($property = '')
@@ -235,69 +235,5 @@ class Messages
                 return 0;
             }
         }
-    }
-}
-
-/**
- * This class is used to store a set of messages associated with a property/key
- * and the position it was initially added to list.
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-class \Phruts\Action\MessageItem
-{
-    /**
-	 * The list of \Phruts\Action\Message.
-	 *
-	 * @var array
-	 */
-    protected $list = null;
-
-    /**
-	 * The position in the list of messages.
-	 *
-	 * @var integer
-	 */
-    protected $iOrder = 0;
-
-    /**
-	 * @param array $list The list of Actionmessages.
-	 * @param integer $iOrder The position in the list of messages.
-	 */
-    public function __construct(array $list, $iOrder)
-    {
-        $this->list = $list;
-        $this->iOrder = (integer) $iOrder;
-    }
-
-    /**
-	 * @return array
-	 */
-    public function & getList() {
-        return $this->list;
-    }
-
-    /**
-	 * @param array $list
-	 */
-    public function setList(array $list)
-    {
-        $this->list = $list;
-    }
-
-    /**
-	 * @return integer
-	 */
-    public function getOrder()
-    {
-        return $this->iOrder;
-    }
-
-    /**
-	 * @param integer $iOrder
-	 */
-    public function setOrder($iOrder)
-    {
-        $this->iOrder = (integer) $iOrder;
     }
 }

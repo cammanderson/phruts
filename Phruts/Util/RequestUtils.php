@@ -6,7 +6,7 @@ namespace Phruts\Util;
  * General purpose utility methods related to processing a servlet request
  * in the PHruts controller framework.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi Contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts Contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
 class RequestUtils
@@ -104,22 +104,22 @@ class RequestUtils
     }
 
     /**
-	 * Create (if necessary) and return a \Phruts\Action\Form instance appropriate
+	 * Create (if necessary) and return a \Phruts\Action\AbstractActionForm instance appropriate
 	 * for this request.
 	 *
-	 * If no \Phruts\Action\Form instance is required, return null.
+	 * If no \Phruts\Action\AbstractActionForm instance is required, return null.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
 	 * processing
-	 * @param \Phruts\Config\Action $mapping The action mapping for this request
+	 * @param \Phruts\Config\ActionConfig $mapping The action mapping for this request
 	 * @param ModuleConfig $moduleConfig The configuration for this
 	 * module
 	 * @param ActionServlet $servlet The action servlet
-	 * @return \Phruts\Action\Form Form instance associated with this
+	 * @return \Phruts\Action\AbstractActionForm Form instance associated with this
 	 * request
 	 * @todo Manage exception for ClassLoader::loadClass.
 	 */
-    public static function createActionForm(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Config\Action $mapping, \Phruts\Config\ModuleConfig $moduleConfig, \Phruts\Action\Servlet $servlet)
+    public static function createActionForm(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Config\ActionConfig $mapping, \Phruts\Config\ModuleConfig $moduleConfig, \Phruts\Action\ActionServlet $servlet)
     {
         // Is there a form bean associated with this mapping?
         $attribute = $mapping->getAttribute();
@@ -136,7 +136,7 @@ class RequestUtils
 
         // Look up any existing form bean instance
 //        if (self::$log->isDebugEnabled()) {
-//            self::$log->debug('  Looking for \Phruts\Action\Form bean instance in scope "' . $mapping->getScope() . '" under attribute key "' . $attribute . '"');
+//            self::$log->debug('  Looking for \Phruts\Action\AbstractActionForm bean instance in scope "' . $mapping->getScope() . '" under attribute key "' . $attribute . '"');
 //        }
         $instance = null;
         $session = null;
@@ -155,7 +155,7 @@ class RequestUtils
             $instanceClass = get_class($instance);
             if (\Serphlet\ClassLoader::classIsAssignableFrom($configClass, $instanceClass)) {
 //                if (self::$log->isDebugEnabled()) {
-//                    self::$log->debug('  Recycling existing \Phruts\Action\Form instance' . ' of class "' . $instanceClass . '"');
+//                    self::$log->debug('  Recycling existing \Phruts\Action\AbstractActionForm instance' . ' of class "' . $instanceClass . '"');
 //                }
 
                 return $instance;
@@ -164,9 +164,9 @@ class RequestUtils
 
         // Create and return a new form bean instance
         try {
-            $instance = \Serphlet\ClassLoader::newInstance($config->getType(), '\Phruts\Action\Form');
+            $instance = \Serphlet\ClassLoader::newInstance($config->getType(), '\Phruts\Action\AbstractActionForm');
 //            if (self::$log->isDebugEnabled()) {
-//                self::$log->debug('  Creating new \Phruts\Action\Form instance of type "' . $config->getType() . '"');
+//                self::$log->debug('  Creating new \Phruts\Action\AbstractActionForm instance of type "' . $config->getType() . '"');
 //            }
             $instance->setServlet($servlet);
         } catch (\Exception $e) {
@@ -363,4 +363,4 @@ class RequestUtils
     }
 }
 
-//\Phruts\Util\RequestUtils::$log = Aloi_Util_Logger_Manager::getLogger('\Phruts\Util\RequestUtils');
+//\Phruts\Util\RequestUtils::$log = Phruts_Util_Logger_Manager::getLogger('\Phruts\Util\RequestUtils');

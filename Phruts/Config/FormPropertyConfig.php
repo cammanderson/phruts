@@ -5,7 +5,7 @@ namespace Phruts\Config;
 /**
  * <p>A PHPBean representing the configuration information of a <code>&lt;form-
  * property&gt;</code> element in a Phruts configuration file.<p>
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  * @since Struts 1.1 */

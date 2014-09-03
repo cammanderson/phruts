@@ -3,8 +3,8 @@
 namespace Phruts\Action;
 
 /**
- * A \Phruts\Action\Form is a PHPBean optionally associated with one or more
- * \Phruts\Config\Action.
+ * A \Phruts\Action\AbstractActionForm is a PHPBean optionally associated with one or more
+ * \Phruts\Config\ActionConfig.
  *
  * <p>Such a bean will have had its properties initialized from the
  * corresponding request parameters before the corresponding action's
@@ -27,12 +27,12 @@ namespace Phruts\Action;
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @todo Manage setServlet() calls with or without null argument.
  */
-abstract class Form
+abstract class AbstractActionForm
 {
     /**
 	 * The controller servlet instance to which we are attached.
 	 *
-	 * @var ActionServlet
+	 * @var \Phruts\Action\ActionServlet
 	 */
     protected $servlet = null;
 
@@ -70,34 +70,34 @@ abstract class Form
 	 * Action). You mainly need to worry about setting checkbox values to
 	 * false; most of the time you can leave this method unimplemented.</p>
 	 *
-	 * @param \Phruts\Config\Action $mapping The mapping used to select this
+	 * @param \Phruts\Config\ActionConfig $mapping The mapping used to select this
 	 * instance
 	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
 	 * processing
 	 */
-    public function reset(\Phruts\Config\Action $mapping, \Symfony\Component\HttpFoundation\Request $request)
+    public function reset(\Phruts\Config\ActionConfig $mapping, \Symfony\Component\HttpFoundation\Request $request)
     {
         // Default implementation does nothing
     }
 
     /**
 	 * Validate the properties that have been set for this HTTP request, and
-	 * return a \Phruts\Action\Errors object that encapsulates any validation errors
+	 * return a \Phruts\Action\ActionErrors object that encapsulates any validation errors
 	 * that have been found.
 	 *
-	 * <p>If no errors are found, return null or an \Phruts\Action\Errors object
+	 * <p>If no errors are found, return null or an \Phruts\Action\ActionErrors object
 	 * with no recorded error messages.</p>
 	 * <p>The default implementation performs no validation and returns null.
 	 * Subclasses must override this method to provide any validation they wish
 	 * to perform.</p>
 	 *
-	 * @param \Phruts\Config\Action $mapping The mapping used to select this
+	 * @param \Phruts\Config\ActionConfig $mapping The mapping used to select this
 	 * instance
 	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
 	 * processing
-	 * @return \Phruts\Action\Errors
+	 * @return \Phruts\Action\ActionErrors
 	 */
-    public function validate(\Phruts\Config\Action $mapping, \Symfony\Component\HttpFoundation\Request $request)
+    public function validate(\Phruts\Config\ActionConfig $mapping, \Symfony\Component\HttpFoundation\Request $request)
     {
         return null;
     }

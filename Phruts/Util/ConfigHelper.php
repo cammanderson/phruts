@@ -19,10 +19,10 @@ namespace Phruts\Util;
  * The resources are stored under attributes in the servlet, session, or request
  * contexts.
  *
- * The \Phruts\Config\Action methods simply return the resources from under the context
+ * The \Phruts\Config\ActionConfig methods simply return the resources from under the context
  * and key used by the Struts ActionServlet when the resources are created.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  * @since Struts 1.1 */
@@ -98,7 +98,7 @@ class ConfigHelper
     /**
      * Set the forward associated with this instance.
      */
-    public function setForward(\Phruts\Config\Action $forward)
+    public function setForward(\Phruts\Config\ActionConfig $forward)
     {
         $this->forward = $forward;
     }
@@ -147,7 +147,7 @@ class ConfigHelper
     }
 
     /**
-	 * @return \Phruts\Action\Messages
+	 * @return \Phruts\Action\ActionMessages
 	 */
     public function getActionMessages()
     {
@@ -232,7 +232,7 @@ class ConfigHelper
     /**
       * The <code>org.apache.struts.ActionMapping</code>
       * instance for this request.
-      * @return \Phruts\Config\Action
+      * @return \Phruts\Config\ActionConfig
       */
     public function getMapping()
     {
@@ -266,10 +266,10 @@ class ConfigHelper
     }
 
     /**
-     * Retrieve and return the <code>\Phruts\Action\Form</code> bean associated with
+     * Retrieve and return the <code>\Phruts\Action\AbstractActionForm</code> bean associated with
      * this mapping, creating and stashing one if necessary.  If there is no
      * form bean associated with this mapping, return <code>null</code>.
-     * @return \Phruts\Action\Form
+     * @return \Phruts\Action\AbstractActionForm
      */
     public function getActionForm()
     {
@@ -300,7 +300,7 @@ class ConfigHelper
 //     *
 //     * @param name Logical name of the requested form bean definition
 //     */
-//    public \Phruts\Action\FormBean getFormBean(String name) {
+//    public \Phruts\Action\AbstractActionFormBean getFormBean(String name) {
 //        return null;
 //    }
 
@@ -310,7 +310,7 @@ class ConfigHelper
 //     *
 //     * @param name Logical name of the requested forwarding
 //     */
-//    public \Phruts\Config\Action getActionForward(String name) {
+//    public \Phruts\Config\ActionConfig getActionForward(String name) {
 //        return null;
 //    }
 

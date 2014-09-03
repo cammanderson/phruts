@@ -4,7 +4,7 @@ namespace Phruts\Action;
 
 /**
  * <p>An encapsulation of an individual message returned by the
- * <code>validate()</code> method of an <code>\Phruts\Action\Form</code>, consisting
+ * <code>validate()</code> method of an <code>\Phruts\Action\AbstractActionForm</code>, consisting
  * of a message key (to be used to look up message text in an appropriate
  * message resources database) plus up to four placeholder objects that can
  * be used for parametric replacement in the message text.</p>
@@ -13,7 +13,7 @@ namespace Phruts\Action;
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @since Struts 1.1
  */
-class Message
+class ActionMessage
 {
     /**
 	 * The message key for this message.

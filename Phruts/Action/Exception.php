@@ -2,7 +2,6 @@
 
 namespace Phruts\Action;
 
-use Phruts\Config\ExceptionConfig;
 
 /**
  * An <strong>\Phruts\Action\Exception</strong> represents a potential exception
@@ -34,18 +33,18 @@ use Phruts\Config\ExceptionConfig;
  * Default is 'org.apache.struts.action.ExceptionHandler'.
  * </ul>
  *
- * @author Cameron Manderson (Contributor from Aloi)
+ * @author Cameron Manderson (Contributor from Phruts)
  * @author ldonlan * @deprecated Replaced by org.apache.struts.config.ExceptionConfig
  */
-class Exception extends ExceptionConfig
+class Exception extends \Phruts\Config\ExceptionConfig
 {
     /**
-	 * Returns an instance of an <code>\Phruts\Action\Error</code> configured for this
+	 * Returns an instance of an <code>\Phruts\Action\ActionError</code> configured for this
 	 * exception.
-	 * @return Error
+	 * @return ActionError
 	 */
     public function getError()
     {
-        return new Error($this->key);
+        return new ActionError($this->key);
     }
 }

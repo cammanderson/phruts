@@ -6,7 +6,7 @@ namespace Phruts\Config;
  * A PHPBean representing the configuration information of a <form-bean> element
  * in a PHruts application configuration file
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi Contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts Contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
 class FormBeanConfig
@@ -71,7 +71,7 @@ class FormBeanConfig
     /**
 	 * The unique identifier of this form bean.
 	 *
-	 * It is used to reference this bean in \Phruts\Config\Action instances as well
+	 * It is used to reference this bean in \Phruts\Config\ActionConfig instances as well
 	 * as for the name of the request or session attribute under which the
 	 * corresponding form bean instance is created or accessed.
 	 * @var string

@@ -96,7 +96,7 @@ class ModuleConfig
 	 *
 	 * @var string
 	 */
-    protected $actionConfigClass = '\Phruts\Config\Action';
+    protected $actionConfigClass = '\Phruts\Config\ActionConfig';
 
     /**
      * The set of exception handling configurations for this
@@ -218,15 +218,15 @@ class ModuleConfig
     }
 
     /**
-	 * Add a new \Phruts\Config\Action instance to the set associated with this
+	 * Add a new \Phruts\Config\ActionConfig instance to the set associated with this
 	 * module.
 	 *
-	 * @param \Phruts\Config\Action $config The new configuration instance
+	 * @param \Phruts\Config\ActionConfig $config The new configuration instance
 	 * to be added
 	 * @throws \Serphlet\Exception\IllegalState - If this module configuration has
 	 * been frozen
 	 */
-    public function addActionConfig(\Phruts\Config\Action $config)
+    public function addActionConfig(\Phruts\Config\ActionConfig $config)
     {
         if ($this->configured) {
             throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
@@ -325,7 +325,7 @@ class ModuleConfig
 	 * otherwise return null.
 	 *
 	 * @param string $path The path of the action configuration to return
-	 * @return \Phruts\Config\Action
+	 * @return \Phruts\Config\ActionConfig
 	 */
     public function findActionConfig($path)
     {
@@ -533,12 +533,12 @@ class ModuleConfig
     /**
 	 * Remove the specified action configuration instance.
 	 *
-	 * @param \Phruts\Config\Action $config \Phruts\Config\Action instance to be
+	 * @param \Phruts\Config\ActionConfig $config \Phruts\Config\ActionConfig instance to be
 	 * removed
 	 * @throws \Serphlet\Exception\IllegalState - If this module configuration has
 	 * been frozen
 	 */
-    public function removeActionConfig(\Phruts\Config\Action $config)
+    public function removeActionConfig(\Phruts\Config\ActionConfig $config)
     {
         if ($this->configured) {
             throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
@@ -653,7 +653,7 @@ class ModuleConfig
     /**
      * Remove the specified exception configuration instance.
      *
-     * @param config \Phruts\Config\Action instance to be removed
+     * @param config \Phruts\Config\ActionConfig instance to be removed
      *
      * @exception \Serphlet\Exception\IllegalState if this module configuration  has been
      * frozen

@@ -9,7 +9,7 @@ namespace Phruts\Util;
  * object for two threads accessing the same session so it is not possible to
  * synchronize on the session.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi Contibutor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts Contibutor)
  * @since Struts 1.1 */
 class TokenProcessor
 {

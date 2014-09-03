@@ -5,7 +5,7 @@ namespace Phruts\Config;
 /**
  * Class used for fallback when an action config is not found. Also provides
  * Wildcard mapping support
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Aloi Contributor)
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
  */
 class ActionMatcher
 {
@@ -14,7 +14,7 @@ class ActionMatcher
 
     public function __construct($configs)
     {
-        //$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+        //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
         //$log->info('Looking to configs');
         $this->regexPaths = array();
         foreach ($configs as $config) {
@@ -36,7 +36,7 @@ class ActionMatcher
 
     public function match($path)
     {
-        //$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+        //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
         $config = null;
         if(substr($path, 0, 1) == '/') $path = substr($path, 1);
         foreach (array_keys($this->regexPaths) as $regex) {
@@ -108,7 +108,7 @@ class ActionMatcher
         $clone = new $originalClass();
 
         // Clone the object through public accessors
-        $reflectionClass = new ReflectionClass($originalClass);
+        $reflectionClass = new \ReflectionClass($originalClass);
         $methods = $reflectionClass->getMethods();
         foreach ($methods as $method) {
             if (substr($method->getName(), 0, 3) == 'get' && $method->isPublic()) {

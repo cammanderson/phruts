@@ -27,12 +27,12 @@ interface PlugInInterface
     /**
 	 * Receive notification that the specified module is being started up.
 	 *
-	 * @param ActionServlet $servlet ActionServlet that is managing
+	 * @param \Phruts\Action\ActionServlet $servlet ActionServlet that is managing
 	 * all the module in this web application
-	 * @param ModuleConfig $config ModuleConfig for the module with
+	 * @param \Phruts\Config\ModuleConfig $config ModuleConfig for the module with
 	 * which this plug-in is associated
-	 * @throws ServletException If this PlugIn cannot be
+	 * @throws \Serphlet\Exception If this PlugIn cannot be
 	 * successfully initialized
 	 */
-    public function init(\Phruts\Action\Servlet $servlet, \Phruts\Config\ModuleConfig $config);
+    public function init(\Phruts\Action\ActionServlet $servlet, \Phruts\Config\ModuleConfig $config);
 }

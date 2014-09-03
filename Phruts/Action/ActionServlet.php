@@ -45,7 +45,7 @@ namespace Phruts\Action;
  *     </li>
  * <li>If this is the first request for a particular action class, instantiate
  *     an instance of that class and cache it for future use.</li>
- * <li>Optionally populate the properties of a \Phruts\Action\Form bean
+ * <li>Optionally populate the properties of a \Phruts\Action\AbstractActionForm bean
  *     associated with this mapping.</li>
  * <li>Call the <samp>execute</samp> method of this action class, passing
  *     on a reference to the mapping that was used (thereby providing access
@@ -60,7 +60,7 @@ namespace Phruts\Action;
  * descriptor "/WEB-INF/web.xml".
  * @todo Manage the possibility of subclassing the servlet controller.
  */
-class Servlet extends \Serphlet\Http\Servlet
+class ActionServlet extends \Serphlet\Http\Servlet
 {
     /**
 	 * Comma-separated list of context-relative path(s) to our configuration
@@ -123,7 +123,7 @@ class Servlet extends \Serphlet\Http\Servlet
     public function __wakeup()
     {
 //        if (is_null(self::$log)) {
-//            self::$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+//            self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
 //        }
     }
 
@@ -133,7 +133,7 @@ class Servlet extends \Serphlet\Http\Servlet
     public function __construct()
     {
 //        if (is_null(self::$log)) {
-//            self::$log = Aloi_Util_Logger_Manager::getLogger(__CLASS__);
+//            self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
 //        }
     }
 
@@ -358,7 +358,7 @@ class Servlet extends \Serphlet\Http\Servlet
         $this->configPrefix = $configPrefix;
 
         // Create a new Digester instance with standard capabilities
-        $this->configDigester = new Aloi_Phigester_Digester();
+        $this->configDigester = new Phruts_Phigester_Digester();
         $this->configDigester->addRuleSet(new \Phruts\Config\ConfigRuleSet($this->configPrefix));
 
         return $this->configDigester;

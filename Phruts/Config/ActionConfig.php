@@ -1,5 +1,5 @@
 <?php
-/* Copyright 2010 aloi-project
+/* Copyright 2010 Phruts-project
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -59,10 +59,10 @@ namespace Phruts\Config;
  * A PHPBean representing the configuration information of
  * an <action> element from a PHruts module configuration file.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Aloi contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
-class Action
+class ActionConfig
 {
     /**
 	 * Has this component been completely configured?
@@ -797,7 +797,7 @@ class Action
 	 */
     public function __toString()
     {
-        $sb = '\Phruts\Config\Action[';
+        $sb = '\Phruts\Config\ActionConfig[';
         $sb .= 'path=' . var_export($this->path, true);
         if (!is_null($this->forward)) {
             $sb .= ',forward=' . var_export($this->forward, true);
