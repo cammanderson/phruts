@@ -67,12 +67,12 @@ class PlugInConfig
 	 *
 	 * @param string $name Property name
 	 * @param string $value Property value
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function addProperty($name, $value)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $name = (string) $name;
         $this->properties[$name] = (string) $value;

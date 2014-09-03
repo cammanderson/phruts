@@ -231,7 +231,7 @@ class Properties
             fclose($handle);
         } else {
             $err = error_get_last();
-            throw new \Serphlet\Exception_IO('Cannot open file "' . $file . '": ' . $err['message']);
+            throw new \Serphlet\Exception\IO('Cannot open file "' . $file . '": ' . $err['message']);
         }
     }
 

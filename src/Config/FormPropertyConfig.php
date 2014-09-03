@@ -64,7 +64,7 @@ class FormPropertyConfig
     public function setInitial($initial)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState("Configuration is frozen");
+            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
         }
         $this->initial = $initial;
     }
@@ -82,7 +82,7 @@ class FormPropertyConfig
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState("Configuration is frozen");
+            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
         }
         $this->name = $name;
     }
@@ -102,10 +102,10 @@ class FormPropertyConfig
     public function setSize($size)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState("Configuration is frozen");
+            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
         }
         if ($this->size < 0) {
-            throw new \Serphlet\Exception_IllegalArgument("size < 0");
+            throw new \Serphlet\Exception\IllegalArgument("size < 0");
         }
         $this->size = $size;
     }
@@ -125,7 +125,7 @@ class FormPropertyConfig
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState("Configuration is frozen");
+            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
         }
         $this->type = $type;
     }

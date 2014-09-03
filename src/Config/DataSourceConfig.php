@@ -43,12 +43,12 @@ class DataSourceConfig
 
     /**
 	 * @param string $key
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setKey($key)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->key = (string) $key;
     }
@@ -77,7 +77,7 @@ class DataSourceConfig
     public function addProperty($name, $value)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $name = (string) $name;
         $this->properties[$name] = (string) $value;
@@ -104,7 +104,7 @@ class DataSourceConfig
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->type = (string) $type;
     }

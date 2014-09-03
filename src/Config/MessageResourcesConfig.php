@@ -43,12 +43,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param string $factory
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setFactory($factory)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->factory = (string) $factory;
     }
@@ -71,12 +71,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param string $parameter
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setParameter($parameter)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->parameter = (string) $parameter;
     }
@@ -99,12 +99,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param string $key
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setKey($key)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->key = (string) $key;
     }
@@ -126,12 +126,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param boolean $nullValue
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setNull($nullValue)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($nullValue);
         if ($temp === 'false' || $temp === 'no') {

@@ -51,12 +51,12 @@ class ForwardConfig
 
     /**
 	 * @param string $name
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->name = (string) $name;
     }
@@ -64,12 +64,12 @@ class ForwardConfig
     /**
 	 * Set the context relative
 	 * @param string $contextRelative
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setContextRelative($contextRelative)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($contextRelative);
         if ($temp === 'false' || $temp === 'no') {
@@ -105,12 +105,12 @@ class ForwardConfig
 
     /**
 	 * @param string $path
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setPath($path)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->path = (string) $path;
     }
@@ -132,12 +132,12 @@ class ForwardConfig
 
     /**
 	 * @param boolean $redirect
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setRedirect($redirect)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($redirect);
         if ($temp === 'false' || $temp === 'no') {

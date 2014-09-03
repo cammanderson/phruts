@@ -57,13 +57,13 @@ class FormBeanConfig
 	 *
 	 * @param ModuleConfig $moduleConfig The new ModuleConfig or
 	 * null to disassociate this form bean configuration from any module
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 * @todo Check if the parameter is a ModuleConfig object.
 	 */
     public function setModuleConfig($moduleConfig)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->moduleConfig = $moduleConfig;
     }
@@ -88,12 +88,12 @@ class FormBeanConfig
 
     /**
 	 * @param string $name
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->name = (string) $name;
     }
@@ -116,12 +116,12 @@ class FormBeanConfig
 
     /**
 	 * @param string $type
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->type = (string) $type;
     }
@@ -132,16 +132,16 @@ class FormBeanConfig
      *
      * @param config The new configuration instance to be added
      *
-     * @exception \Serphlet\Exception_IllegalArgument if this property name has already
+     * @exception \Serphlet\Exception\IllegalArgument if this property name has already
      *  been defined
      */
     public function addFormPropertyConfig(\Phruts\Config\FormPropertyConfig $config)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState("Configuration is frozen");
+            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
         }
         if (!empty($this->formProperties[$config->getName()])) {
-            throw new \Serphlet\Exception_IllegalArgument("Property " + config.getName() + " already defined");
+            throw new \Serphlet\Exception\IllegalArgument("Property " + config.getName() + " already defined");
         }
         $this->formProperties[$config->getName()] = $config;
     }

@@ -14,17 +14,17 @@ class BeanUtils
 	 *
 	 * @param object $bean
 	 * @param array $properties
-	 * @throws \Serphlet\Exception_IllegalArgument - If the bean object has not been
+	 * @throws \Serphlet\Exception\IllegalArgument - If the bean object has not been
 	 * specified
 	 */
     public static function populate($bean, array $properties)
     {
         if (is_null($bean)) {
-            throw new \Serphlet\Exception_IllegalArgument('Bean object to populate must be not null.');
+            throw new \Serphlet\Exception\IllegalArgument('Bean object to populate must be not null.');
         }
 
         // Loop through the property name/value pairs to be set
-        $reflection = new ReflectionClass(get_class($bean));
+        $reflection = new \ReflectionClass(get_class($bean));
         foreach ($properties as $name => $value) {
             // Perform the assignement for this property
             $reflectionProperty = null;

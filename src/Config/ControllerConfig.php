@@ -43,12 +43,12 @@ class ControllerConfig
 
     /**
 	 * @param string $processorClass
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setProcessorClass($processorClass)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->processorClass = (string) $processorClass;
     }
@@ -70,12 +70,12 @@ class ControllerConfig
 
     /**
 	 * @param string $contentType
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setContentType($contentType)
     {
         if (!$this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $this->contentType = (string) $contentType;
     }
@@ -97,12 +97,12 @@ class ControllerConfig
 
     /**
 	 * @param boolean $nocache
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setNocache($nocache)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($nocache);
         if ($temp === 'false' || $temp === 'no') {
@@ -132,12 +132,12 @@ class ControllerConfig
 
     /**
 	 * @param boolean $inputForward
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setInputForward($inputForward)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($inputForward);
         if ($temp === 'false' || $temp === 'no') {
@@ -164,12 +164,12 @@ class ControllerConfig
 
     /**
 	 * @param boolean $locale
-	 * @throws \Serphlet\Exception_IllegalState
+	 * @throws \Serphlet\Exception\IllegalState
 	 */
     public function setLocale($locale)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception_IllegalState('Configuration is frozen');
+            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($locale);
         if ($temp === 'false' || $temp === 'no') {
