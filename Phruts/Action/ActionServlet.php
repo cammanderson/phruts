@@ -161,7 +161,7 @@ class ActionServlet extends \Serphlet\Http\Servlet
 	 * @exception \Serphlet\Exception - If we cannot configure ourselves
 	 * correctly
 	 */
-    public function init(\Serphlet\Config\ServletConfig $servletConfig)
+    public function init(\Serphlet\Config\ServletConfigInterface $servletConfig)
     {
         try {
             // Set the config
