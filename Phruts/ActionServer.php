@@ -15,7 +15,7 @@ class ActionServer
     public function process(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         // Get the module config
-        $this->getRequestProcessor($this->app['phruts.module_config_provider']->getModuleConfig($request))->process($request, $response);
+        $this->getRequestProcessor($this->getModuleConfig($request))->process($request, $response);
     }
 
     protected function getModuleConfig(\Symfony\Component\HttpFoundation\Request $request)
@@ -26,6 +26,7 @@ class ActionServer
             // Obtain the matching module config
                 // Initialise the module config (e.g. all the datasource/plugins)
             // Return module config
+        return;
     }
 
     /**
