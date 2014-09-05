@@ -115,8 +115,8 @@ class Action
 	 */
     protected function getLocale(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $session = $request->getSession();
-        $locale = $session->getLocale();
+        // TODO: Confirm that we are no longer accessing from the session
+        $locale = $request->getLocale();
         if (is_null($locale)) {
             // Silex core parameter
             $app = $this->actionKernel->getApplication();
@@ -186,7 +186,6 @@ class Action
         // Remove any error messages attribute if none are required
         if (is_null($errors) || $errors->isEmpty()) {
             $request->attributes->remove(\Phruts\Globals::ERROR_KEY);
-
             return;
         }
 
@@ -212,6 +211,7 @@ class Action
         // Remove the error attribute if none are required
         if (($errors == null) || $errors->isEmpty()) {
             $session->remove(\Phruts\Globals::ERROR_KEY);
+            return;
         }
 
         // Save the errors we need
