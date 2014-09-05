@@ -9,7 +9,7 @@
         >
     <testsuites>
         <testsuite name="Phruts Project Test Suite">
-            <directory suffix="Test.php">./Tests/</directory>
+            <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -17,16 +17,17 @@
         <whitelist>
             <directory>./</directory>
             <exclude>
-                <directory>./Tests</directory>
+                <directory>./tests</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>
     </filter>
 
+    <!--
     <logging>
         <log type="coverage-html" target="coverage" charset="UTF-8"
              yui="true" highlight="true"
              lowUpperBound="35" highLowerBound="70"/>
     </logging>
-
+    -->
 </phpunit>
