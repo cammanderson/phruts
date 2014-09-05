@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1e9051f551c2a7edc022f25feb75d478",
+    "hash": "38c44a527311598216b87f531a098fea",
     "packages": [
         {
             "name": "cammanderson/phigester",
