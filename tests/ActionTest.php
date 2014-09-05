@@ -150,8 +150,6 @@ class MockActionKernel extends \Phruts\Action\ActionKernel
     {
         return new MockPDO();
     }
-
-
 }
 
 class MockPDO extends \PDO
