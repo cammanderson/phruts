@@ -3,7 +3,7 @@
 namespace Phruts\Util;
 
 /**
- * General purpose utility methods related to processing a servlet request
+ * General purpose utility methods related to processing a actionKernel request
  * in the PHruts controller framework.
  *
  * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts Contributor)
@@ -22,48 +22,46 @@ class RequestUtils
 	 * Select the module to which the specified request belongs, and add
 	 * corresponding request attributes to this request.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
-	 * @param \Serphlet\Config\ServletContext $context The \Serphlet\Config\ServletContext for this
-	 * web application
+	 * @param \Silex\Application $application The application
 	 */
-    public static function selectModule(\Symfony\Component\HttpFoundation\Request $request, \Serphlet\Config\ServletContext $context)
+    public static function selectModule(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application)
     {
         // Compute module name
-        $prefix = self::getModuleName($request, $context);
+        $prefix = self::getModuleName($request, $application);
 
         // Expose the resources for this module
-        $config = $context->getAttribute(\Phruts\Globals::MODULE_KEY . $prefix);
+        $config = $application[\Phruts\Globals::MODULE_KEY . $prefix];
         if (is_null($config)) {
-            $request->removeAttribute(\Phruts\Globals::MODULE_KEY);
+            $request->attributes->remove(\Phruts\Globals::MODULE_KEY);
         } else {
-            $request->setAttribute(\Phruts\Globals::MODULE_KEY, $config);
+            $request->attributes->set(\Phruts\Globals::MODULE_KEY, $config);
         }
-        $resources = $context->getAttribute(\Phruts\Globals::MESSAGES_KEY . $prefix);
+        $resources = $application[\Phruts\Globals::MESSAGES_KEY . $prefix];
         if (is_null($resources)) {
-            $request->removeAttribute(\Phruts\Globals::MESSAGES_KEY);
+            $request->attributes->remove(\Phruts\Globals::MESSAGES_KEY);
         } else {
-            $request->setAttribute(\Phruts\Globals::MESSAGES_KEY, $resources);
+            $request->attributes->set(\Phruts\Globals::MESSAGES_KEY, $resources);
         }
     }
 
     /**
 	 * Get the module name to which the specified request belong.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
-	 * @param ServletContext $context The ServletContext for this
-	 * web application
+	 * @param \Silex\Application $application The Application for this web application
 	 * @return string The module prefix or ""
 	 */
-    public static function getModuleName(\Symfony\Component\HttpFoundation\Request $request, \Serphlet\Config\ServletContext $context)
+    public static function getModuleName(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application)
     {
         $path = $request->getPathInfo();
 //        if (self::$log->isDebugEnabled()) {
 //            self::$log->debug('Get module name for path "' . $path . '"');
 //        }
 
-        $prefixes = $context->getAttribute(\Phruts\Globals::PREFIXES_KEY);
+        $prefixes = $application[\Phruts\Globals::PREFIXES_KEY];
         if (is_null($prefixes)) {
             $prefix = '';
         } else {
@@ -87,17 +85,16 @@ class RequestUtils
     /**
 	 * Return the ModuleConfig object if it exists, null otherwise.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
-	 * @param \Serphlet\Config\ServletContext $context The \Serphlet\Config\ServletContext for this
-	 * web application
+	 * @param \Silex\Application $application The application
 	 * @return ModuleConfig The ModuleConfig object
 	 */
-    public static function getModuleConfig(\Symfony\Component\HttpFoundation\Request $request, \Serphlet\Config\ServletContext $context)
+    public static function getModuleConfig(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application)
     {
-        $moduleConfig = $request->getAttribute(\Phruts\Globals::MODULE_KEY);
+        $moduleConfig = $request->attributes->get(\Phruts\Globals::MODULE_KEY);
         if (is_null($moduleConfig)) {
-            $moduleConfig = $context->getAttribute(\Phruts\Globals::MODULE_KEY);
+            $moduleConfig = $application->getAttribute(\Phruts\Globals::MODULE_KEY);
         }
 
         return $moduleConfig;
@@ -109,17 +106,17 @@ class RequestUtils
 	 *
 	 * If no \Phruts\Action\AbstractActionForm instance is required, return null.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param \Phruts\Config\ActionConfig $mapping The action mapping for this request
 	 * @param ModuleConfig $moduleConfig The configuration for this
 	 * module
-	 * @param ActionServlet $servlet The action servlet
+	 * @param ActionKernel $actionKernel The action actionKernel
 	 * @return \Phruts\Action\AbstractActionForm Form instance associated with this
 	 * request
 	 * @todo Manage exception for ClassLoader::loadClass.
 	 */
-    public static function createActionForm(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Config\ActionConfig $mapping, \Phruts\Config\ModuleConfig $moduleConfig, \Phruts\Action\ActionServlet $servlet)
+    public static function createActionForm(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Config\ActionConfig $mapping, \Phruts\Config\ModuleConfig $moduleConfig, \Phruts\Action\ActionKernel $kernel)
     {
         // Is there a form bean associated with this mapping?
         $attribute = $mapping->getAttribute();
@@ -141,19 +138,19 @@ class RequestUtils
         $instance = null;
         $session = null;
         if ($mapping->getScope() == 'request') {
-            $instance = $request->getAttribute($attribute);
+            $instance = $request->attributes->get($attribute);
         } else {
-            \Serphlet\ClassLoader::loadClass($config->getType());
+            \Phruts\ClassLoader::loadClass($config->getType());
 
             $session = $request->getSession();
-            $instance = $session->getAttribute($attribute);
+            $instance = $session->get($attribute);
         }
 
         // Can we recycle the existing form bean instance (if there is one)?
         if (!is_null($instance)) {
             $configClass = $config->getType();
             $instanceClass = get_class($instance);
-            if (\Serphlet\ClassLoader::classIsAssignableFrom($configClass, $instanceClass)) {
+            if (\Phruts\ClassLoader::classIsAssignableFrom($configClass, $instanceClass)) {
 //                if (self::$log->isDebugEnabled()) {
 //                    self::$log->debug('  Recycling existing \Phruts\Action\AbstractActionForm instance' . ' of class "' . $instanceClass . '"');
 //                }
@@ -164,13 +161,13 @@ class RequestUtils
 
         // Create and return a new form bean instance
         try {
-            $instance = \Serphlet\ClassLoader::newInstance($config->getType(), '\Phruts\Action\AbstractActionForm');
+            $instance = \Phruts\ClassLoader::newInstance($config->getType(), '\Phruts\Action\AbstractActionForm');
 //            if (self::$log->isDebugEnabled()) {
 //                self::$log->debug('  Creating new \Phruts\Action\AbstractActionForm instance of type "' . $config->getType() . '"');
 //            }
-            $instance->setServlet($servlet);
+            $instance->setActionKernel($kernel);
         } catch (\Exception $e) {
-            $msg = $servlet->getInternal()->getMessage(null, 'formBean', $config->getType());
+            $msg = $kernel->getInternal()->getMessage(null, 'formBean', $config->getType());
             //self::$log->error($msg . ' - ' . $e->getMessage());
         }
 
@@ -194,7 +191,7 @@ class RequestUtils
 	 * names when looking for matching parameters
 	 * @param \Symfony\Component\HttpFoundation\Request $request The HTTP request whose parameters
 	 * are to be used to populate bean properties
-	 * @throws \Serphlet\Exception - If an exception is thrown while setting
+	 * @throws \Phruts\Exception - If an exception is thrown while setting
 	 * property values
 	 */
     public static function populate($bean, $prefix, $suffix, \Symfony\Component\HttpFoundation\Request $request)
@@ -206,7 +203,7 @@ class RequestUtils
 
         // Build a list of revelant request parameters from this request
         $properties = array ();
-        $names = $request->getParameterNames();
+        $names = $request->getNames();
         foreach ($names as $name) {
             $stripped = $name;
             if ($prefix != '') {
@@ -223,14 +220,14 @@ class RequestUtils
                 }
                 $stripped = substr($stripped, 0, strlen($stripped) - $suffixLength);
             }
-            $properties[$stripped] = $request->getParameter($name);
+            $properties[$stripped] = $request->get($name);
         }
 
         // Set the corresponding properties of our bean
         try {
             \Phruts\Util\BeanUtils::populate($bean, $properties);
         } catch (\Exception $e) {
-            throw new \Serphlet\Exception('\Phruts\Util\BeanUtils->populate() - ' . $e->getMessage());
+            throw new \Phruts\Exception('\Phruts\Util\BeanUtils->populate() - ' . $e->getMessage());
         }
     }
 
@@ -238,32 +235,31 @@ class RequestUtils
 	 * Returns the appropriate MessageResources object for the current module
 	 * and the given bundle.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
-	 * @param \Serphlet\Config\ServletContext $context The \Serphlet\Config\ServletContext for this
-	 * web application
+	 * @param \Silex\Application $application $application The application
 	 * @param string $bundle The bundle name to look for. If this is null, the
 	 * default bundle name is used
 	 * @return MessageResources
 	 * @todo If MessageResources is null throw Exception.
 	 */
-    public static function retrieveMessageResources(\Symfony\Component\HttpFoundation\Request $request, \Serphlet\Config\ServletContext $context, $bundle)
+    public static function retrieveMessageResources(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application, $bundle)
     {
         if (is_null($bundle)) {
             $bundle = \Phruts\Globals::MESSAGES_KEY;
         } else {
             $bundle = (string) $bundle;
         }
-        $resources = $request->getAttribute($bundle);
+        $resources = $request->attributes->get($bundle);
 
         if (is_null($resources)) {
-            $config = $request->getAttribute(\Phruts\Globals::MODULE_KEY);
+            $config = $request->attributes->get(\Phruts\Globals::MODULE_KEY);
             if (is_null($config)) {
                 $prefix = '';
             } else {
                 $prefix = $config->getPrefix();
             }
-            $resources = $context->getAttribute(\Phruts\Globals::MESSAGES_KEY . $prefix);
+            $resources = $application[\Phruts\Globals::MESSAGES_KEY . $prefix];
         }
 
         return $resources;
@@ -272,24 +268,22 @@ class RequestUtils
     /**
 	 * Look up and return current user locale, based on the specified parameters.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param string $locale Name of the session attribute for our user's
 	 * Locale. If this is null, the default locale key is used for the
 	 * lookup
-	 * @return Locale
+	 * @return string
 	 */
     public static function retrieveUserLocale(\Symfony\Component\HttpFoundation\Request $request, $locale = null)
     {
-        if (is_null($locale)) {
-            $locale = \Phruts\Globals::LOCALE_KEY;
-        } else {
-            $locale = (string) $locale;
-        }
-        $session = $request->getSession();
-        $userLocale = $session->getAttribute($locale);
+        // TODO: Consider what happens if we want our own
+        if(!empty($locale)) return $locale;
 
-        if (is_null($userLocale)) {
+        $session = $request->getSession();
+        $userLocale = $session->getLocale();
+
+        if (empty($userLocale)) {
             $userLocale = $request->getLocale();
         }
 
@@ -302,7 +296,7 @@ class RequestUtils
      * simply appending the server-relative path (starting with '/') to this.
      * </p>
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      *
      * @return string URL representing the scheme, server, and port number of
      *                the current request

@@ -3,20 +3,20 @@ namespace Phruts;
 
 /**
  * RequestProcessor contains the processing logic that the PHruts
- * controller servlet performs as it receives each servlet request.
+ * controller kernel performs as it receives each kernel request.
  *
  * You can customize the request processing behavior by subclassing this
  * class and overriding the method(s) whose behavior you are
  * interested in changing.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Contributor from
- * Phruts)
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
+ */
 class RequestProcessor
 {
-    const INCLUDE_SERVLET_PATH = 'Serphlet_Include.servlet_path';
-    const INCLUDE_PATH_INFO = 'Serphlet_Include.path_info';
+    const INCLUDE_kernel_PATH = 'Phruts_Include.actionserver_path';
+    const INCLUDE_PATH_INFO = 'Phruts_Include.path_info';
 
     /**
 	 * Commons Logging instance.
@@ -41,11 +41,11 @@ class RequestProcessor
     protected $moduleConfig = null;
 
     /**
-	 * The controller servlet we are associated with.
+	 * The controller kernel we are associated with.
 	 *
-	 * @var \Phruts\Action\ActionServlet
+	 * @var \Phruts\Action\ActionKernel
 	 */
-    protected $servlet = null;
+    protected $actionKernel = null;
 
     public function __wakeup()
     {
@@ -63,22 +63,22 @@ class RequestProcessor
 	 */
     protected function getInternal()
     {
-        return $this->servlet->getInternal();
+        return $this->actionKernel->getInternal();
     }
 
     /**
 	 * Initialize this request processor instance.
 	 *
-	 * @param \Phruts\Action\ActionServlet $servlet The \Phruts\Action\ActionServlet we are
+	 * @param \Phruts\Action\ActionKernel $actionKernel The ActionKernel we are
 	 * associated with
 	 * @param \Phruts\Config\ModuleConfig $moduleConfig The \Phruts\Config\ModuleConfig we are
 	 * associated with
 	 * @todo Actions initializations?
 	 */
-    public function init(\Phruts\Action\ActionServlet $servlet, \Phruts\Config\ModuleConfig $moduleConfig)
+    public function init(\Phruts\Action\ActionKernel $actionKernel, \Phruts\Config\ModuleConfig $moduleConfig)
     {
         $this->actions = array ();
-        $this->servlet = $servlet;
+        $this->actionKernel = $actionKernel;
         $this->moduleConfig = $moduleConfig;
     }
 
@@ -152,7 +152,7 @@ class RequestProcessor
 
             // Process the returned ActionForward instance
             $this->processForwardConfig($request, $response, $forward);
-        } catch (\Serphlet\Exception $e) {
+        } catch (\Phruts\Exception $e) {
             throw $e;
         }
     }
@@ -164,16 +164,16 @@ class RequestProcessor
 	 * If no such path can be identified, create an error response
 	 * and return null.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @return string
 	 */
     protected function processPath(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         // For prefix matching, match on the path info (if any)
-//        $path = (string) $request->getAttribute(self::INCLUDE_PATH_INFO);
+//        $path = (string) $request->attributes->get(self::INCLUDE_PATH_INFO);
 //        if ($path == null) {
             $path = $request->getPathInfo();
 //        }
@@ -182,20 +182,21 @@ class RequestProcessor
 //        }
 
         // For extension matching, strip the module prefix and extension
-//        $path = (string) $request->getAttribute(self::INCLUDE_SERVLET_PATH);
+//        $path = (string) $request->attributes->get(self::INCLUDE_KERNEL_PATH);
 //        if ($path == null) {
-//            $path = $request->getServletPath();
+//            $path = $request->getKernelPath();
 //        }
         $prefix = $this->moduleConfig->getPrefix();
         if (substr($path, 0, strlen($prefix)) != $prefix) {
             $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
             //$this->log->error($msg);
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $msg);
+            $response->setStatusCode(400);
+            $response->setContent($msg);
 
             return null;
         }
 
-        // TODO: Add back in support for servlet path
+        // TODO: Add back in support for kernel path
         $path = substr($path, strlen($prefix));
         $period = strrpos($path, ".");
         if (($period >= 0) && $period !== false) {
@@ -211,9 +212,9 @@ class RequestProcessor
 	 * <b>NOTE</b> - configuring Locale selection will trigger the creation
 	 * of a new \Symfony\Component\HttpFoundation\Session\Session if necessary.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 */
     protected function processLocale(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
@@ -225,7 +226,7 @@ class RequestProcessor
 
         // Has a Locale already been selected?
         $session = $request->getSession();
-        if (!is_null($session->getAttribute(\Phruts\Globals::LOCALE_KEY))) {
+        if (!is_null($session->getLocale())) {
             return;
         }
 
@@ -234,8 +235,8 @@ class RequestProcessor
         if (!is_null($locale)) {
             if (!empty($this->log)) {
                 $this->log->debug('  Setting user locale "' . (string) $locale . '"');
-                $session->setAttribute(\Phruts\Globals::LOCALE_KEY, $locale);
             }
+            $session->setLocale($locale);
         }
     }
 
@@ -247,16 +248,16 @@ class RequestProcessor
 	 * <samp>RequestDispatcher->doForward</samp> call is ultimately
 	 * invoked.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 */
     protected function processContent(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         $contentType = $this->moduleConfig->getControllerConfig()->getContentType();
         if ($contentType != '') {
-            $response->setContentType($contentType);
+            $response->setContent($contentType);
         }
     }
 
@@ -265,15 +266,15 @@ class RequestProcessor
 	 * <code>ActionForward</code> instance (if any) returned by the
 	 * called <code>ExceptionHandler</code>.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are processing
-	 * @param \Symfony\Component\HttpFoundation\Response response The servlet response we are processing
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are processing
+	 * @param \Symfony\Component\HttpFoundation\Response response The kernel response we are processing
 	 * @param \Exception exception The exception being handled
 	 * @param \Phruts\Action\AbstractActionForm form The ActionForm we are processing
 	 * @param \Phruts\Config\ActionConfig mapping The ActionMapping we are using
 	 *
 	 * @return \Phruts\Action\Forward
 	 * @exception IOException if an input/output error occurs
-	 * @exception ServletException if a servlet exception occurs
+	 * @exception kernelException if a kernel exception occurs
 	 */
     protected function processException(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Exception $exception, $form, \Phruts\Config\ActionConfig $mapping)
     {
@@ -298,11 +299,11 @@ class RequestProcessor
 
         // Use the configured exception handling
         try {
-            $handler = \Serphlet\ClassLoader::newInstance($config->getHandler(), '\Phruts\Action\ExceptionHandler'); //ExceptionHandler
+            $handler = \Phruts\ClassLoader::newInstance($config->getHandler(), '\Phruts\Action\ExceptionHandler'); //ExceptionHandler
 
             return ($handler->execute($exception, $config, $mapping, $form, $request, $response));
         } catch (\Exception $e) {
-            throw new \Serphlet\Exception($e);
+            throw new \Phruts\Exception($e);
         }
     }
 
@@ -313,17 +314,17 @@ class RequestProcessor
 	 * <samp>RequestDispatcher->doForward</samp> call is ultimately
 	 * invoked.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 */
     protected function processNoCache(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         if ($this->moduleConfig->getControllerConfig()->getNocache()) {
-            $response->setHeader('Pragma', 'No-cache');
-            $response->setHeader('Cache-Control', 'no-cache');
-            $response->setDateHeader('Expires', 1);
+            $response->headers->add('Pragma', 'No-cache');
+            $response->headers->set('Cache-Control', 'no-cache');
+            $response->expire();
         }
     }
 
@@ -335,9 +336,9 @@ class RequestProcessor
 	 * response has already been completed. The default implementation does
 	 * nothing.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @return boolean
 	 */
@@ -351,9 +352,9 @@ class RequestProcessor
 	 *
 	 * If no mapping can be identified, create an error response and return null.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param string $path The portion of the request URI for selecting a mapping
 	 * @return \Phruts\Config\ActionConfig
@@ -363,7 +364,7 @@ class RequestProcessor
         // Is there a directly defined mapping for this path?
         $mapping = $this->moduleConfig->findActionConfig($path);
         if (!is_null($mapping)) {
-            $request->setAttribute(\Phruts\Globals::MAPPING_KEY, $mapping);
+            $request->attributes->set(\Phruts\Globals::MAPPING_KEY, $mapping);
 
             return $mapping;
         }
@@ -372,7 +373,7 @@ class RequestProcessor
         $configs = $this->moduleConfig->findActionConfigs();
         foreach ($configs as $config) {
             if ($config->getUnknown()) {
-                $request->setAttribute(\Phruts\Globals::MAPPING_KEY, $config);
+                $request->attributes->set(\Phruts\Globals::MAPPING_KEY, $config);
 
                 return $config;
             }
@@ -381,7 +382,8 @@ class RequestProcessor
         // No mapping can be found to process this request
         $msg = $this->getInternal()->getMessage(null, 'processInvalid', $path);
         //$this->log->error($msg);
-        $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $msg);
+        $response->setStatusCode(400);
+        $response->setContent($msg);
 
         return null;
     }
@@ -393,9 +395,9 @@ class RequestProcessor
 	 * Return true to continue normal processing, or false if an appropriate
 	 * response has been created and processing should terminate.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param \Phruts\Config\ActionConfig $mapping The mapping we are using
 	 * @return boolean
@@ -424,7 +426,8 @@ class RequestProcessor
         if (!empty($this->log)) {
             $this->log->debug('  User "' . $request->getRemoteUser() . '" does not have any required role, denying access');
         }
-        $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_FORBIDDEN, $this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
+        $response->setStatusCode(403);
+        $response->setContent($this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
 
         return false;
     }
@@ -435,9 +438,9 @@ class RequestProcessor
 	 *
 	 * If there is no form bean associated with this mapping, return null.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param \Phruts\Config\ActionConfig $mapping The mapping we are using
 	 * @return \Phruts\Action\AbstractActionForm
@@ -445,20 +448,20 @@ class RequestProcessor
     protected function processActionForm(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ActionConfig $mapping)
     {
         // Create (if necessary a form bean to use)
-        $instance = \Phruts\Util\RequestUtils::createActionForm($request, $mapping, $this->moduleConfig, $this->servlet);
+        $instance = \Phruts\Util\RequestUtils::createActionForm($request, $mapping, $this->moduleConfig, $this->actionKernel);
         if (is_null($instance)) {
             return null;
         }
 
         // Store the new instance in the appropriate scope
-        if (!mepty($this->log)) {
+        if (!empty($this->log)) {
             $this->log->debug('  Storing ActionForm bean instance in scope "' . $mapping->getScope() . '" under attribute key "' . $mapping->getAttribute() . '"');
         }
         if ($mapping->getScope() == 'request') {
-            $request->setAttribute($mapping->getAttribute(), $instance);
+            $request->attributes->set($mapping->getAttribute(), $instance);
         } else {
             $session = $request->getSession();
-            $session->setAttribute($mapping->getAttribute(), $instance);
+            $session->set($mapping->getAttribute(), $instance);
         }
 
         return $instance;
@@ -471,14 +474,14 @@ class RequestProcessor
 	 * In addition, request attribute <samp>\Phruts\Globals::CANCEL_KEY</samp> will be
 	 * set if the request was submitted with a cancel button.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param \Phruts\Action\AbstractActionForm $form The ActionForm instance we are
 	 * populating
 	 * @param \Phruts\Config\ActionConfig $mapping The ActionMapping we are using
-	 * @throws \Serphlet\Exception - If thrown by
+	 * @throws \Phruts\Exception - If thrown by
 	 * \Phruts\Util\RequestUtils->populate()
 	 */
     protected function processPopulate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $form, \Phruts\Config\ActionConfig $mapping)
@@ -488,21 +491,21 @@ class RequestProcessor
         }
 
         // Populate the bean properties of this ActionForm instance
-        if (//$this->log->isDebugEnabled()) {
-            //$this->log->debug('  Populating bean properties from this request');
+        if (!empty($this->log)) {
+            $this->log->debug('  Populating bean properties from this request');
         }
-        $form->setServlet($this->servlet);
+        $form->setkernel($this->actionKernel);
         $form->reset($mapping, $request);
 
         try {
             \Phruts\Util\RequestUtils::populate($form, $mapping->getPrefix(), $mapping->getSuffix(), $request);
-        } catch (ServletException $e) {
+        } catch (kernelException $e) {
             throw $e;
         }
 
         // Set the cancellation request attribute if appropriate
-        if (!is_null($request->getParameter(\Phruts\Globals::CANCEL_PROPERTY))) {
-            $request->setAttribute(\Phruts\Globals::CANCEL_KEY, true);
+        if (!is_null($request->get(\Phruts\Globals::CANCEL_PROPERTY))) {
+            $request->attributes->set(\Phruts\Globals::CANCEL_KEY, true);
         }
     }
 
@@ -515,9 +518,9 @@ class RequestProcessor
 	 * Return true if we should continue processing, or false if we have already
 	 * forwarded control back to the input form.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param ActionForm $form The ActionForm instance we are
 	 * populating
@@ -531,9 +534,9 @@ class RequestProcessor
         }
 
         // Was this request cancelled?
-        if (!is_null($request->getAttribute(\Phruts\Globals::CANCEL_KEY))) {
-            if (//$this->log->isDebugEnabled()) {
-                //$this->log->debug('  Cancelled transaction, skipping validation');
+        if (!is_null($request->attributes->get(\Phruts\Globals::CANCEL_KEY))) {
+            if (!empty($this->log)) {
+                $this->log->debug('  Cancelled transaction, skipping validation');
             }
 
             return true;
@@ -545,13 +548,13 @@ class RequestProcessor
         }
 
         // Call the form bean's validation method
-        if (//$this->log->isDebugEnabled()) {
-            //$this->log->debug('  Validating input form properties');
+        if (!empty($this->log)) {
+            $this->log->debug('  Validating input form properties');
         }
         $errors = $form->validate($mapping, $request);
         if (is_null($errors) || $errors->isEmpty()) {
-            if (//$this->log->isDebugEnabled()) {
-                //$this->log->debug('  No errors detected, accepting input');
+            if (!empty($this->log)) {
+                $this->log->debug('  No errors detected, accepting input');
             }
 
             return true;
@@ -560,26 +563,27 @@ class RequestProcessor
         // Has an input form been specified for this mapping?
         $input = $mapping->getInput();
         if (is_null($input)) {
-            if (//$this->log->isDebugEnabled()) {
+            if (!empty($this->log)) {
                 //$this->log->debug('  Validation failed but no input form available');
             }
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $this->getInternal()->getMessage(null, 'noInput', $mapping->getPath()), $mapping->getPath());
+            $response->sendError(500);
+            $response->setContent($this->getInternal()->getMessage(null, 'noInput', $mapping->getPath()), $mapping->getPath());
 
             return false;
         }
 
         // Save our error messages and return to the input form if possible
-        if (//$this->log->isDebugEnabled()) {
+        if (!empty($this->log)) {
             //$this->log->debug('  Validation failed, returning to "' . $input . '"');
         }
-        $request->setAttribute(\Phruts\Globals::ERROR_KEY, $errors);
+        $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
 
         if ($this->moduleConfig->getControllerConfig()->getInputForward()) {
             $forward = $mapping->findForward($input);
             $this->processForwardConfig($request, $response, $forward);
         } else {
             // Delegate the processing of this request
-            if (//$this->log->isDebugEnabled()) {
+            if (!empty($this->log)) {
                 //$this->log->debug('  Delegating via forward to "' . $input . '"');
             }
             $this->doForward($input, $request, $response);
@@ -592,9 +596,9 @@ class RequestProcessor
 	 * Return true if standard processing should continue, or false if we have
 	 * already handled this request.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig we are using
 	 * @return boolean
@@ -608,7 +612,7 @@ class RequestProcessor
         }
 
         // Delegate the processing of this request
-        if (//$this->log->isDebugEnabled()) {
+        if (!empty($this->log)) {
             //$this->log->debug('  Delegating via forward to "' . $forward . '"');
         }
         $this->doForward($forward, $request, $response);
@@ -622,9 +626,9 @@ class RequestProcessor
 	 * Return true if standard processing should continue, or false if we have
 	 * already handled this request.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig we are using
 	 * @return boolean
@@ -638,7 +642,7 @@ class RequestProcessor
         }
 
         // Delegate the processing of this request
-        if (//$this->log->isDebugEnabled()) {
+        if (!empty($this->log)) {
             //$this->log->debug('  Delegating via include to "' . $include . '"');
         }
         $this->doInclude($include, $request, $response);
@@ -650,9 +654,9 @@ class RequestProcessor
 	 * Return a Action instance that will be used to process the current
 	 * request, creating a new one if necessary.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param \Phruts\Config\ActionConfig $mapping The mapping we are using
 	 * @return ForwardConfig
@@ -661,7 +665,7 @@ class RequestProcessor
     {
         // Acquire the Action instance we will be using (if there is one)
         $className = $mapping->getType();
-        if (//$this->log->isDebugEnabled()) {
+        if (!empty($this->log)) {
             //$this->log->debug('  Looking for Action instance for class ' . $className);
         }
 
@@ -672,7 +676,7 @@ class RequestProcessor
             $instance = $this->actions[$className];
         }
         if (!is_null($instance)) {
-            if (//$this->log->isDebugEnabled()) {
+            if (!empty($this->log)) {
                 //$this->log->debug('  Returning existing Action instance');
             }
 
@@ -680,22 +684,23 @@ class RequestProcessor
         }
 
         // Create an return a new Action instance
-        if (//$this->log->isDebugEnabled()) {
+        if (!empty($this->log)) {
             //$this->log->debug('  Creating new Action instance');
         }
         try {
-            $instance = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Action');
+            $instance = \Phruts\ClassLoader::newInstance($className, '\Phruts\Action');
 
 //			API::addInclude($className);
         } catch (\Exception $e) {
             $msg = $this->getInternal()->getMessage(null, 'actionCreate', $mapping->getPath());
             //$this->log->error($msg . ' - ' . $e->getMessage());
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $msg);
+            $response->setStatusCode(500);
+            $response->setContent($msg);
 
             return null;
         }
 
-        $instance->setServlet($this->servlet);
+        $instance->setActionKernel($this->actionKernel);
         $this->actions[$className] = $instance;
 
         return $instance;
@@ -707,9 +712,9 @@ class RequestProcessor
 	 * Return the ActionForward instance (if any) returned by the called
 	 * Action for further processing.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param Action $action The Action instance to be used
 	 * @param ActionForm $form The ActionForm instance to pass to
@@ -717,14 +722,14 @@ class RequestProcessor
 	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig instance to
 	 * pass to this Action
 	 * @return ForwardConfig
-	 * @throws ServletException
+	 * @throws \Phruts\Exception
 	 */
     protected function processActionPerform(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action $action, $form, \Phruts\Config\ActionConfig $mapping)
     {
         try {
             return $action->execute($mapping, $form, $request, $response);
         } catch (\Exception $e) {
-            if (//$this->log->isDebugEnabled()) {
+            if (!empty($this->log)) {
                 //$this->log->debug('  Exception caught of type ' . get_class($e));
             }
 
@@ -736,9 +741,9 @@ class RequestProcessor
 	 * Forward or redirect to the specified destination, by the specified
 	 * mechanism.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
 	 * processing
-	 * @param \Symfony\Component\HttpFoundation\Response $response The servlet response we are
+	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param ForwardConfig $forward The ForwardConfig controlling
 	 * where we go next
@@ -749,7 +754,7 @@ class RequestProcessor
             return;
         }
 
-        if (//$this->log->isDebugEnabled()) {
+        if (!empty($this->log)) {
             //$this->log->debug('processForwardConfig(' . $forward . ')');
         }
 
@@ -765,6 +770,7 @@ class RequestProcessor
                 $forwardPath = $request->getContextPath() . $forwardPath;
             }
 
+            // TODO: Author a redirect response
             $response->sendRedirect($response->encodeRedirectURL($forwardPath));
         } else {
             $this->doForward($forwardPath, $request, $response);
@@ -783,22 +789,26 @@ class RequestProcessor
     protected function doForward($uri, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         // Identify configured action chaining
-        if (preg_match('/(\/[A-z0-9]+)\.do$/', $uri, $matches)) { // TODO: Base on current servlet mapping
-            if (//$this->log->isDebugEnabled()) {
+        if (preg_match('/(\/[A-z0-9]+)\.do$/', $uri, $matches)) { // TODO: Base on current kernel mapping
+            if (!empty($this->log)) {
                 //$this->log->debug('  Forward identified as an action chain request');
             }
             // Set the action do path in the request and then process
             $newPath = $matches[1];
-            $servletConfig = $this->servlet->getServletConfig();
+
+            // TODO: Set the path info on the request
             $request->setPathInfo($newPath);
             $this->process($request, $response);
 
             return;
         }
 
-        $rd = $this->servlet->getServletContext()->getRequestDispatcher($uri);
+        // TODO: Update to match the request dispatcher
+        $app = $this->actionKernel->getApplication();
+        $rd = $app['request_dispatcher_matcher']->getRequestDispatcher($uri);
         if (is_null($rd)) {
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
+            $response->setStatusCode(500);
+            $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
 
             return;
         }
@@ -816,9 +826,12 @@ class RequestProcessor
 	 */
     protected function doInclude($uri, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        $rd = $this->servlet->getServletContext()->getRequestDispatcher($uri);
+        // TODO: Update to match the request dispatcher
+        $app = $this->actionKernel->getApplication();
+        $rd = $app['request_dispatcher_matcher']->getRequestDispatcher($uri);
         if (is_null($rd)) {
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
+            $response->setStatusCode(500);
+            $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
 
             return;
         }

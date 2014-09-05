@@ -28,20 +28,21 @@ class SwitchAction extends \Phruts\Action
         //$log = Phruts_Util_Logger_Manager::getLogger( __CLASS__);
 
         // Identify the request parameters controlling our actions
-        $page = $request->getParameter("page");
-        $prefix = $request->getParameter("prefix");
+        $page = $request->get("page");
+        $prefix = $request->get("prefix");
         if (($page == null) || ($prefix == null)) {
-            $message = $this->getServlet()->getInternal()->getMessage("switch.required");
+            $message = $this->getActionKernel()->getInternal()->getMessage("switch.required");
             //$log->error($message);
-            throw new ServletException($message);
+            throw new ActionKernelException($message);
         }
 
         // Switch to the requested module
-        RequestUtils::selectModule($prefix, $request, $this->getServlet()->getServletContext());
-        if ($request->getAttribute(\Phruts\Globals::MODULE_KEY) == null) {
-            $message = $this->getServlet()->getInternal()->getMessage("switch.prefix", $prefix);
+        RequestUtils::selectModule($prefix, $request, $this->getActionKernel()->getActionKernelContext());
+        if ($request->attributes->get(\Phruts\Globals::MODULE_KEY) == null) {
+            $message = $this->getActionKernel()->getInternal()->getMessage("switch.prefix", $prefix);
             //$log->error($message);
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
+            $response->setContent(400);
+            $response->setContent($message);
 
             return (null);
         }

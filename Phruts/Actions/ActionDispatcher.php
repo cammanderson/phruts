@@ -86,19 +86,19 @@ class ActionDispatch extends \Phruts\Action
         // Identify the request parameter containing the method name
         $parameter = $mapping->getParameter();
         if ($parameter == null) {
-            $message = $this->getServlet()->getInternal()->getMessage("dispatch.handler", $mapping->getPath());
+            $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.handler", $mapping->getPath());
             //$log->error($message);
-            throw new \Serphlet\Exception($message);
+            throw new \Phruts\Exception($message);
         }
 
         // Identify the method name to be dispatched to.
         // dispatchMethod() will call unspecified() if name is null
-        $name = $request->getParameter($parameter);
+        $name = $request->get($parameter);
 
         if ($name == 'perform' || $name == 'execute') {
-            $message = $this->getServlet()->getInternal()->getMessage("dispatch.recursive", $mapping->getPath());
+            $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.recursive", $mapping->getPath());
             //$log->error($message);
-            throw new \Serphlet\Exception($message);
+            throw new \Phruts\Exception($message);
         }
 
         // Invoke the named method, and return the result
@@ -115,10 +115,11 @@ class ActionDispatch extends \Phruts\Action
 	 */
     protected function unspecified(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        $message = $this->getServlet()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
+        $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
         //$log = Phruts_Util_Logger_Manager::getRootLogger();
         //$log->error($message);
-        $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
+        $response->setStatusCode(400);
+        $response->setContent($message);
 
         return (null);
     }
@@ -143,9 +144,10 @@ class ActionDispatch extends \Phruts\Action
         $reflectionClass = new ReflectionClass(get_class($this));
         $method = $reflectionClass->getMethod($name);
         if (empty($method) || !$method->isPublic()) {
-            $message = $this->getServlet()->getInternal()->getMessage("dispatch.method", $mapping->getPath(), $name);
+            $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.method", $mapping->getPath(), $name);
             //$log->error($message);
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $message);
+            $response->setStatusCode(500);
+            $response->setContent($message);
 
             return (null);
         }

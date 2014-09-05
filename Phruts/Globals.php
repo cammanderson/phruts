@@ -4,9 +4,10 @@ namespace Phruts;
 /**
  * Global manifest constants for the entire PHruts framework.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
+ */
 class Globals
 {
     /**
@@ -27,7 +28,7 @@ class Globals
     const CANCEL_PROPERTY = '\Phruts\Action\CANCEL';
 
     /**
-	 * The context attributes key under which our ActionServlet instance will
+	 * The context attributes key under which our ActionKernel instance will
 	 * be stored.
 	 */
     const ACTION_SERVLET_KEY = '\Phruts\Action\ACTION_SERVLET';
@@ -48,7 +49,7 @@ class Globals
 	 *
 	 * This will be suffixed with the actual module prefix (including the
 	 * leading "/" character) to form the actual attributes key.
-	 * For each request processed by the controller servlet, the ModuleConfig
+	 * For each request processed by the controller actionKernel, the ModuleConfig
 	 * object for the module selected by the request URI currently being
 	 * processed will also be exposed under this key as a request attribute.
 	 *

@@ -56,7 +56,7 @@ abstract class MessageResourcesFactory
     public static function createFactory()
     {
         try {
-            $factory = \Serphlet\ClassLoader::newInstance(self::$factoryClass, '\Phruts\Util\MessageResourcesFactory');
+            $factory = \Phruts\ClassLoader::newInstance(self::$factoryClass, '\Phruts\Util\MessageResourcesFactory');
 
             // Save dynamic class path
 //			API::addInclude(self::$factoryClass);

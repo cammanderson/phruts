@@ -20,10 +20,10 @@ class ExceptionHandler
      * @param ae The ExceptionConfig corresponding to the exception
      * @param mapping The ActionMapping we are processing
      * @param formInstance The \Phruts\Action\AbstractActionForm we are processing
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
+     * @param request The actionKernel request we are processing
+     * @param response The actionKernel response we are creating
      * @return \Phruts\Config\ForwardConfig
-     * @exception ServletException if a servlet exception occurs
+     * @exception ActionKernelException if a actionKernel exception occurs
      *
      * @since Struts 1.1
      */
@@ -57,7 +57,7 @@ class ExceptionHandler
         }
 
         // Store the exception
-        $request->setAttribute(\Phruts\Globals::EXCEPTION_KEY, $ex);
+        $request->attributes->set(\Phruts\Globals::EXCEPTION_KEY, $ex);
         $this->storeException($request, $property, $error, $forward, $ae->getScope());
 
         return $forward;
@@ -87,7 +87,7 @@ class ExceptionHandler
         $errors->add($property, $error);
 
         if ($scope == "request") {
-            $request->setAttribute(\Phruts\Globals::ERROR_KEY, $errors);
+            $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
         } else {
             $request->getSession()->setAttribute(\Phruts\Globals::ERROR_KEY, $errors);
         }

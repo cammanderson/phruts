@@ -6,6 +6,7 @@ namespace Phruts\Config;
  * A PHPBean representing the configuration information of a <forward> element
  * from a PHruts application configuration file.
  *
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
 class ForwardConfig
@@ -51,12 +52,12 @@ class ForwardConfig
 
     /**
 	 * @param string $name
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->name = (string) $name;
     }
@@ -64,12 +65,12 @@ class ForwardConfig
     /**
 	 * Set the context relative
 	 * @param string $contextRelative
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setContextRelative($contextRelative)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($contextRelative);
         if ($temp === 'false' || $temp === 'no') {
@@ -80,7 +81,7 @@ class ForwardConfig
     }
 
     /**
-	 * Is the forward to be context relative to the current servlet
+	 * Is the forward to be context relative to the current actionKernel
 	 * @return boolean true for context relative
 	 */
     public function getContextRelative()
@@ -105,12 +106,12 @@ class ForwardConfig
 
     /**
 	 * @param string $path
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setPath($path)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->path = (string) $path;
     }
@@ -132,12 +133,12 @@ class ForwardConfig
 
     /**
 	 * @param boolean $redirect
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setRedirect($redirect)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $temp = strtolower($redirect);
         if ($temp === 'false' || $temp === 'no') {

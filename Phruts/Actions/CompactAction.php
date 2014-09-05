@@ -52,7 +52,7 @@ class CompactAction extends Action
         $parameter = self::ACTION_PARAMETER;
 
         // Identify the action method from the request
-        $this->method = $request->getParameter($parameter);
+        $this->method = $request->get($parameter);
 
         // Init
         return $this->dispatchCompactMethod($this->method);
@@ -71,7 +71,7 @@ class CompactAction extends Action
         $localMethodName = self::ACTION_METHOD_PREPEND . ucfirst($method);
         if (!method_exists($this, $localMethodName)) {
             //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
-            $message = $this->getServlet()->getInternal()->getMessage('compact.dispatchcompactmethod', $this->getMapping()->getPath(), $this->getMapping()->getParameter());
+            $message = $this->getActionKernel()->getInternal()->getMessage('compact.dispatchcompactmethod', $this->getMapping()->getPath(), $this->getMapping()->getParameter());
             //$log->error($message);
             $this->getResponse()->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
 
@@ -91,7 +91,7 @@ class CompactAction extends Action
     public function executeIndex()
     {
         //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
-        $message = $this->getServlet()->getInternal()->getMessage('compact.index', $this->getMapping()->getPath(), $this->getMapping()->getParameter());
+        $message = $this->getActionKernel()->getInternal()->getMessage('compact.index', $this->getMapping()->getPath(), $this->getMapping()->getParameter());
         //$log->error($message);
         $this->getResponse()->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
     }

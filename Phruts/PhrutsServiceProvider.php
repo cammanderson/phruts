@@ -1,6 +1,11 @@
 <?php
 namespace Phruts;
 
+/**
+ * Class PhrutsServiceProvider
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
+ * @package Phruts
+ */
 class PhrutsServiceProvider implements \Silex\ServiceProviderInterface
 {
     /**
@@ -14,7 +19,9 @@ class PhrutsServiceProvider implements \Silex\ServiceProviderInterface
     public function register(\Silex\Application $app)
     {
         // Register our action server
-        $app[\Phruts\Globals::ACTION_SERVER] = new ActionServer($app);
+        $app[\Phruts\Globals::ACTION_KERNEL] = $app->share(function() use ($app) {
+            return new ActionKernel($app);
+        });
     }
 
     /**

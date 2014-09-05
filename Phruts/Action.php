@@ -6,72 +6,61 @@ namespace Phruts;
  * request and the corresponding business logic that should be executed to
  * process this request.
  *
- * <p>The controller (ActionServlet) will select an appropriate
+ * <p>The controller (ActionKernel) will select an appropriate
  * Action for each request, create an instance (if necessary), and call
  * the <samp>execute</samp> method.</p>
- * <p>When a Action instance is first created, the controller servlet
- * will call <samp>setServlet</samp> with a non-null argument to identify the
- * controller servlet instance to which this Action is attached. When
- * the controller servlet is to be shut down (or restarted), the
- * <samp>setServlet</samp> method will be called with a null argument, which
+ * <p>When a Action instance is first created, the controller actionKernel
+ * will call <samp>setActionKernel</samp> with a non-null argument to identify the
+ * controller actionKernel instance to which this Action is attached. When
+ * the controller actionKernel is to be shut down (or restarted), the
+ * <samp>setActionKernel</samp> method will be called with a null argument, which
  * can be used to clean up any allocated resources in use by this
  * Action.</p>
  *
- * @author Cameron Manderson <cameronmanderson@gmail.com>
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
- * @todo Manage setServlet() calls with or without null argument.
+ * @todo Manage setActionKernel() calls with or without null argument.
  */
 class Action
 {
-    /**
-	 * The system default Locale.
-	 *
-	 * @var \Serphlet\Util\Locale
-	 */
-    protected static $defaultLocale = null;
 
     /**
-	 * The controller servlet to which we are attached.
+	 * The controller ActionKernel to which we are attached.
 	 *
-	 * @var \Phruts\Action\ActionServlet
+	 * @var \Phruts\Action\ActionKernel
 	 */
-    protected $servlet = null;
+    protected $actionKernel = null;
 
     final public function __construct()
     {
-        if (is_null(self::$defaultLocale)) {
-            \Phruts\Action::$defaultLocale = \Serphlet\Util\Locale::getDefault();
-        }
+
     }
 
     public function __wakeup()
     {
-        if (is_null(self::$defaultLocale)) {
-            \Phruts\Action::$defaultLocale = \Serphlet\Util\Locale::getDefault();
-        }
+
     }
 
     /**
-	 * Return the controller servlet instance to which we are attached.
+	 * Return the controller action server instance to which we are attached.
 	 *
-	 * @return \Phruts\Action\ActionServlet
+	 * @return \Phruts\Action\ActionKernel
 	 */
-    public function getServlet()
+    public function getActionKernel()
     {
-        return $this->servlet;
+        return $this->actionKernel;
     }
 
     /**
-	 * Set the controller servlet instance to which we are attached (if servlet
-	 * is non-null), or release any allocated resources (if servlet is null).
+	 * Set the controller app instance to which we are attached (if app
+	 * is non-null), or release any allocated resources (if app is null).
 	 *
-	 * @param \Phruts\Action\ActionServlet $servlet The new controller servlet, if any
-	 * @todo Check if the parameter is a ActionServlet object.
+	 * @param \Phruts\Action\ActionKernel $actionKernel The new controller server, if any
 	 */
-    public function setServlet(\Phruts\Action\ActionServlet $servlet)
+    public function setActionKernel(\Phruts\Action\ActionKernel $actionKernel)
     {
-        $this->servlet = $servlet;
+        $this->actionKernel = $actionKernel;
     }
 
     /**
@@ -101,7 +90,7 @@ class Action
     /**
 	 * Return the specified data source for the current module.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param string $key The key specified in the <data-source> element for
 	 * the requested data source
@@ -111,8 +100,9 @@ class Action
     protected function getDataSource(\Symfony\Component\HttpFoundation\Request $request, $key)
     {
         try {
-            return $this->servlet->getDataSource($request, $key);
+            return $this->actionKernel->getDataSource($request, $key);
         } catch (\Exception $e) {
+            // Log
             throw $e;
         }
     }
@@ -121,14 +111,16 @@ class Action
 	 * Return the user's currently selected Locale.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The request we are processing
-	 * @return \Serphlet\Util\Locale
+	 * @return string
 	 */
     protected function getLocale(\Symfony\Component\HttpFoundation\Request $request)
     {
         $session = $request->getSession();
-        $locale = $session->getAttribute(\Phruts\Globals::LOCALE_KEY);
+        $locale = $session->getLocale();
         if (is_null($locale)) {
-            $locale = self::$defaultLocale;
+            // Silex core parameter
+            $app = $this->actionKernel->getApplication();
+            $locale = $app['locale'];
         }
 
         return $locale;
@@ -138,7 +130,7 @@ class Action
 	 * Return the specified or default (key = "") message resources for the
 	 * current module.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param string $key The key specified in the <message-resources> element
 	 * for the requested bundle
@@ -149,14 +141,14 @@ class Action
     protected function getResources(\Symfony\Component\HttpFoundation\Request $request, $key = '')
     {
         if ($key == '') {
-            return $request->getAttribute(\Phruts\Globals::MESSAGES_KEY);
+            return $request->attributes->get(\Phruts\Globals::MESSAGES_KEY);
         } else {
             // Identify the current module
-            $context = $this->servlet->getServletContext();
-            $moduleConfig = \Phruts\Util\RequestUtils::getModuleConfig($request, $context);
+            $app = $this->actionKernel->getApplication();
+            $moduleConfig = \Phruts\Util\RequestUtils::getModuleConfig($request, $app);
 
             // Return the requested message resources instance
-            return $context->getAttribute($key . $moduleConfig->getPrefix());
+            return $app[$key . $moduleConfig->getPrefix()];
         }
     }
 
@@ -167,15 +159,15 @@ class Action
 	 * request attribute has been set, which normally occurs if the cancel button
 	 * was pressed by the user in the current request. If true, validation
 	 * performed by a \Phruts\Action\AbstractActionForm <samp>validate</samp> method will have
-	 * been skipped by the controller servlet.
+	 * been skipped by the controller actionKernel.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @return boolean
 	 */
     protected function isCancelled(\Symfony\Component\HttpFoundation\Request $request)
     {
-        return (!is_null($request->getAttribute(\Phruts\Globals::CANCEL_KEY)));
+        return (!is_null($request->attributes->get(\Phruts\Globals::CANCEL_KEY)));
     }
 
     /**
@@ -184,7 +176,7 @@ class Action
 	 *
 	 * Otherwise, ensure that the request attribute is not created.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param \Phruts\Action\ActionErrors $errors Error messages object
 	 * @todo Check if the second parameter is a \Phruts\Action\ActionErrors object.
@@ -193,13 +185,13 @@ class Action
     {
         // Remove any error messages attribute if none are required
         if (is_null($errors) || $errors->isEmpty()) {
-            $request->removeAttribute(\Phruts\Globals::ERROR_KEY);
+            $request->attributes->remove(\Phruts\Globals::ERROR_KEY);
 
             return;
         }
 
         // Save the error messages we need
-        $request->setAttribute(\Phruts\Globals::ERROR_KEY, $errors);
+        $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
     }
 
     /**
@@ -219,13 +211,11 @@ class Action
     {
         // Remove the error attribute if none are required
         if (($errors == null) || $errors->isEmpty()) {
-            $session->removeAttribute(\Phruts\Globals::ERROR_KEY);
-
-            return;
+            $session->remove(\Phruts\Globals::ERROR_KEY);
         }
 
         // Save the errors we need
-        $session->setAttribute(\Phruts\Globals::ERROR_KEY, $errors);
+        $session->set(\Phruts\Globals::ERROR_KEY, $errors);
     }
 
     /**
@@ -234,7 +224,7 @@ class Action
 	 * Initialize the attribute if it has not already been. Otherwise, ensure
      * that the request attribute is not set.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request request   The servlet request we are processing
+	 * @param \Symfony\Component\HttpFoundation\Request request   The actionKernel request we are processing
 	 * @param \Phruts\Action\ActionMessages errors  Errors object
 	 * @since Struts 1.2.1
 	 */
@@ -246,7 +236,7 @@ class Action
         }
 
         // get any existing errors from the request, or make a new one
-        $requestErrors = $request->getAttribute(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
+        $requestErrors = $request->attributes->get(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
         if ($requestErrors == null) {
             $requestErrors = new \Phruts\Action\ActionMessages();
         }
@@ -255,13 +245,13 @@ class Action
 
         // if still empty, just wipe it out from the request
         if ($requestErrors->isEmpty()) {
-            $request->removeAttribute(\Phruts\Globals::ERROR_KEY);
+            $request->attributes->remove(\Phruts\Globals::ERROR_KEY);
 
             return;
         }
 
         // Save the errors
-        $request->setAttribute(\Phruts\Globals::ERROR_KEY, $requestErrors);
+        $request->attributes->set(\Phruts\Globals::ERROR_KEY, $requestErrors);
     }
 
     /**
@@ -270,7 +260,7 @@ class Action
      * messages="true" is set), if any messages are required. Otherwise,
      * ensure that the request attribute is not created.</p>
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing.
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing.
      * @param \Phruts\Action\ActionMessages messages The messages to save. <code>null</code> or
      * empty messages removes any existing \Phruts\Action\ActionMessages in the request.
      *
@@ -280,13 +270,13 @@ class Action
     {
         // Remove any messages attribute if none are required
         if (($messages == null) || $messages->isEmpty()) {
-            $request->removeAttribute(\Phruts\Globals::MESSAGE_KEY);
+            $request->attributes->remove(\Phruts\Globals::MESSAGE_KEY);
 
             return;
         }
 
         // Save the messages we need
-        $request->setAttribute(\Phruts\Globals::MESSAGE_KEY, $messages);
+        $request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $messages);
     }
 
     /**
@@ -305,13 +295,13 @@ class Action
     {
         // Remove any messages attribute if none are required
         if (($messages == null) || $messages->isEmpty()) {
-            $session->removeAttribute(\Phruts\Globals::MESSAGE_KEY);
+            $session->remove(\Phruts\Globals::MESSAGE_KEY);
 
             return;
         }
 
         // Save the messages we need
-        $session->setAttribute(\Phruts\Globals::MESSAGE_KEY, $messages);
+        $session->set(\Phruts\Globals::MESSAGE_KEY, $messages);
     }
 
     /**
@@ -321,14 +311,14 @@ class Action
 	 * Initialize the attribute if it has not already been.
 	 * Otherwise, ensure that the request attribute is not set.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request request   The servlet request we are processing
+	 * @param \Symfony\Component\HttpFoundation\Request request   The actionKernel request we are processing
 	 * @param \Phruts\Action\ActionMessages messages  Messages object
 	 * @since Struts 1.2.1
 	 */
     protected function addMessages(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Action\ActionMessages $messages)
     {
         // get any existing errors from the request, or make a new one
-        $requestMessages = $request->getAttribute(\Phruts\Globals::MESSAGE_KEY); //\Phruts\Action\ActionMessages
+        $requestMessages = $request->attributes->get(\Phruts\Globals::MESSAGE_KEY); //\Phruts\Action\ActionMessages
         if ($requestMessages == null) {
             $requestMessages = new \Phruts\Action\ActionMessages();
         }
@@ -337,13 +327,13 @@ class Action
 
         // if still empty, just wipe it out from the request
         if ($requestMessages->isEmpty()) {
-            $request->removeAttribute(\Phruts\Globals::MESSAGE_KEY);
+            $request->attributes->remove(\Phruts\Globals::MESSAGE_KEY);
 
             return;
         }
 
         // Save the errors
-        $request->setAttribute(\Phruts\Globals::MESSAGE_KEY, $requestMessages);
+        $request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $requestMessages);
     }
 
     /**
@@ -352,13 +342,13 @@ class Action
      * This will prevent saveErrors() from wiping out any existing Errors
      *
      * @return array Errors that already exist in the request, or a new \Phruts\Action\ActionMessages object if empty.
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      * @return \Phruts\Action\ActionMessages
      * @since Struts 1.2.1
      */
     protected function getErrors(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $errors = $request->getAttribute(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
+        $errors = $request->attributes->get(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
         if ($errors == null) {
             $errors = new \Phruts\Action\ActionMessages();
         }
@@ -372,13 +362,13 @@ class Action
 	 * This will prevent saveMessages() from wiping out any existing Messages
 	 *
 	 * @return array Messages that already exist in the request, or a new \Phruts\Action\ActionMessages object if empty.
-	 * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+	 * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
 	 * @return \Phruts\Action\ActionMessages
      * @since Struts 1.2.1
 	 */
     protected function getMessages(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $messages = $request->getAttribute(\Phruts\Globals::MESSAGE_KEY); // \Phruts\Action\ActionMessages
+        $messages = $request->attributes->get(\Phruts\Globals::MESSAGE_KEY); // \Phruts\Action\ActionMessages
         if ($messages == null) {
             $messages = new \Phruts\Action\ActionMessages();
         }
@@ -390,17 +380,19 @@ class Action
 	 * Set the user's currently selected Locale.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The request we are processing
-	 * @param \Serphlet\Util\Locale $locale The user's selected Locale to be set,
+	 * @param string $locale The user's selected Locale to be set,
 	 * or null to select the system's default Locale
 	 * @todo Check if the second parameter is a Locale object.
 	 */
-    protected function setLocale(\Symfony\Component\HttpFoundation\Request $request, \Serphlet\Util\Locale $locale)
+    protected function setLocale(\Symfony\Component\HttpFoundation\Request $request, $locale)
     {
         $session = $request->getSession();
         if (is_null($locale)) {
-            $locale = self::$defaultLocale;
+            // Silex core parameter
+            $app = $this->actionKernel->getApplication();
+            $locale = $app['locale'];
         }
-        $session->setAttribute(\Phruts\Globals::LOCALE_KEY, $locale);
+        $session->set(\Phruts\Globals::LOCALE_KEY, $locale);
     }
 
     /**
@@ -430,7 +422,7 @@ class Action
      *     transaction token in the user's session</li>
      * </ul>
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      * @param reset Should we reset the token after checking it?
      * @return boolean
      */
@@ -446,7 +438,7 @@ class Action
      * indicates that transactional token checking will not be needed
      * on the next request that is submitted.</p>
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      */
     protected function resetToken(\Symfony\Component\HttpFoundation\Request $request)
     {
@@ -458,7 +450,7 @@ class Action
      * <p>Save a new transaction token in the user's current session, creating
      * a new session if necessary.</p>
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      */
     protected function saveToken(\Symfony\Component\HttpFoundation\Request $request)
     {

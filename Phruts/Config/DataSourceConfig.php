@@ -6,6 +6,7 @@ namespace Phruts\Config;
  * A PHPBean representing the configuration information of a <data-source>
  * element from a PHruts configuration file.
  *
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
 class DataSourceConfig
@@ -26,7 +27,7 @@ class DataSourceConfig
     }
 
     /**
-	 * The servlet context attribute key under which this data source is stored
+	 * The actionKernel context attribute key under which this data source is stored
 	 * and made available.
 	 *
 	 * @var string
@@ -43,12 +44,12 @@ class DataSourceConfig
 
     /**
 	 * @param string $key
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setKey($key)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->key = (string) $key;
     }
@@ -77,7 +78,7 @@ class DataSourceConfig
     public function addProperty($name, $value)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $name = (string) $name;
         $this->properties[$name] = (string) $value;
@@ -104,7 +105,7 @@ class DataSourceConfig
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->type = (string) $type;
     }

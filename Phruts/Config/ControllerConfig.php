@@ -6,8 +6,10 @@ namespace Phruts\Config;
  * A PHPBean representing the configuration information of a <controller>
  * element in a PHruts configuration file.
  *
+ * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
+ */
 class ControllerConfig
 {
     /**
@@ -43,12 +45,12 @@ class ControllerConfig
 
     /**
 	 * @param string $processorClass
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setProcessorClass($processorClass)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->processorClass = (string) $processorClass;
     }
@@ -70,12 +72,12 @@ class ControllerConfig
 
     /**
 	 * @param string $contentType
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setContentType($contentType)
     {
         if (!$this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->contentType = (string) $contentType;
     }
@@ -97,12 +99,12 @@ class ControllerConfig
 
     /**
 	 * @param boolean $nocache
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setNocache($nocache)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $temp = strtolower($nocache);
         if ($temp === 'false' || $temp === 'no') {
@@ -132,12 +134,12 @@ class ControllerConfig
 
     /**
 	 * @param boolean $inputForward
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setInputForward($inputForward)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $temp = strtolower($inputForward);
         if ($temp === 'false' || $temp === 'no') {
@@ -164,12 +166,12 @@ class ControllerConfig
 
     /**
 	 * @param boolean $locale
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setLocale($locale)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $temp = strtolower($locale);
         if ($temp === 'false' || $temp === 'no') {
