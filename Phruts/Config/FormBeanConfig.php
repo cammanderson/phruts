@@ -6,7 +6,7 @@ namespace Phruts\Config;
  * A PHPBean representing the configuration information of a <form-bean> element
  * in a PHruts application configuration file
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts Contributor)
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
 class FormBeanConfig
@@ -57,13 +57,13 @@ class FormBeanConfig
 	 *
 	 * @param ModuleConfig $moduleConfig The new ModuleConfig or
 	 * null to disassociate this form bean configuration from any module
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 * @todo Check if the parameter is a ModuleConfig object.
 	 */
     public function setModuleConfig($moduleConfig)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->moduleConfig = $moduleConfig;
     }
@@ -88,12 +88,12 @@ class FormBeanConfig
 
     /**
 	 * @param string $name
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->name = (string) $name;
     }
@@ -116,12 +116,12 @@ class FormBeanConfig
 
     /**
 	 * @param string $type
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->type = (string) $type;
     }
@@ -132,16 +132,16 @@ class FormBeanConfig
      *
      * @param config The new configuration instance to be added
      *
-     * @exception \Phruts\Exception\IllegalArgument if this property name has already
+     * @exception \Phruts\Exception\IllegalArgumentException if this property name has already
      *  been defined
      */
     public function addFormPropertyConfig(\Phruts\Config\FormPropertyConfig $config)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         if (!empty($this->formProperties[$config->getName()])) {
-            throw new \Phruts\Exception\IllegalArgument("Property " + config.getName() + " already defined");
+            throw new \Phruts\Exception\IllegalArgumentException("Property " + config.getName() + " already defined");
         }
         $this->formProperties[$config->getName()] = $config;
     }

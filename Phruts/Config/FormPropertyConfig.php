@@ -5,7 +5,7 @@ namespace Phruts\Config;
 /**
  * <p>A PHPBean representing the configuration information of a <code>&lt;form-
  * property&gt;</code> element in a Phruts configuration file.<p>
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  * @since Struts 1.1 */
@@ -64,7 +64,7 @@ class FormPropertyConfig
     public function setInitial($initial)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->initial = $initial;
     }
@@ -82,7 +82,7 @@ class FormPropertyConfig
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->name = $name;
     }
@@ -102,10 +102,10 @@ class FormPropertyConfig
     public function setSize($size)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         if ($this->size < 0) {
-            throw new \Phruts\Exception\IllegalArgument("size < 0");
+            throw new \Phruts\Exception\IllegalArgumentException("size < 0");
         }
         $this->size = $size;
     }
@@ -125,7 +125,7 @@ class FormPropertyConfig
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->type = $type;
     }

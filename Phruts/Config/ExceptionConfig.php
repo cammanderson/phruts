@@ -7,7 +7,7 @@ namespace Phruts\Config;
  * <code>&lt;exception&gt;</code> element from a Struts
  * configuration file.</p>
  *
- * @author Cameron Manderson (Contributor from Phruts)
+ * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Craig R. McClanahan
  * @since Struts 1.1 */
 class ExceptionConfig
@@ -30,7 +30,7 @@ class ExceptionConfig
     public function setBundle($bundle)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->bundle = $bundle;
     }
@@ -47,7 +47,7 @@ class ExceptionConfig
     public function setHandler($handler)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->handler = $handler;
     }
@@ -66,7 +66,7 @@ class ExceptionConfig
     public function setKey($key)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->key = $key;
     }
@@ -84,7 +84,7 @@ class ExceptionConfig
     public function setPath($path)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->path = $path;
     }
@@ -101,7 +101,7 @@ class ExceptionConfig
     public function setScope($scope)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->scope = $scope;
     }
@@ -120,7 +120,7 @@ class ExceptionConfig
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
         $this->type = $type;
     }

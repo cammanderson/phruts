@@ -43,12 +43,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param string $factory
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setFactory($factory)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->factory = (string) $factory;
     }
@@ -71,12 +71,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param string $parameter
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setParameter($parameter)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->parameter = (string) $parameter;
     }
@@ -99,12 +99,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param string $key
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setKey($key)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->key = (string) $key;
     }
@@ -126,12 +126,12 @@ class MessageResourcesConfig
 
     /**
 	 * @param boolean $nullValue
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function setNull($nullValue)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $temp = strtolower($nullValue);
         if ($temp === 'false' || $temp === 'no') {

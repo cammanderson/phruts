@@ -69,7 +69,7 @@ class TokenProcessor
         }
 
         // Retrieve the transaction token included in this request
-        $token = $request->getParameter(\Phruts\Globals::TOKEN_KEY);
+        $token = $request->get(\Phruts\Globals::TOKEN_KEY);
         if ($token == null) {
             return false;
         }

@@ -28,8 +28,8 @@ class SwitchAction extends \Phruts\Action
         //$log = Phruts_Util_Logger_Manager::getLogger( __CLASS__);
 
         // Identify the request parameters controlling our actions
-        $page = $request->getParameter("page");
-        $prefix = $request->getParameter("prefix");
+        $page = $request->get("page");
+        $prefix = $request->get("prefix");
         if (($page == null) || ($prefix == null)) {
             $message = $this->getActionKernel()->getInternal()->getMessage("switch.required");
             //$log->error($message);
@@ -41,7 +41,8 @@ class SwitchAction extends \Phruts\Action
         if ($request->attributes->get(\Phruts\Globals::MODULE_KEY) == null) {
             $message = $this->getActionKernel()->getInternal()->getMessage("switch.prefix", $prefix);
             //$log->error($message);
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
+            $response->setContent(400);
+            $response->setContent($message);
 
             return (null);
         }

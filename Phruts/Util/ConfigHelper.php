@@ -22,7 +22,7 @@ namespace Phruts\Util;
  * The \Phruts\Config\ActionConfig methods simply return the resources from under the context
  * and key used by the Struts ActionKernel when the resources are created.
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
+ * @author Cameron MANDERSON <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  * @since Struts 1.1 */

@@ -93,7 +93,7 @@ class ActionDispatch extends \Phruts\Action
 
         // Identify the method name to be dispatched to.
         // dispatchMethod() will call unspecified() if name is null
-        $name = $request->getParameter($parameter);
+        $name = $request->get($parameter);
 
         if ($name == 'perform' || $name == 'execute') {
             $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.recursive", $mapping->getPath());
@@ -118,7 +118,8 @@ class ActionDispatch extends \Phruts\Action
         $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
         //$log = Phruts_Util_Logger_Manager::getRootLogger();
         //$log->error($message);
-        $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
+        $response->setStatusCode(400);
+        $response->setContent($message);
 
         return (null);
     }
@@ -145,7 +146,8 @@ class ActionDispatch extends \Phruts\Action
         if (empty($method) || !$method->isPublic()) {
             $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.method", $mapping->getPath(), $name);
             //$log->error($message);
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $message);
+            $response->setStatusCode(500);
+            $response->setContent($message);
 
             return (null);
         }

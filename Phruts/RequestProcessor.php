@@ -190,7 +190,8 @@ class RequestProcessor
         if (substr($path, 0, strlen($prefix)) != $prefix) {
             $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
             //$this->log->error($msg);
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $msg);
+            $response->setStatusCode(400);
+            $response->setContent($msg);
 
             return null;
         }
@@ -256,7 +257,7 @@ class RequestProcessor
     {
         $contentType = $this->moduleConfig->getControllerConfig()->getContentType();
         if ($contentType != '') {
-            $response->setContentType($contentType);
+            $response->setContent($contentType);
         }
     }
 
@@ -321,9 +322,9 @@ class RequestProcessor
     protected function processNoCache(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         if ($this->moduleConfig->getControllerConfig()->getNocache()) {
-            $response->setHeader('Pragma', 'No-cache');
-            $response->setHeader('Cache-Control', 'no-cache');
-            $response->setDateHeader('Expires', 1);
+            $response->headers->add('Pragma', 'No-cache');
+            $response->headers->set('Cache-Control', 'no-cache');
+            $response->expire();
         }
     }
 
@@ -381,7 +382,8 @@ class RequestProcessor
         // No mapping can be found to process this request
         $msg = $this->getInternal()->getMessage(null, 'processInvalid', $path);
         //$this->log->error($msg);
-        $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $msg);
+        $response->setStatusCode(400);
+        $response->setContent($msg);
 
         return null;
     }
@@ -424,7 +426,8 @@ class RequestProcessor
         if (!empty($this->log)) {
             $this->log->debug('  User "' . $request->getRemoteUser() . '" does not have any required role, denying access');
         }
-        $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_FORBIDDEN, $this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
+        $response->setStatusCode(403);
+        $response->setContent($this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
 
         return false;
     }
@@ -501,7 +504,7 @@ class RequestProcessor
         }
 
         // Set the cancellation request attribute if appropriate
-        if (!is_null($request->getParameter(\Phruts\Globals::CANCEL_PROPERTY))) {
+        if (!is_null($request->get(\Phruts\Globals::CANCEL_PROPERTY))) {
             $request->attributes->set(\Phruts\Globals::CANCEL_KEY, true);
         }
     }
@@ -563,7 +566,8 @@ class RequestProcessor
             if (!empty($this->log)) {
                 //$this->log->debug('  Validation failed but no input form available');
             }
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $this->getInternal()->getMessage(null, 'noInput', $mapping->getPath()), $mapping->getPath());
+            $response->sendError(500);
+            $response->setContent($this->getInternal()->getMessage(null, 'noInput', $mapping->getPath()), $mapping->getPath());
 
             return false;
         }
@@ -690,12 +694,13 @@ class RequestProcessor
         } catch (\Exception $e) {
             $msg = $this->getInternal()->getMessage(null, 'actionCreate', $mapping->getPath());
             //$this->log->error($msg . ' - ' . $e->getMessage());
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $msg);
+            $response->setStatusCode(500);
+            $response->setContent($msg);
 
             return null;
         }
 
-        $instance->setkernel($this->actionKernel);
+        $instance->setActionKernel($this->actionKernel);
         $this->actions[$className] = $instance;
 
         return $instance;
@@ -717,7 +722,7 @@ class RequestProcessor
 	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig instance to
 	 * pass to this Action
 	 * @return ForwardConfig
-	 * @throws kernelException
+	 * @throws \Phruts\Exception
 	 */
     protected function processActionPerform(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action $action, $form, \Phruts\Config\ActionConfig $mapping)
     {
@@ -765,6 +770,7 @@ class RequestProcessor
                 $forwardPath = $request->getContextPath() . $forwardPath;
             }
 
+            // TODO: Author a redirect response
             $response->sendRedirect($response->encodeRedirectURL($forwardPath));
         } else {
             $this->doForward($forwardPath, $request, $response);
@@ -789,16 +795,20 @@ class RequestProcessor
             }
             // Set the action do path in the request and then process
             $newPath = $matches[1];
-            $kernelConfig = $this->actionKernel->getkernelConfig();
+
+            // TODO: Set the path info on the request
             $request->setPathInfo($newPath);
             $this->process($request, $response);
 
             return;
         }
 
-        $rd = $this->actionKernel->getkernelContext()->getRequestDispatcher($uri);
+        // TODO: Update to match the request dispatcher
+        $app = $this->actionKernel->getApplication();
+        $rd = $app['request_dispatcher_matcher']->getRequestDispatcher($uri);
         if (is_null($rd)) {
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
+            $response->setStatusCode(500);
+            $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
 
             return;
         }
@@ -816,9 +826,12 @@ class RequestProcessor
 	 */
     protected function doInclude($uri, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        $rd = $this->actionKernel->getkernelContext()->getRequestDispatcher($uri);
+        // TODO: Update to match the request dispatcher
+        $app = $this->actionKernel->getApplication();
+        $rd = $app['request_dispatcher_matcher']->getRequestDispatcher($uri);
         if (is_null($rd)) {
-            $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_INTERNAL_SERVER_ERROR, $this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
+            $response->setStatusCode(500);
+            $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
 
             return;
         }

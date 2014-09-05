@@ -203,7 +203,7 @@ class RequestUtils
 
         // Build a list of revelant request parameters from this request
         $properties = array ();
-        $names = $request->getParameterNames();
+        $names = $request->getNames();
         foreach ($names as $name) {
             $stripped = $name;
             if ($prefix != '') {
@@ -220,7 +220,7 @@ class RequestUtils
                 }
                 $stripped = substr($stripped, 0, strlen($stripped) - $suffixLength);
             }
-            $properties[$stripped] = $request->getParameter($name);
+            $properties[$stripped] = $request->get($name);
         }
 
         // Set the corresponding properties of our bean

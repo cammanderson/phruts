@@ -52,7 +52,7 @@ class CompactAction extends Action
         $parameter = self::ACTION_PARAMETER;
 
         // Identify the action method from the request
-        $this->method = $request->getParameter($parameter);
+        $this->method = $request->get($parameter);
 
         // Init
         return $this->dispatchCompactMethod($this->method);
