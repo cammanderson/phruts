@@ -12,8 +12,8 @@
     ],
     "type": "library",
     "autoload": {
-        "psr-0": {
-            "Phruts\\": ""
+        "psr-4": {
+            "Phruts\\": "src"
         }
     },
     "require": {
