@@ -14,13 +14,13 @@ class BeanUtils
 	 *
 	 * @param object $bean
 	 * @param array $properties
-	 * @throws \Serphlet\Exception\IllegalArgument - If the bean object has not been
+	 * @throws \Phruts\Exception\IllegalArgument - If the bean object has not been
 	 * specified
 	 */
     public static function populate($bean, array $properties)
     {
         if (is_null($bean)) {
-            throw new \Serphlet\Exception\IllegalArgument('Bean object to populate must be not null.');
+            throw new \Phruts\Exception\IllegalArgument('Bean object to populate must be not null.');
         }
 
         // Loop through the property name/value pairs to be set

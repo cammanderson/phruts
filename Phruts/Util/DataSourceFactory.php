@@ -13,8 +13,10 @@ namespace Phruts\Util;
  * a newly instantiated data source instance.</li>
  * </ul>
  *
+ * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
+ */
 abstract class DataSourceFactory
 {
     /**
@@ -44,12 +46,12 @@ abstract class DataSourceFactory
     /**
 	 * Data source configuration.
 	 *
-	 * @var DataSourceConfig
+	 * @var \Phruts\Config\DataSourceConfig
 	 */
     protected $config = null;
 
     /**
-	 * @return DataSourceConfig
+	 * @return \Phruts\Config\DataSourceConfig
 	 */
     public function getConfig()
     {
@@ -57,7 +59,7 @@ abstract class DataSourceFactory
     }
 
     /**
-	 * @param DataSourceConfig $config
+	 * @param \Phruts\Config\DataSourceConfig $config
 	 */
     public function setConfig(\Phruts\Config\DataSourceConfig $config)
     {
@@ -68,16 +70,13 @@ abstract class DataSourceFactory
 	 * Create and return a DataSourceFactory instance of the appropriate
 	 * class, which can be used to create customized data source instances.
 	 *
-	 * @param DataSourceConfig $config
+	 * @param \Phruts\Config\DataSourceConfig $config
 	 * @return DataSourceFactory
 	 */
     public static function createFactory(\Phruts\Config\DataSourceConfig $config)
     {
         try {
-            $factory = \Serphlet\ClassLoader::newInstance(self::$factoryClass, '\Phruts\Util\DataSourceFactory');
-
-            // Save dynamic class path
-//			API::addInclude(self::$factoryClass);
+            $factory = \Phruts\ClassLoader::newInstance(self::$factoryClass, '\Phruts\Util\DataSourceFactory');
 
             $factory->setConfig($config);
 
@@ -91,7 +90,7 @@ abstract class DataSourceFactory
 	 * Create a data source object.
 	 *
 	 * @return object
-	 * @throws Exception
+	 * @throws \Exception
 	 */
     abstract public function createDataSource();
 }

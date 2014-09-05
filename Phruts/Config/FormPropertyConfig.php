@@ -64,7 +64,7 @@ class FormPropertyConfig
     public function setInitial($initial)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->initial = $initial;
     }
@@ -82,7 +82,7 @@ class FormPropertyConfig
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->name = $name;
     }
@@ -102,10 +102,10 @@ class FormPropertyConfig
     public function setSize($size)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         if ($this->size < 0) {
-            throw new \Serphlet\Exception\IllegalArgument("size < 0");
+            throw new \Phruts\Exception\IllegalArgument("size < 0");
         }
         $this->size = $size;
     }
@@ -125,7 +125,7 @@ class FormPropertyConfig
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->type = $type;
     }
@@ -162,7 +162,7 @@ class FormPropertyConfig
                     $baseType = substr($baseType, 0, strlen($baseType) -2);
                     $this->indexed = true;
                 }
-                \Serphlet\ClassLoader::loadClass($baseType);
+                \Phruts\ClassLoader::loadClass($baseType);
             } catch (\Exception $e) {
                 $baseClass = null;
             }
@@ -251,11 +251,11 @@ class FormPropertyConfig
                         $size = intval($this->initial);
                         if ($size > 0) {
                             for ($x = 0; $x < $size; $x++) {
-                                $intialValue[] = \Serphlet\ClassLoader::newInstance($className);
+                                $intialValue[] = \Phruts\ClassLoader::newInstance($className);
                             }
                         }
                     } else {
-                        $initialValue = \Serphlet\ClassLoader::newInstance($className);
+                        $initialValue = \Phruts\ClassLoader::newInstance($className);
                     }
                     break;
             }

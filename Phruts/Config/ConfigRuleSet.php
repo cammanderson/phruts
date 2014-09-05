@@ -8,7 +8,9 @@ namespace Phruts\Config;
  *
  * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
+ * @TODO: Update the reference to the locale in the Controller config to be str
+ */
 class ConfigRuleSet extends Phruts_Phigester_RuleSetBase
 {
     private $configPrefix;
@@ -150,7 +152,7 @@ final class ActionConfigFactory extends Phruts_Phigester_AbstractObjectCreationF
         // Instantiate the new object and return it
         $actionConfig = null;
         try {
-            $actionConfig = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\ActionConfig');
+            $actionConfig = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ActionConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('\Phruts\Config\ActionConfigFactory->createObject(): ' . $e->getMessage());
         }
@@ -182,7 +184,7 @@ final class ForwardConfigFactory extends Phruts_Phigester_AbstractObjectCreation
         // Instantiate the new object and return it
         $config = null;
         try {
-            $config = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\ForwardConfig');
+            $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ForwardConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('ForwardConfigFactory->createObject(): ' . $e->getMessage());
         }
@@ -214,7 +216,7 @@ final class ControllerConfigFactory extends Phruts_Phigester_AbstractObjectCreat
         // Instantiate the new object and return it
         $config = null;
         try {
-            $config = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\ControllerConfig');
+            $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ControllerConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('\Phruts\Config\ControllerConfigFactory->createObject(): ' . $e->getMessage());
         }
@@ -247,7 +249,7 @@ final class FormPropertyConfigFactory extends Phruts_Phigester_AbstractObjectCre
         // Instantiate the new object and return it
         $config = null;
         try {
-            $config = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\FormPropertyConfig');
+            $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\FormPropertyConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('FormPropertyConfigFactory->createObject(): ' . $e->getMessage());
         }
@@ -279,7 +281,7 @@ final class FormBeanConfigFactory extends Phruts_Phigester_AbstractObjectCreatio
         // Instantiate the new object and return it
         $config = null;
         try {
-            $config = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\FormBeanConfig');
+            $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\FormBeanConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('\Phruts\Config\FormBeanConfigFactory->createObject(): ' . $e->getMessage());
         }
@@ -311,7 +313,7 @@ final class MessageResourcesConfigFactory extends Phruts_Phigester_AbstractObjec
         // Instantiate the new object and return it
         $config = null;
         try {
-            $config = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\MessageResourcesConfig');
+            $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\MessageResourcesConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('\Phruts\Config\MessageResourcesConfigFactory->createObject(): ' . $e->getMessage());
         }
@@ -343,7 +345,7 @@ final class DataSourceConfigFactory extends Phruts_Phigester_AbstractObjectCreat
         // Instantiate the new object and return it
         $config = null;
         try {
-            $config = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\DataSourceConfig');
+            $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\DataSourceConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('\Phruts\Config\DataSourceConfigFactory->createObject(): ' . $e->getMessage());
         }
@@ -374,7 +376,7 @@ final class ExceptionConfigFactory extends Phruts_Phigester_AbstractObjectCreati
         // Instantiate the new object and return it
         $config = null;
         try {
-            $config = \Serphlet\ClassLoader::newInstance($className, '\Phruts\Config\ExceptionConfig');
+            $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ExceptionConfig');
         } catch (\Exception $e) {
             $this->digester->getLogger()->error('ExceptionConfigFactory->createObject(): ' . $e->getMessage());
         }

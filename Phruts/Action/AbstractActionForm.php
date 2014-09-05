@@ -14,7 +14,7 @@ namespace Phruts\Action;
  * <samp>validate</samp> method will be called, which gives the bean a chance
  * to verify that the properties submitted by the user are correct and valid.
  * If this method finds problems, it returns an error messages object that
- * encapsulates those problems, and the controller servlet will return control
+ * encapsulates those problems, and the controller actionKernel will return control
  * to the corresponding input form.  Otherwise, the <samp>validate</samp>
  * method returns null, indicating that everything is acceptable and the
  * corresponding Action's <samp>execute()</samp> method should be
@@ -25,44 +25,44 @@ namespace Phruts\Action;
  * methods for which they wish to provide modified functionality.</p>
  *
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @todo Manage setServlet() calls with or without null argument.
+ * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @todo Manage setActionKernel() calls with or without null argument.
  */
 abstract class AbstractActionForm
 {
     /**
-	 * The controller servlet instance to which we are attached.
+	 * The controller actionKernel instance to which we are attached.
 	 *
-	 * @var \Phruts\Action\ActionServlet
+	 * @var \Phruts\Action\ActionKernel
 	 */
-    protected $servlet = null;
+    protected $actionKernel = null;
 
     /**
-	 * Return the controller servlet instance to which we are attached.
+	 * Return the controller actionKernel instance to which we are attached.
 	 *
-	 * @return ActionServlet
+	 * @return ActionKernel
 	 */
-    public function getServlet()
+    public function getActionKernel()
     {
-        return $this->servlet;
+        return $this->actionKernel;
     }
 
     /**
-	 * Set the controller servlet instance to which we are attached (if servlet
-	 * is non-null), or release any allocated resources (if servlet is null).
+	 * Set the controller actionKernel instance to which we are attached (if actionKernel
+	 * is non-null), or release any allocated resources (if actionKernel is null).
 	 *
-	 * @param ActionServlet $servlet The new controller servlet, if any
-	 * @todo Check if the parameter is a ActionServlet object.
+	 * @param ActionKernel $actionKernel The new controller actionKernel, if any
+	 * @todo Check if the parameter is a ActionKernel object.
 	 */
-    public function setServlet($servlet)
+    public function setActionKernel($actionKernel)
     {
-        $this->servlet = $servlet;
+        $this->actionKernel = $actionKernel;
     }
 
     /**
 	 * Reset all bean properties to their default state.
 	 *
 	 * <p>This method is called before the properties are repopulated by the
-	 * controller servlet.</p>
+	 * controller actionKernel.</p>
 	 * <p>The default implementation does nothing. Subclasses should override
 	 * this method to reset all bean properties to default values.</p>
 	 * <p>This method is <b>not</b> the appropriate place to initialize form
@@ -72,7 +72,7 @@ abstract class AbstractActionForm
 	 *
 	 * @param \Phruts\Config\ActionConfig $mapping The mapping used to select this
 	 * instance
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 */
     public function reset(\Phruts\Config\ActionConfig $mapping, \Symfony\Component\HttpFoundation\Request $request)
@@ -93,7 +93,7 @@ abstract class AbstractActionForm
 	 *
 	 * @param \Phruts\Config\ActionConfig $mapping The mapping used to select this
 	 * instance
-	 * @param \Symfony\Component\HttpFoundation\Request $request The servlet request we are
+	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @return \Phruts\Action\ActionErrors
 	 */

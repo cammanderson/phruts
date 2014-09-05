@@ -22,9 +22,9 @@ abstract class MessageResources
     /**
 	 * Logging instance.
 	 *
-	 * @var Logger
+	 * @var \Psr\Log\Logger
 	 */
-    //$log = null;
+    protected $log = null;
 
     /**
 	 * The configuration parameter used to initialize this
@@ -37,7 +37,7 @@ abstract class MessageResources
     /**
 	 * The default Locale for our environment.
 	 *
-	 * @var Locale
+	 * @var string
 	 */
     protected $defaultLocale = null;
 
@@ -59,9 +59,9 @@ abstract class MessageResources
 
     public function __wakeup()
     {
-        if (is_null(//self::$log)) {
-            //self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
-        }
+//        if (is_null(self::$log)) {
+//            self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
+//        }
     }
 
     /**
@@ -75,11 +75,12 @@ abstract class MessageResources
 	 */
     public function __construct($config, $returnNull = false)
     {
-        if (is_null(//self::$log)) {
-            //self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
-        }
+//        if (is_null(self::$log)) {
+//            self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
+//        }
 
-        $this->defaultLocale = \Serphlet\Util\Locale::getDefault();
+        // TODO: Set the default location based on Application
+        //$this->defaultLocale = $app['locale'];
 
         $this->config = (string) $config;
         $this->returnNull = (boolean) $returnNull;
@@ -124,7 +125,7 @@ abstract class MessageResources
 	 * Returns a text message after parametric replacement of the specified
 	 * parameter placeholders.
 	 *
-	 * @param Locale $locale The requested message Locale, or null
+	 * @param string $locale The requested message Locale, or null
 	 * for the system default Locale
 	 * @param string $key The message key to look up
 	 * @param string $arg0 The replacement for placeholder {0} in the message
@@ -165,7 +166,7 @@ abstract class MessageResources
 	 * property is set. Otherwise, an appropriate error message will be
 	 * returned.</p>
 	 * <p>This method must be implemented by a concrete subclass.</p>
-	 * @param locale $locale The requested message Locale, or null
+	 * @param string $locale The requested message Locale, or null
 	 * for the system default Locale
 	 * @param string $key The message key to look up
 	 */
@@ -175,7 +176,7 @@ abstract class MessageResources
 	 * Return true if there is a defined message for the specified key
 	 * in the specified Locale.
 	 *
-	 * @param Locale $locale The requested message Locale, or null
+	 * @param string $locale The requested message Locale, or null
 	 * for the system default Locale
 	 * @param string $key The message key to look up
 	 * @return boolean
@@ -199,32 +200,27 @@ abstract class MessageResources
 	 *
 	 * <b>NOTE:</b> The locale key for the default Locale in our
 	 * environment is a zero length String.
-	 * @param Locale $locale The locale for which a key is desired
+	 * @param string $locale The locale for which a key is desired
 	 * @return string
 	 * @todo Check if the parameter is a Locale object.
 	 */
     protected function localeKey($locale)
     {
-        if (is_null($locale))
-            return '';
-        elseif($locale instanceof Locale)
-            return $locale->__toString();
-        else
-            return '';
+        return $locale;
     }
 
     /**
 	 * Compute and return a key to be used in caching information by
 	 * Locale and message key.
 	 *
-	 * @param Locale $locale The locale key for which this cache key
+	 * @param string $locale The locale key for which this cache key
 	 * is calculated
 	 * @param string $key The message key for which this cache key is calculated
 	 * @return string
 	 */
     protected function messageKey($locale, $key)
     {
-        return $this->localeKey($locale) . '.' . $key;
+        return $locale . '.' . $key;
     }
 
     /**

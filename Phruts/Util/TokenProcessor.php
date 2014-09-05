@@ -5,7 +5,7 @@ namespace Phruts\Util;
 /**
  * TokenProcessor is responsible for handling all token related functionality.  The
  * methods in this class are synchronized to protect token processing from multiple
- * threads.  Servlet containers are allowed to return a different HttpSession
+ * threads.  ActionKernel containers are allowed to return a different HttpSession
  * object for two threads accessing the same session so it is not possible to
  * synchronize on the session.
  *
@@ -46,7 +46,7 @@ class TokenProcessor
      *     transaction token in the user's session</li>
      * </ul>
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      * @param reset Should we reset the token after checking it?
      */
     public function isTokenValid(\Symfony\Component\HttpFoundation\Request $request, $reset = false)
@@ -59,7 +59,7 @@ class TokenProcessor
 
         // Retrieve the transaction token from this session, and
         // reset it if requested
-        $saved = $session->getAttribute(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
+        $saved = $session->get(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
         if ($saved == null) {
             return false;
         }
@@ -82,7 +82,7 @@ class TokenProcessor
      * indicates that transactional token checking will not be needed
      * on the next request that is submitted.
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      */
     public function resetToken(\Symfony\Component\HttpFoundation\Request $request)
     {
@@ -90,21 +90,21 @@ class TokenProcessor
         if ($session == null) {
             return;
         }
-        $session->removeAttribute(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
+        $session->remove(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
     }
 
     /**
      * Save a new transaction token in the user's current session, creating
      * a new session if necessary.
      *
-     * @param \Symfony\Component\HttpFoundation\Request request The servlet request we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      */
     public function saveToken(\Symfony\Component\HttpFoundation\Request $request)
     {
         $session = $request->getSession(); //\Symfony\Component\HttpFoundation\Session\Session
         $token = $this->generateToken($request);
         if ($token != null) {
-            $session->setAttribute(\Phruts\Globals::TRANSACTION_TOKEN_KEY, $token);
+            $session->set(\Phruts\Globals::TRANSACTION_TOKEN_KEY, $token);
         }
     }
 

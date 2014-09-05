@@ -18,7 +18,7 @@ class ExceptionConfig
     protected $configured = false;
 
     /**
-     * The servlet context attribute under which the message resources bundle
+     * The actionKernel context attribute under which the message resources bundle
      * to be used for this exception is located.  If not set, the default
      * message resources for the current module is assumed.
      */
@@ -30,7 +30,7 @@ class ExceptionConfig
     public function setBundle($bundle)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->bundle = $bundle;
     }
@@ -47,7 +47,7 @@ class ExceptionConfig
     public function setHandler($handler)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->handler = $handler;
     }
@@ -66,7 +66,7 @@ class ExceptionConfig
     public function setKey($key)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->key = $key;
     }
@@ -84,7 +84,7 @@ class ExceptionConfig
     public function setPath($path)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->path = $path;
     }
@@ -101,7 +101,7 @@ class ExceptionConfig
     public function setScope($scope)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->scope = $scope;
     }
@@ -120,7 +120,7 @@ class ExceptionConfig
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->type = $type;
     }

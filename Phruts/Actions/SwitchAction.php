@@ -31,15 +31,15 @@ class SwitchAction extends \Phruts\Action
         $page = $request->getParameter("page");
         $prefix = $request->getParameter("prefix");
         if (($page == null) || ($prefix == null)) {
-            $message = $this->getServlet()->getInternal()->getMessage("switch.required");
+            $message = $this->getActionKernel()->getInternal()->getMessage("switch.required");
             //$log->error($message);
-            throw new ServletException($message);
+            throw new ActionKernelException($message);
         }
 
         // Switch to the requested module
-        RequestUtils::selectModule($prefix, $request, $this->getServlet()->getServletContext());
-        if ($request->getAttribute(\Phruts\Globals::MODULE_KEY) == null) {
-            $message = $this->getServlet()->getInternal()->getMessage("switch.prefix", $prefix);
+        RequestUtils::selectModule($prefix, $request, $this->getActionKernel()->getActionKernelContext());
+        if ($request->attributes->get(\Phruts\Globals::MODULE_KEY) == null) {
+            $message = $this->getActionKernel()->getInternal()->getMessage("switch.prefix", $prefix);
             //$log->error($message);
             $response->sendError(\Symfony\Component\HttpFoundation\Response::SC_BAD_REQUEST, $message);
 

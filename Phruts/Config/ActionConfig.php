@@ -105,12 +105,12 @@ class ActionConfig
 	 * The module configuration with which we are associated.
 	 *
 	 * @param ModuleConfig $moduleConfig
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setModuleConfig(\Phruts\Config\ModuleConfig $moduleConfig)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->moduleConfig = $moduleConfig;
     }
@@ -147,12 +147,12 @@ class ActionConfig
 	 *
 	 * @param string $attribute The request-scope or session-scope attribute
 	 * name under which our form bean is accessed.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setAttribute($attribute)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->attribute = (string) $attribute;
     }
@@ -188,12 +188,12 @@ class ActionConfig
 	 *
 	 * @param string $forward Context-relative path of the web application
 	 * resource that will process this request.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setForward($forward)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->forward = (string) $forward;
     }
@@ -229,12 +229,12 @@ class ActionConfig
 	 *
 	 * @param string $include Context-relative path of the web application
 	 * resource that will process this request.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setInclude($include)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->include = (string) $include;
     }
@@ -271,12 +271,12 @@ class ActionConfig
 	 *
 	 * @param string $input Context-relative path of the input form to which
 	 * control should be returned if a validation error is encountered.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setInput($input)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->input = (string) $input;
     }
@@ -302,12 +302,12 @@ class ActionConfig
 	 * Set the name of the form bean, if any, associated with this Action.
 	 *
 	 * @param string $name Name of the bean associated with this Action.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setName($name)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->name = (string) $name;
     }
@@ -342,12 +342,12 @@ class ActionConfig
 	 * PHruts does not itself use this value in any way.
 	 *
 	 * @param string $parameter General purpose configuration parameter.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setParameter($parameter)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->parameter = (string) $parameter;
     }
@@ -376,12 +376,12 @@ class ActionConfig
 	 * a slash ("/") character.
 	 *
 	 * @param string $path Context-relative path of the submitted request.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setPath($path)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $path = (string) $path;
         // Add in the starting slash if missing
@@ -414,12 +414,12 @@ class ActionConfig
 	 *
 	 * @param string $prefix Prefix used to match request parameter names to
 	 * form bean property names, if any.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setPrefix($prefix)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->prefix = (string) $prefix;
     }
@@ -442,12 +442,12 @@ class ActionConfig
 
     /**
 	 * @param string $roles
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setRoles($roles)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $roles = (string) $roles;
         $this->roles = $roles;
@@ -513,12 +513,12 @@ class ActionConfig
 	 *
 	 * @param string $scope Scope ("request" or "session") within which our form
 	 * bean is accessed, if any.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setScope($scope)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->scope = (string) $scope;
     }
@@ -548,12 +548,12 @@ class ActionConfig
 	 *
 	 * @param string $suffix Suffix used to match request parameter names to
 	 * form bean property names, if any.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setSuffix($suffix)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->suffix = (string) $suffix;
     }
@@ -579,12 +579,12 @@ class ActionConfig
 
     /**
 	 * @param string $type
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setType($type)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->type = (string) $type;
     }
@@ -611,12 +611,12 @@ class ActionConfig
 	 *
 	 * @param boolean $unknown Indicates Action is configured as the default
 	 * one for this module, when true.
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setUnknown($unknown)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($unknown);
         if ($temp === 'false' || $temp === 'no') {
@@ -644,12 +644,12 @@ class ActionConfig
 
     /**
 	 * @param boolean $validate
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function setValidate($validate)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $temp = strtolower($validate);
         if ($temp === 'false' || $temp === 'no') {
@@ -673,12 +673,12 @@ class ActionConfig
 	 *
 	 * @param ForwardConfig $config The new configuration instance
 	 * to be added
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function addForwardConfig(\Phruts\Config\ForwardConfig $config)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         $this->forwards[$config->getName()] = $config;
     }
@@ -719,12 +719,12 @@ class ActionConfig
 	 * Remove the specified forward configuration instance.
 	 *
 	 * @param ForwardConfig $config ForwardConfig instance to be removed
-	 * @throws \Serphlet\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalState
 	 */
     public function removeForwardConfig(\Phruts\Config\ForwardConfig $config)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
         }
         unset ($this->forwards[$config->getName()]);
     }
@@ -741,13 +741,13 @@ class ActionConfig
      *
      * @param config The new configuration instance to be added
      *
-     * @exception \Serphlet\Exception\IllegalState if this module configuration
+     * @exception \Phruts\Exception\IllegalState if this module configuration
      *  has been frozen
      */
     public function addExceptionConfig(\Phruts\Config\ExceptionConfig $config)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         $this->exceptions[$config->getType()] = $config;
     }
@@ -757,13 +757,13 @@ class ActionConfig
      *
      * @param config ExceptionConfig instance to be removed
      *
-     * @exception \Serphlet\Exception\IllegalState if this module configuration
+     * @exception \Phruts\Exception\IllegalState if this module configuration
      *  has been frozen
      */
     public function removeExceptionConfig(\Phruts\Config\ExceptionConfig $config)
     {
         if ($this->configured) {
-            throw new \Serphlet\Exception\IllegalState("Configuration is frozen");
+            throw new \Phruts\Exception\IllegalState("Configuration is frozen");
         }
         unset($this->exceptions[config.getType()]);
     }

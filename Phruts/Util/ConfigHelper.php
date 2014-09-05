@@ -8,19 +8,19 @@ namespace Phruts\Util;
  * NOT EVERY API FUNCTION HAS BEEN IMPLEMENTED YET.
  *
  * A helper object to expose the Phruts shared resources, which are be stored in
- * the servlet, session, or request contexts, as appropriate.
+ * the actionKernel, session, or request contexts, as appropriate.
  *
  * An instance should be created for each request processed. The  methods which
  * return resources from the request or session contexts are not thread-safe.
  *
- * Provided for use by other servlets in the servlet so they can easily access
+ * Provided for use by other actionKernels in the actionKernel so they can easily access
  * the Struts shared resources.
  *
- * The resources are stored under attributes in the servlet, session, or request
+ * The resources are stored under attributes in the actionKernel, session, or request
  * contexts.
  *
  * The \Phruts\Config\ActionConfig methods simply return the resources from under the context
- * and key used by the Struts ActionServlet when the resources are created.
+ * and key used by the Struts ActionKernel when the resources are created.
  *
  * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts contributor)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
@@ -31,17 +31,17 @@ class ConfigHelper
     // --------------------------------------------------------  Properites
 
     /**
-     * The ServletContext servlet associated with this instance.
+     * The \Silex\Application actionKernel associated with this instance.
      */
-    private $servlet = null;
+    private $application = null;
 
     /**
-     * Set the servlet associated with this instance.
-     * [servlet->getServletContext()]
+     * Set the actionKernel associated with this instance.
+     * [actionKernel->getActionKernelContext()]
      */
-    public function setApplication(\Serphlet\Config\ServletContext $servlet)
+    public function getApplication(\Silex\Application $app)
     {
-        $this->servlet = $servlet;
+        $this->application = $app;
     }
 
     /**
@@ -53,7 +53,7 @@ class ConfigHelper
     /**
      * Set the session associated with this instance.
      */
-    public function setSession(Serphlet_Http_Session $session)
+    public function setSession(\Symfony\Component\HttpFoundation\Session $session)
     {
         $this->session = $session;
     }
@@ -97,6 +97,7 @@ class ConfigHelper
 
     /**
      * Set the forward associated with this instance.
+     * // TODO: Is this supposed to be a ForwardConfig?
      */
     public function setForward(\Phruts\Config\ActionConfig $forward)
     {
@@ -104,29 +105,29 @@ class ConfigHelper
     }
 
     /**
-     * Set the servlet and request for this object instance.
-     * The ServletContext can be set by any servlet in the servlet.
+     * Set the actionKernel and request for this object instance.
+     * The ActionKernelContext can be set by any actionKernel in the actionKernel.
      * The request should be the instant request.
      * Most of the other methods retrieve their own objects
-     * by reference to the servlet, request, or session
+     * by reference to the actionKernel, request, or session
      * attributes.
      * Do not call other methods without setting these first!
      * This is also called by the convenience constructor.
      *
-     * @param ServletContext servlet - The associated ServletContext.
+     * @param \Silex\Application $app - The associated app.
      * @param \Symfony\Component\HttpFoundation\Request request - The associated HTTP request.
      * @param \Symfony\Component\HttpFoundation\Response response - The associated HTTP response.
      */
-    public function setResources(\Serphlet\Config\ServletContext $servlet, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function setResources(\Silex\Application $app, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        $this->setApplication($servlet);
+        $this->setApp($app);
         $this->setRequest($request);
         $this->setResponse($response);
     }
 
-    public function __construct(\Serphlet\Config\ServletContext $servlet, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function __construct(\Phruts\Action\ActionKernel $actionKernel, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        $this->setResources($servlet, $request, $response);
+        $this->setResources($actionKernel, $request, $response);
     }
 
     // ------------------------------------------------ Application Context
@@ -135,14 +136,14 @@ class ConfigHelper
      * The <strong>default</strong>
      * configured data source (which must implement
      * <code>phruts::util::DataSource</code>), if one is configured for this
-     * servlet.
+     * actionKernel.
      * @return DataSource
      */
     public function getDataSource()
     {
-        if ($this->servlet == null)
+        if ($this->actionKernel == null)
             return null;
-        return $this->servlet->getAttribute(\Phruts\Globals::DATA_SOURCE_KEY);
+        return $this->actionKernel->getAttribute(\Phruts\Globals::DATA_SOURCE_KEY);
 
     }
 
@@ -151,37 +152,37 @@ class ConfigHelper
 	 */
     public function getActionMessages()
     {
-        if ($this->servlet == null)
+        if ($this->actionKernel == null)
             return null;
-        return $this->servlet->getAttribute(\Phruts\Globals::MESSAGE_KEY);
+        return $this->actionKernel->getAttribute(\Phruts\Globals::MESSAGE_KEY);
 
     }
 
     /**
-     * The servlet resources for this servlet.
+     * The actionKernel resources for this actionKernel.
      * @return MessageResources
      */
     public function getMessageResources()
     {
-        if ($this->servlet == null) {
+        if ($this->actionKernel == null) {
             return null;
         }
 
-        return $this->servlet->getAttribute(\Phruts\Globals::MESSAGES_KEY);
+        return $this->actionKernel->getAttribute(\Phruts\Globals::MESSAGES_KEY);
     }
 
     /**
      * The path-mapped pattern (<code>/action/*</code>) or
      * extension mapped pattern ((<code>*.do</code>)
-     * used to determine our Action URIs in this servlet.
+     * used to determine our Action URIs in this actionKernel.
      */
-    public function getServletMapping()
+    public function getActionKernelMapping()
     {
-        if ($this->servlet == null) {
+        if ($this->actionKernel == null) {
             return null;
         }
-        //return $this->servlet->getAttribute(\Phruts\Globals::SERVLET_KEY);
-        return $this->servlet->getServletConfig()->getServletMapping();
+        //return $this->actionKernel->getAttribute(\Phruts\Globals::SERVLET_KEY);
+        return $this->actionKernel->getActionKernelConfig()->getActionKernelMapping();
     }
 
     // ---------------------------------------------------- Session Context
@@ -330,7 +331,7 @@ class ConfigHelper
      * computing the name of the requested mapping:
      * <ul>
      * <li>Any filename extension is removed (on the theory that extension
-     *     mapping is being used to select the controller servlet).</li>
+     *     mapping is being used to select the controller actionKernel).</li>
      * <li>If the resulting value does not start with a slash, then a
      *     slash is prepended.</li>
      * </ul>
@@ -363,7 +364,7 @@ class ConfigHelper
     {
         $contextPath = '';
         // TODO: See if we can get the context path from the request '/context/action' otherwise context is ''
-        $path = $this->request->getParameter($this->servlet->getServletConfig()->getPathParam());
+        $path = $this->request->getParameter($this->actionKernel->getActionKernelConfig()->getPathParam());
         if (!empty($path) && preg_match('/^\/?([^\/]+\/)[.]+/', $path, $matches)) {
             $contextPath = $matches[1]; // Get the context
         }
@@ -371,10 +372,10 @@ class ConfigHelper
         // Make our context/path
         $ref = $contextPath . $action;
 
-        // Use our servlet mapping, if one is specified
-        $servletMapping = $this->getServletMapping();
-        if ($servletMapping == null) {
-             $servletMapping = 'index.php?do=*';
+        // Use our actionKernel mapping, if one is specified
+        $actionKernelMapping = $this->getActionKernelMapping();
+        if ($actionKernelMapping == null) {
+             $actionKernelMapping = 'index.php?do=*';
         }
 
         // Query incomming?
@@ -384,10 +385,10 @@ class ConfigHelper
         }
         $actionMapping = $this->getActionMappingName($action);
 
-        $value = preg_replace('/\*/', $contextPath . $actionMapping, $servletMapping);
+        $value = preg_replace('/\*/', $contextPath . $actionMapping, $actionKernelMapping);
 
         if (!empty($queryString)) {
-            if (preg_match('/\?/', $servletMapping)) {
+            if (preg_match('/\?/', $actionKernelMapping)) {
                 $value .= '&' . $queryString;
             } else {
                 $value .= '?' . $queryString;
@@ -442,7 +443,7 @@ class ConfigHelper
         else {
             $contextPath = '';
             // TODO: See if we can get the context path from the request '/context/action' otherwise context is ''
-            $requestPath = $this->request->getParameter($this->servlet->getServletConfig()->getPathParam());
+            $requestPath = $this->request->getParameter($this->actionKernel->getActionKernelConfig()->getPathParam());
             if (!empty($requestPath) && preg_match('/([^\/]+)\/[.]+/', $requestPath, $matches)) {
                 $contextPath = $matches[1]; // Get the context
             }

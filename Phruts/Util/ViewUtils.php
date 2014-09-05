@@ -1,25 +1,13 @@
 <?php
 namespace Phruts\Util;
 
+use Phruts\Action\ActionKernel;
+use Phruts\Action;
+use Symfony\Component\HttpFoundation\Request;
+
 class ViewUtils
 {
     // Standard serphlet accessors
-    public static function getRequest()
-    {
-        return \Serphlet\Host::getRequest();
-    }
-    public static function getResponse()
-    {
-        return \Serphlet\Host::getResponse();
-    }
-    public static function getSession()
-    {
-        return self::getRequest()->getSession(true);
-    }
-    public static function getServlet()
-    {
-        return \Serphlet\Host::getServlet();
-    }
 
     /**
 	 * Create (if necessary) and return a ActionForm instance.
@@ -37,49 +25,49 @@ class ViewUtils
 	 * be submitted, used to select the ActionConfig we are assumed to be
 	 * processing, from which we can identify the appropriate form bean and scope.
 	 */
-    public static function getFormBean($name, $type, $scope = 'request', $populate = false)
+    public static function getFormBean(ActionKernel $actionKernel, Request $request, $name, $type, $scope = 'request', $populate = false)
     {
                 // Look up any existing form bean instance
         if ($scope == 'request') {
-            $form = self::getRequest()->getAttribute($name);
+            $form = $request->getAttribute($name);
         } else {
-            \Serphlet\ClassLoader::loadClass($type);
-            $form = self::getRequest()->getSession()->getAttribute($name);
+            \Phruts\ClassLoader::loadClass($type);
+            $form = $request->getSession()->getAttribute($name);
         }
 
         // Can we recycle the existing form bean instance (if there is one)?
         if (!is_null($form)) {
             $formClass = get_class($form);
-            if (\Serphlet\ClassLoader::classIsAssignableFrom($type, $formClass)) {
+            if (\Phruts\ClassLoader::classIsAssignableFrom($type, $formClass)) {
                 return $form;
             }
         }
 
         // Create and return a new form bean instance
-        $form = \Serphlet\ClassLoader::newInstance($type, '\Phruts\Action\AbstractActionForm');
-        $mapping = self::getRequest()->getAttribute(\Phruts\Globals::MAPPING_KEY);
+        $form = \Phruts\ClassLoader::newInstance($type, '\Phruts\Action\AbstractActionForm');
+        $mapping = $request->attributes->get(\Phruts\Globals::MAPPING_KEY);
         if ($mapping != null && $populate) {
-            $form->setServlet(self::getServlet());
-            $form->reset($mapping, self::getRequest());
+            $form->setActionKernel($actionKernel);
+            $form->reset($mapping, $request);
 
             try {
                 \Phruts\Util\RequestUtils::populate($form, $mapping->getPrefix(), $mapping->getSuffix(), self::getRequest());
-            } catch (\Serphlet\Exception $e) {
+            } catch (\Phruts\Exception $e) {
                 throw $e;
             }
 
             // Set the cancellation request attribute if appropriate
-            if (!is_null(self::getRequest()->getParameter(\Phruts\Globals::CANCEL_PROPERTY))) {
-                self::getRequest()->setAttribute(\Phruts\Globals::CANCEL_KEY, true);
+            if (!is_null($request->attributes->get(\Phruts\Globals::CANCEL_PROPERTY))) {
+                $request->setAttribute(\Phruts\Globals::CANCEL_KEY, true);
             }
         }
 
         // Assign to scope
         if ($scope == 'request') {
-            self::getRequest()->setAttribute($name, $form);
+            $request->setAttribute($name, $form);
         } else {
-            $session = self::getRequest()->getSession();
-            $session->setAttribute($name, $form);
+            $session = $request->getSession();
+            $session->set($name, $form);
         }
 
         return $form;
@@ -91,16 +79,16 @@ class ViewUtils
 	 * @param string $property the property to locate the exception.
 	 * @param string $scope Scope within which the exception will be accessed
 	 * (must be either request or session).
-	 * @return Exception
+	 * @return \Exception
 	 */
-    public static function getException($property = null)
+    public static function getException(Request $request, $property = null)
     {
         // Retrieve the exception
         if ($property == null) {
             $property = \Phruts\Globals::EXCEPTION_KEY;
         }
 
-        return self::getRequest()->getAttribute($property);
+        return $request->attributes->get($property);
     }
 
     /**
@@ -119,17 +107,18 @@ class ViewUtils
 	 * @param string $arg1 Second parametric replacement value, if any.
 	 * @param string $arg2 Third parametric replacement value, if any.
 	 * @param string $arg3 Fourth parametric replacement value, if any.
+     * @return string
 	 */
-    public static function message($key, $bundle = null, $locale = null, $arg0 = null, $arg1 = null, $arg2 = null, $arg3 = null)
+    public static function message(ActionKernel $actionKernel, Request $request, $key, $bundle = null, $locale = null, $arg0 = null, $arg1 = null, $arg2 = null, $arg3 = null)
     {
         // Retrieve message resources
-        $resources = \Phruts\Util\RequestUtils::retrieveMessageResources(self::getRequest(), self::getServlet()->getServletContext(), $bundle);
+        $resources = \Phruts\Util\RequestUtils::retrieveMessageResources($request, $actionKernel->getApplication(), $bundle);
 
         // Retrieve user locale
-        $userLocale = \Phruts\Util\RequestUtils::retrieveUserLocale(self::getRequest(), $locale);
+        $userLocale = \Phruts\Util\RequestUtils::retrieveUserLocale($request, $locale);
         $message = '';
         if(!empty($resoures)) $message = $resources->getMessage($userLocale, $key, $arg0, $arg1, $arg2, $arg3);
-        echo $message;
+        return $message;
     }
 
     /**
@@ -162,19 +151,20 @@ class ViewUtils
 	 * @param string $locale The session attribute key for the Locale used to
 	 * select messages to be displayed. If not specified, defaults to the PHruts
 	 * standard value.
+     * @return string
 	 */
-    public static function errors($property = '', $bundle = null, $locale = null)
+    public static function errors(ActionKernel $actionKernel, Request $request, $property = '', $bundle = null, $locale = null)
     {
-        $errors = self::getRequest()->getAttribute(\Phruts\Globals::ERROR_KEY);
+        $errors = $request->getAttribute(\Phruts\Globals::ERROR_KEY);
         if (is_null($errors)) {
             return;
         }
 
         // Retrieve message resources
-        $resources = \Phruts\Util\RequestUtils::retrieveMessageResources(self::getRequest(), self::getServlet()->getServletConfig()->getServletContext(), $bundle);
+        $resources = \Phruts\Util\RequestUtils::retrieveMessageResources($request, $actionKernel->getApplication(), $bundle);
 
         // Retrieve user locale
-        $userLocale = \Phruts\Util\RequestUtils::retrieveUserLocale(self::getRequest(), $locale);
+        $userLocale = \Phruts\Util\RequestUtils::retrieveUserLocale($request, $locale);
 
         $headerPresent = $resources->isPresent($userLocale, 'errors.header');
         $footerPresent = $resources->isPresent($userLocale, 'errors.footer');
@@ -210,7 +200,7 @@ class ViewUtils
             $message .= $resources->getMessage($userLocale, 'errors.footer') . PHP_EOL;
         }
 
-        echo $message;
+        return $message;
     }
 
     /**
@@ -243,19 +233,20 @@ class ViewUtils
 	 * @param string $locale The session attribute key for the Locale used to
 	 * select messages to be displayed. If not specified, defaults to the PHruts
 	 * standard value.
+     * @return string
 	 */
-    public static function messages($property = '', $bundle = null, $locale = null)
+    public static function messages(ActionKernel $actionKernel, Request $request, $property = '', $bundle = null, $locale = null)
     {
-        $messages = self::getRequest()->getAttribute(\Phruts\Globals::MESSAGE_KEY);
+        $messages = $request->getAttribute(\Phruts\Globals::MESSAGE_KEY);
         if (is_null($messages)) {
             return;
         }
 
         // Retrieve message resources
-        $resources = \Phruts\Util\RequestUtils::retrieveMessageResources(self::getRequest(), self::getServletConfig()->getServletContext(), $bundle);
+        $resources = \Phruts\Util\RequestUtils::retrieveMessageResources($request, $actionKernel->getApplication(), $bundle);
 
         // Retrieve user locale
-        $userLocale = \Phruts\Util\RequestUtils::retrieveUserLocale(self::getRequest(), $locale);
+        $userLocale = \Phruts\Util\RequestUtils::retrieveUserLocale($request, $locale);
 
         $headerPresent = $resources->isPresent($userLocale, 'messages.header');
         $footerPresent = $resources->isPresent($userLocale, 'messages.footer');
@@ -291,20 +282,20 @@ class ViewUtils
             $message .= $resources->getMessage($userLocale, 'messages.footer') . PHP_EOL;
         }
 
-        echo $message;
+        return $message;
     }
 
     /**
      * The transaction token stored in this session, if it is used.
      * @return string
      */
-    public static function getToken()
+    public static function getToken(Request $request)
     {
-        if (self::getRequest()->getSession(false) == null) {
+        if ($request->getSession(false) == null) {
             return null;
         }
 
-        return self::getRequest()->getSession()->getAttribute(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
+        return $request->getSession()->getAttribute(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
     }
 
     /**
@@ -314,14 +305,14 @@ class ViewUtils
     /**
      * Renders the reference for a HTML <base> element.
      */
-    public static function getBaseHref($includeServerSB = false)
+    public static function getBaseHref(Request $request, $includeServerSB = false)
     {
-        if (self::getRequest() == null)
+        if ($request == null)
             return null;
 
         $path = '';
-        if($includeServerSB) $path = \Phruts\Util\RequestUtils::requestToServerStringBuffer(self::getRequest());
-        $path .= self::getRequest()->getContextPath();
+        if($includeServerSB) $path = \Phruts\Util\RequestUtils::requestToServerStringBuffer($request);
+        $path .= $request->getContextPath();
 
         if(substr($path, -1) != '/') $path .= '/';
 
@@ -329,36 +320,36 @@ class ViewUtils
 
     }
 
-    public static function getServletMapping()
+    public static function getKernelMapping(ActionKernel $actionKernel)
     {
-        if (self::getServlet() == null) {
+        if ($actionKernel == null) {
             return null;
         }
 
-        //return $this->servlet->getAttribute(\Phruts\Globals::SERVLET_KEY);
-        return self::getServlet()->getServletConfig()->getServletMapping();
+        $application = $actionKernel->getApplication();
+        return $application[\Phruts\Globals::SERVLET_KEY];
     }
 
     /**
      * Return the form action converted into a server-relative URL.
      * @return string
      */
-    public function getActionMappingURL($action = null)
+    public static function getActionMappingURL(ActionKernel $actionKernel, Request $request, $action = null)
     {
         if (empty($action)) {
             // Get it from the request
-            if(self::getRequest() == null) return;
-            $mapping = self::getRequest()->getAttribute(\Phruts\Globals::MAPPING_KEY);
+            if($request == null) return;
+            $mapping = $request->attribute->get(\Phruts\Globals::MAPPING_KEY);
             $action = $mapping->getPath();
         }
 
-        // Use our servlet mapping, if one is specified
-        $servletMapping = self::getServletMapping();
-        if ($servletMapping == null) {
-             $servletMapping = '/*'; // Set to default
+        // Use our actionKernel mapping, if one is specified
+        $actionKernelMapping = self::getKernelMapping($actionKernel);
+        if ($actionKernelMapping == null) {
+             $actionKernelMapping = '/*'; // Set to default
         }
 
-        $moduleName = \Phruts\Util\RequestUtils::getModuleName(self::getRequest(), self::getServlet()->getServletConfig()->getServletContext());
+        $moduleName = \Phruts\Util\RequestUtils::getModuleName($request, $actionKernel->getApplication());
 
         // Query incomming?
         $queryString = null;
@@ -367,19 +358,19 @@ class ViewUtils
         }
         $actionMapping = self::getActionMappingName($action);
 
-        $value = preg_replace('/[\/]?\*/', $moduleName . $actionMapping, $servletMapping);
+        $value = preg_replace('/[\/]?\*/', $moduleName . $actionMapping, $actionKernelMapping);
 
         if (!empty($queryString)) {
-            if (preg_match('/\?/', $servletMapping)) {
+            if (preg_match('/\?/', $actionKernelMapping)) {
                 $value .= '&' . $queryString;
             } else {
                 $value .= '?' . $queryString;
             }
         }
 
-        // If the requiest URI has index.php/ in it, we need to have index.php
+        // If the request URI has index.php/ in it, we need to have index.php
         $scriptName = basename($_SERVER['SCRIPT_NAME']);
-        if (strpos(self::getRequest()->getRequestURI(), $scriptName) > -1) {
+        if (strpos($request->getRequestURI(), $scriptName) > -1) {
             $value = $scriptName . $value;
         }
 
@@ -399,7 +390,7 @@ class ViewUtils
      * computing the name of the requested mapping:
      * <ul>
      * <li>Any filename extension is removed (on the theory that extension
-     *     mapping is being used to select the controller servlet).</li>
+     *     mapping is being used to select the controller actionKernel).</li>
      * <li>If the resulting value does not start with a slash, then a
      *     slash is prepended.</li>
      * </ul>

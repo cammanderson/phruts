@@ -6,6 +6,11 @@ namespace Phruts;
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * Class RequestDispatcher
+ * @author Cameron Manderson <cameronmanderson@gmail.com>
+ * @package Phruts
+ */
 class RequestDispatcher implements RequestDispatcherInterface
 {
 
