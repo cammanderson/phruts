@@ -3,10 +3,6 @@ phruts
 
 ![Travis build status master]
 (https://travis-ci.org/cammanderson/phruts.svg?branch=master)
+(Still in development)
 
-An implementation of Struts style framework into PHP.
-
-TODO
-----
-- Implement selected PSR standards
-- Implement Symfony HTTP Foundation
+Implementation of Struts in PHP and strapped onto Silex.
