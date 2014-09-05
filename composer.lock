@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cammanderson/serphlet.git",
-                "reference": "f8c6a9f2528710de643025e0d5832e0ad5429829"
+                "reference": "ccb55a3ab1e9de4d37112461ee6be582a0599316"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cammanderson/serphlet/zipball/f8c6a9f2528710de643025e0d5832e0ad5429829",
-                "reference": "f8c6a9f2528710de643025e0d5832e0ad5429829",
+                "url": "https://api.github.com/repos/cammanderson/serphlet/zipball/ccb55a3ab1e9de4d37112461ee6be582a0599316",
+                "reference": "ccb55a3ab1e9de4d37112461ee6be582a0599316",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
                 "serphlet",
                 "servlet"
             ],
-            "time": "2014-09-03 05:47:02"
+            "time": "2014-09-03 09:30:41"
         },
         {
             "name": "psr/log",
@@ -93,17 +93,17 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.5.3",
+            "version": "v2.5.4",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "53296aa0794ebe1e3880e3f2c68fe10ddad6c3e3"
+                "reference": "cec87359655f901a11de336576851d3957449947"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/53296aa0794ebe1e3880e3f2c68fe10ddad6c3e3",
-                "reference": "53296aa0794ebe1e3880e3f2c68fe10ddad6c3e3",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/cec87359655f901a11de336576851d3957449947",
+                "reference": "cec87359655f901a11de336576851d3957449947",
                 "shasum": ""
             },
             "require": {
@@ -142,7 +142,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-08-05 09:00:40"
+            "time": "2014-09-03 09:00:14"
         }
     ],
     "packages-dev": [
@@ -908,17 +908,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.5.3",
+            "version": "v2.5.4",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "5a75366ae9ca8b4792cd0083e4ca4dff9fe96f1f"
+                "reference": "01a7695bcfb013d0a15c6757e15aae120342986f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/5a75366ae9ca8b4792cd0083e4ca4dff9fe96f1f",
-                "reference": "5a75366ae9ca8b4792cd0083e4ca4dff9fe96f1f",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/01a7695bcfb013d0a15c6757e15aae120342986f",
+                "reference": "01a7695bcfb013d0a15c6757e15aae120342986f",
                 "shasum": ""
             },
             "require": {
@@ -951,7 +951,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-08-05 09:00:40"
+            "time": "2014-08-31 03:22:04"
         }
     ],
     "aliases": [],
