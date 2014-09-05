@@ -115,6 +115,12 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testExecute()
+    {
+        $action = new \Phruts\Action();
+        $this->assertNull($action->execute(new \Phruts\Config\ActionMapping(), null, new \Symfony\Component\HttpFoundation\Request(), new \Symfony\Component\HttpFoundation\Response()));
+    }
+
     protected static function getMethod($name)
     {
         $class = new ReflectionClass('\Phruts\Action');
