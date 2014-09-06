@@ -112,7 +112,26 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     public function testAddErrors()
     {
+        $request = new \Symfony\Component\HttpFoundation\Request();
 
+        $errors = new \Phruts\Action\ActionErrors();
+        $errors->add('key', new \Phruts\Action\ActionError('message'));
+
+        $action = new \Phruts\Action();
+
+        $saveErrors = self::getMethod('addErrors');
+        $saveErrors->invokeArgs($action, array($request, $errors));
+
+        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $errorsRequest = $request->attributes->get(\Phruts\Globals::ERROR_KEY);
+        $this->assertEquals(1, $errorsRequest->size());
+
+        $errors2 = new \Phruts\Action\ActionErrors();
+        $errors2->add('key2', new \Phruts\Action\ActionError('message'));
+        $saveErrors->invokeArgs($action, array($request, $errors2));
+
+        $errorsRequest = $request->attributes->get(\Phruts\Globals::ERROR_KEY);
+        $this->assertEquals(2, $errorsRequest->size());
     }
 
     public function testExecute()
