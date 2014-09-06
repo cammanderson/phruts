@@ -349,7 +349,7 @@ class Action
     protected function getErrors(\Symfony\Component\HttpFoundation\Request $request)
     {
         $errors = $request->attributes->get(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
-        if ($errors == null) {
+        if (empty($errors)) {
             $errors = new \Phruts\Action\ActionErrors();
         }
 

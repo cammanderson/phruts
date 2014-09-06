@@ -62,13 +62,8 @@ class ActionMessages
 	 */
     public function add($property, \Phruts\Action\ActionMessage $message)
     {
-        $property = (string) $property;
-
         if (array_key_exists($property, $this->messages)) {
-            $item = $this->messages[$property];
-            $list = & $item->getList();
-
-            $list[] = $message;
+            $this->messages[$property]->add($message);
         } else {
             $list = array (
                 $message
@@ -93,9 +88,6 @@ class ActionMessages
      */
     public function addMessages(\Phruts\Action\ActionMessages $messages)
     {
-        if ($messages == null) {
-            return;
-        }
 
         // loop over properties
         $properties = $messages->properties();

@@ -36,8 +36,17 @@ class ActionMessageItem
     /**
      * @return array
      */
-    public function & getList() {
+    public function &getList() {
         return $this->list;
+    }
+
+    /**
+     * Adds to the current list
+     * @param ActionMessage $message
+     */
+    public function add(\Phruts\Action\ActionMessage $message)
+    {
+        $this->list[] = $message;
     }
 
     /**

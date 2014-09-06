@@ -1,19 +1,24 @@
 <?php
 
-
 class ActionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Phruts\Action
      */
     protected $action;
+
+    /**
+     * @var \Phruts\Action\ActionKernel
+     */
     protected $actionKernel;
 
     protected function setUp()
     {
         $this->action = new \Phruts\Action();
-        $this->mockActionKernel = new MockActionKernel();
-        $this->action->setActionKernel($this->mockActionKernel);
+
+        $this->actionKernel = $this->getMockBuilder('\Phruts\Action\ActionKernel')->disableOriginalConstructor()->getMock();
+
+        $this->action->setActionKernel($this->actionKernel);
     }
 
     public function testMutatorAccessors()
@@ -25,8 +30,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     public function testGetDataSource()
     {
         $getDataSource = self::getMethod('getDataSource');
+
+        $this->actionKernel->method('getDataSource')->willReturn(new PDO('sqlite:memory:'));
+
+//        getDataSource($request, $key);
+
         $datasource = $getDataSource->invokeArgs($this->action, array(new \Symfony\Component\HttpFoundation\Request(), 'key'));
         $this->assertNotEmpty($datasource);
+        $this->assertTrue($datasource instanceof PDO);
     }
 
     public function testGetLocale()
@@ -35,7 +46,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $getLocale = self::getMethod('getLocale');
 
         $request->setDefaultLocale('fr');
-        $this->mockActionKernel->application['locale'] = 'fr';
+        $this->actionKernel->method('getApplication')->willReturn(array('locale' => 'fr'));
 
         // Source from the default space in the application
         $this->assertEquals('fr', $getLocale->invokeArgs($this->action, array($request)));
@@ -150,7 +161,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $result = $getErrors->invokeArgs($this->action, array($request));
 
         $this->assertNotEmpty($result);
-        $this->assertTrue(2, $result->size());
+        $this->assertEquals(2, $result->size());
     }
 
     public function testSaveMessages()
@@ -220,7 +231,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $messagesRequest->size());
 
         $messages = new \Phruts\Action\ActionMessages();
-        $request->attributes->set(\Phruts\Globals::MESSAGES_KEY, $messages);
+        $request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $messages);
         $saveMessages->invokeArgs($this->action, array($request, $messages));
         $this->assertEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
     }
@@ -242,7 +253,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $result = $getMessages->invokeArgs($this->action, array($request));
 
         $this->assertNotEmpty($result);
-        $this->assertTrue(2, $result->size());
+        $this->assertEquals(2, $result->size());
     }
 
     public function testSetLocale()
@@ -284,32 +295,4 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     }
 
 
-}
-
-
-class MockActionKernel extends \Phruts\Action\ActionKernel
-{
-
-    public $application;
-    public function getApplication()
-    {
-        return $this->application;
-    }
-
-    function __construct()
-    {
-    }
-
-    public function getDataSource(\Symfony\Component\HttpFoundation\Request $request, $key)
-    {
-        return new MockPDO();
-    }
-}
-
-class MockPDO extends \PDO
-{
-
-    function __construct()
-    {
-    }
 }
