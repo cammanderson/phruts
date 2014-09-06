@@ -350,7 +350,7 @@ class Action
     {
         $errors = $request->attributes->get(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
         if ($errors == null) {
-            $errors = new \Phruts\Action\ActionMessages();
+            $errors = new \Phruts\Action\ActionErrors();
         }
 
         return $errors;
