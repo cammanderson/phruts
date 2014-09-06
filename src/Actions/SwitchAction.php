@@ -1,6 +1,6 @@
 <?php
 
-namespace Phruts\Action;
+namespace Phruts\Actions;
 
 /**
  * <p>A standard <strong>Action</strong> that switches to a new module
@@ -33,11 +33,11 @@ class SwitchAction extends \Phruts\Action
         if (($page == null) || ($prefix == null)) {
             $message = $this->getActionKernel()->getInternal()->getMessage("switch.required");
             //$log->error($message);
-            throw new ActionKernelException($message);
+            throw new \Phruts\Exception($message);
         }
 
         // Switch to the requested module
-        RequestUtils::selectModule($prefix, $request, $this->getActionKernel()->getActionKernelContext());
+        \Phruts\Util\RequestUtils::selectModule($prefix, $request, $this->getActionKernel()->getApplication());
         if ($request->attributes->get(\Phruts\Globals::MODULE_KEY) == null) {
             $message = $this->getActionKernel()->getInternal()->getMessage("switch.prefix", $prefix);
             //$log->error($message);

@@ -1,8 +1,6 @@
 <?php
 
-namespace Phruts\Action\Compact;
-
-use Phruts\Actions;
+namespace Phruts\Actions;
 
 /**
  * Similar to a dispatch action, the compact action allows you
@@ -11,7 +9,7 @@ use Phruts\Actions;
  *
  * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
  */
-class CompactAction extends Action
+class CompactAction extends \Phruts\Action
 {
     const ACTION_METHOD_PREPEND = 'execute';
     const ACTION_PARAMETER = 'action';

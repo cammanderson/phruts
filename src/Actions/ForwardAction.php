@@ -2,4 +2,4 @@
 
 namespace Phruts\Actions;
 
-class ForwardAction extends Action {}
+class ForwardAction extends \Phruts\Action {}

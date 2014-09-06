@@ -1,7 +1,6 @@
 <?php
 
-namespace Phruts\Action\Dispatch;
+namespace Phruts\Actions;
 
-use Phruts\Actions;
 
-class LookupDispatchAction extends Action {}
+class LookupDispatchAction extends \Phruts\Action {}

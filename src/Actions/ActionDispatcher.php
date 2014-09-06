@@ -1,8 +1,6 @@
 <?php
 
-namespace Phruts\Action;
-
-use Phruts\Actions;
+namespace Phruts\Actions;
 
 /**
  * <p>An abstract <strong>Action</strong> that dispatches to a public
@@ -51,7 +49,7 @@ use Phruts\Actions;
  * @author Craig R. McClanahan
  * @author Ted Husted
  */
-class ActionDispatch extends \Phruts\Action
+class ActionDispatcher extends \Phruts\Action
 {
     // ----------------------------------------------------- Instance Variables
 
