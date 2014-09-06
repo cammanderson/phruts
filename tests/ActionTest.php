@@ -12,6 +12,11 @@ class ActionTest extends \PHPUnit_Framework_TestCase
      */
     protected $actionKernel;
 
+    /**
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
+    protected $request;
+
     protected function setUp()
     {
         $this->action = new \Phruts\Action();
@@ -19,6 +24,13 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->actionKernel = $this->getMockBuilder('\Phruts\Action\ActionKernel')->disableOriginalConstructor()->getMock();
 
         $this->action->setActionKernel($this->actionKernel);
+
+        $this->request = new \Symfony\Component\HttpFoundation\Request();
+        $storage = new  Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage();
+        $session = new Symfony\Component\HttpFoundation\Session\Session($storage);
+//        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Session')->disableOriginalConstructor()->getMock();
+        $this->request->setSession($session);
+
     }
 
     public function testMutatorAccessors()
@@ -33,27 +45,30 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
         $this->actionKernel->method('getDataSource')->willReturn(new PDO('sqlite:memory:'));
 
-//        getDataSource($request, $key);
+//        getDataSource($this->request, $key);
 
         $datasource = $getDataSource->invokeArgs($this->action, array(new \Symfony\Component\HttpFoundation\Request(), 'key'));
         $this->assertNotEmpty($datasource);
         $this->assertTrue($datasource instanceof PDO);
     }
 
-    public function testGetLocale()
+    public function testLocale()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
         $getLocale = self::getMethod('getLocale');
+        $setLocale = self::getMethod('setLocale');
 
-        $request->setDefaultLocale('fr');
+        $this->request->setDefaultLocale('fr');
         $this->actionKernel->method('getApplication')->willReturn(array('locale' => 'fr'));
 
         // Source from the default space in the application
-        $this->assertEquals('fr', $getLocale->invokeArgs($this->action, array($request)));
+        $this->assertEquals('fr', $getLocale->invokeArgs($this->action, array($this->request)));
 
         // Source from the session if set
-        $request->setLocale('en');
-        $this->assertEquals('en', $getLocale->invokeArgs($this->action, array($request)));
+        $setLocale->invokeArgs($this->action, array($this->request, 'gb'));
+        $this->assertEquals('gb', $getLocale->invokeArgs($this->action, array($this->request)));
+
+        $setLocale->invokeArgs($this->action, array($this->request, null));
+        $this->assertEquals('fr', $getLocale->invokeArgs($this->action, array($this->request)));
     }
 
     public function testGetResources()
@@ -63,43 +78,37 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCancelled()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
-
         $isCancelled = self::getMethod('isCancelled');
-        $this->assertEquals(false, $isCancelled->invokeArgs($this->action, array($request)));
+        $this->assertEquals(false, $isCancelled->invokeArgs($this->action, array($this->request)));
 
-        $request->attributes->set(\Phruts\Globals::CANCEL_KEY, true);
-        $this->assertEquals(true, $isCancelled->invokeArgs($this->action, array($request)));
+        $this->request->attributes->set(\Phruts\Globals::CANCEL_KEY, true);
+        $this->assertEquals(true, $isCancelled->invokeArgs($this->action, array($this->request)));
     }
 
     public function testSaveErrors()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
-
         $saveErrors = self::getMethod('saveErrors');
 
-        $saveErrors->invokeArgs($this->action, array($request, null));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $saveErrors->invokeArgs($this->action, array($this->request, null));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
 
         $errors = new \Phruts\Action\ActionErrors();
 
-        $saveErrors->invokeArgs($this->action, array($request, $errors));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $saveErrors->invokeArgs($this->action, array($this->request, $errors));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
 
         $errors->add('1', new \Phruts\Action\ActionMessage('abc'));
-        $saveErrors->invokeArgs($this->action, array($request, $errors));
-        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $saveErrors->invokeArgs($this->action, array($this->request, $errors));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
 
-        $saveErrors->invokeArgs($this->action, array($request, null));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $saveErrors->invokeArgs($this->action, array($this->request, null));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
     }
 
     public function testSaveErrorsSessions()
     {
-        $storage = new  Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage();
-        $session = new \Symfony\Component\HttpFoundation\Session\Session($storage);
-
         $saveErrors = self::getMethod('saveErrorsSession');
+        $session = $this->request->getSession();
 
         $saveErrors->invokeArgs($this->action, array($session, null));
         $this->assertEmpty($session->get(\Phruts\Globals::ERROR_KEY));
@@ -119,46 +128,48 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     public function testAddErrors()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
+        $this->request = new \Symfony\Component\HttpFoundation\Request();
 
         $errors = new \Phruts\Action\ActionErrors();
         $errors->add('key', new \Phruts\Action\ActionError('message'));
 
         $saveErrors = self::getMethod('addErrors');
-        $saveErrors->invokeArgs($this->action, array($request, $errors));
+        $saveErrors->invokeArgs($this->action, array($this->request, $errors));
 
-        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
-        $errorsRequest = $request->attributes->get(\Phruts\Globals::ERROR_KEY);
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $errorsRequest = $this->request->attributes->get(\Phruts\Globals::ERROR_KEY);
         $this->assertEquals(1, $errorsRequest->size());
 
         $errors2 = new \Phruts\Action\ActionErrors();
         $errors2->add('key2', new \Phruts\Action\ActionError('message'));
-        $saveErrors->invokeArgs($this->action, array($request, $errors2));
+        $saveErrors->invokeArgs($this->action, array($this->request, $errors2));
 
-        $errorsRequest = $request->attributes->get(\Phruts\Globals::ERROR_KEY);
+        $errorsRequest = $this->request->attributes->get(\Phruts\Globals::ERROR_KEY);
         $this->assertEquals(2, $errorsRequest->size());
 
         $errors = new \Phruts\Action\ActionErrors();
-        $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
-        $saveErrors->invokeArgs($this->action, array($request, $errors));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
+        $saveErrors->invokeArgs($this->action, array($this->request, $errors));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
     }
 
     public function testGetErrors()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
+        $getErrors = self::getMethod('getErrors');
+
+        $errors = $getErrors->invokeArgs($this->action, array($this->request));
+        $this->assertEquals(0, $errors->size());
 
         $errors = new \Phruts\Action\ActionErrors();
         $errors->add('key1', new \Phruts\Action\ActionError('error'));
         $errors->add('key2', new \Phruts\Action\ActionError('error'));
 
         $saveErrors = self::getMethod('saveErrors');
-        $saveErrors->invokeArgs($this->action, array($request, $errors));
+        $saveErrors->invokeArgs($this->action, array($this->request, $errors));
 
-        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
 
-        $getErrors = self::getMethod('getErrors');
-        $result = $getErrors->invokeArgs($this->action, array($request));
+        $result = $getErrors->invokeArgs($this->action, array($this->request));
 
         $this->assertNotEmpty($result);
         $this->assertEquals(2, $result->size());
@@ -166,31 +177,27 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     public function testSaveMessages()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
-
         $saveMessages = self::getMethod('saveMessages');
 
-        $saveMessages->invokeArgs($this->action, array($request, null));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $saveMessages->invokeArgs($this->action, array($this->request, null));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
 
         $messages = new \Phruts\Action\ActionMessages();
 
-        $saveMessages->invokeArgs($this->action, array($request, $messages));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $saveMessages->invokeArgs($this->action, array($this->request, $messages));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
 
         $messages->add('1', new \Phruts\Action\ActionMessage('abc'));
-        $saveMessages->invokeArgs($this->action, array($request, $messages));
-        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $saveMessages->invokeArgs($this->action, array($this->request, $messages));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
 
-        $saveMessages->invokeArgs($this->action, array($request, null));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $saveMessages->invokeArgs($this->action, array($this->request, null));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
     }
 
     public function testSaveMessagesSessions()
     {
-        $storage = new  Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage();
-        $session = new \Symfony\Component\HttpFoundation\Session\Session($storage);
-
+        $session = $this->request->getSession();
         $saveMessages = self::getMethod('saveMessagesSession');
 
         $saveMessages->invokeArgs($this->action, array($session, null));
@@ -211,54 +218,49 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     public function testAddMessages()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
-
         $messages = new \Phruts\Action\ActionMessages();
         $messages->add('key', new \Phruts\Action\ActionMessage('message'));
 
         $saveMessages = self::getMethod('addMessages');
-        $saveMessages->invokeArgs($this->action, array($request, $messages));
+        $saveMessages->invokeArgs($this->action, array($this->request, $messages));
 
-        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
-        $messagesRequest = $request->attributes->get(\Phruts\Globals::MESSAGE_KEY);
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $messagesRequest = $this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY);
         $this->assertEquals(1, $messagesRequest->size());
 
         $messages2 = new \Phruts\Action\ActionMessages();
         $messages2->add('key2', new \Phruts\Action\ActionMessage('message'));
-        $saveMessages->invokeArgs($this->action, array($request, $messages2));
+        $saveMessages->invokeArgs($this->action, array($this->request, $messages2));
 
-        $messagesRequest = $request->attributes->get(\Phruts\Globals::MESSAGE_KEY);
+        $messagesRequest = $this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY);
         $this->assertEquals(2, $messagesRequest->size());
 
         $messages = new \Phruts\Action\ActionMessages();
-        $request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $messages);
-        $saveMessages->invokeArgs($this->action, array($request, $messages));
-        $this->assertEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $messages);
+        $saveMessages->invokeArgs($this->action, array($this->request, $messages));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
     }
 
     public function testGetMessages()
     {
-        $request = new \Symfony\Component\HttpFoundation\Request();
+        $getMessages = self::getMethod('getMessages');
+
+        $messages = $getMessages->invokeArgs($this->action, array($this->request));
+        $this->assertEquals(0, $messages->size());
 
         $messages = new \Phruts\Action\ActionMessages();
         $messages->add('key1', new \Phruts\Action\ActionMessage('message'));
         $messages->add('key2', new \Phruts\Action\ActionMessage('message'));
 
         $saveMessages = self::getMethod('saveMessages');
-        $saveMessages->invokeArgs($this->action, array($request, $messages));
+        $saveMessages->invokeArgs($this->action, array($this->request, $messages));
 
-        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
 
-        $getMessages = self::getMethod('getMessages');
-        $result = $getMessages->invokeArgs($this->action, array($request));
+        $result = $getMessages->invokeArgs($this->action, array($this->request));
 
         $this->assertNotEmpty($result);
         $this->assertEquals(2, $result->size());
-    }
-
-    public function testSetLocale()
-    {
-        $setLocale = self::getMethod('setLocale');
     }
 
     public function testGenerateToken()

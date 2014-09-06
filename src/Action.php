@@ -115,8 +115,12 @@ class Action
 	 */
     protected function getLocale(\Symfony\Component\HttpFoundation\Request $request)
     {
-        // TODO: Confirm that we are no longer accessing from the session
-        $locale = $request->getLocale();
+        $session = $request->getSession();
+        $locale = null;
+        if(!empty($session)) {
+            $locale = $session->get(\Phruts\Globals::LOCALE_KEY);
+        }
+
         if (is_null($locale)) {
             // Silex core parameter
             $app = $this->actionKernel->getApplication();
