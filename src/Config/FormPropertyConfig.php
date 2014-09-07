@@ -274,7 +274,7 @@ class FormPropertyConfig
     /**
      * Return a String representation of this object.
      */
-    public function toString()
+    public function __toString()
     {
         $sb = "\Phruts\Config\FormPropertyConfig[";
         $sb .= "name=";
