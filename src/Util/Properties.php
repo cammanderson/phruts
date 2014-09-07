@@ -56,9 +56,7 @@
 
 /**
  * A set of persistent properties, which can be loaded from a properties file.
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @todo Manage UTF8 encodage.
+ * @todo Manage UTF8 encodage.
  */
 class Properties
 {

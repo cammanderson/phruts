@@ -18,7 +18,7 @@ namespace Phruts\Actions;
  *     request attribute, so any subsequent logic will assume the new
  *     module.</li>
  * </ul>
- * * @since Struts 1.1
+ * @since Struts 1.1
  */
 class SwitchAction extends \Phruts\Action
 {

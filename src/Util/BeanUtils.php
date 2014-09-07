@@ -3,9 +3,7 @@ namespace Phruts\Util;
 
 /**
  * Utility methods for populating PHPBeans properties via reflection.
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 class BeanUtils
 {
     /**

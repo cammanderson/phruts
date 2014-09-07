@@ -5,9 +5,7 @@ namespace Phruts\Config;
 /**
  * A PHPBean representing the configuration information of
  * a <message-resources> element in a PHruts configuration file.
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 class MessageResourcesConfig
 {
     /**

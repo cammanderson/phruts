@@ -13,10 +13,7 @@ namespace Phruts\Action;
  * contains a message key (to be looked up in an appropriate message resources
  * database), and up to four placeholder arguments used for parametric
  * substitution in the resulting message.</p>
- *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts Contributor)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 class ActionErrors extends ActionMessages
 {
     /**

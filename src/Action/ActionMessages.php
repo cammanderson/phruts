@@ -15,14 +15,7 @@ namespace Phruts\Action;
  * are created and manipulated only within the context of a single thread.
  * Therefore, no synchronization is required for access to internal
  * collections.</p>
- *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
- * @author David Geary
- * @author Craig R. McClanahan
- * @author David Winterfeldt
- * @author David Graham * @since Struts 1.1
+ * @since Struts 1.1
  */
 class ActionMessages
 {

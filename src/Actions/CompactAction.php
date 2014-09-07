@@ -6,8 +6,6 @@ namespace Phruts\Actions;
  * Similar to a dispatch action, the compact action allows you
  * to write more compact actions by eliminating method parameters
  * and adopting a convention of 'actionAction' in the method name
- *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
  */
 class CompactAction extends \Phruts\Action
 {

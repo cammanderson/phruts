@@ -6,9 +6,8 @@ namespace Phruts\Action;
  * An ExceptionHandler is configured in the Struts configuration file to handle
  * a specific type of exception thrown by an Action's execute method.
  *
- * @author Cameron Manderson (Contributor from Phruts)
- * @author Original struts author unknown
- * @since Struts 1.1 */
+ * @since Struts 1.1
+ */
 class ExceptionHandler
 {
     /**

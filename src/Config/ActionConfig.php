@@ -58,10 +58,7 @@ namespace Phruts\Config;
 /**
  * A PHPBean representing the configuration information of
  * an <action> element from a PHruts module configuration file.
- *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 class ActionConfig
 {
     /**

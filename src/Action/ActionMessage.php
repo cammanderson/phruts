@@ -9,9 +9,7 @@ namespace Phruts\Action;
  * message resources database) plus up to four placeholder objects that can
  * be used for parametric replacement in the message text.</p>
  *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com>
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @since Struts 1.1
+ * @since Struts 1.1
  */
 class ActionMessage
 {

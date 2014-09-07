@@ -5,9 +5,6 @@ namespace Phruts;
  * The ClassLoader is a way of customizing the way PHP gets its classes
  * and loads them into memory.
  *
- * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  */
 class ClassLoader
 {

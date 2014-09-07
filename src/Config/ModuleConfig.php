@@ -10,9 +10,6 @@ namespace Phruts\Config;
  * If no module prefix can be matched, the default configuration (with a
  * prefix equal to a zero-length string) is selected.
  *
- * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  */
 class ModuleConfig
 {

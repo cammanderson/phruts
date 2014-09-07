@@ -14,9 +14,7 @@ namespace Phruts\Util;
  * <li>Call the <samp>createResources</samp> method of the factory to retrieve
  * a newly instantiated MessageResources instance.</li>
  * </ul>
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @todo Set log informations.
+ * @todo Set log informations.
  */
 abstract class MessageResourcesFactory
 {

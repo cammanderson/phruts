@@ -9,9 +9,6 @@ namespace Phruts;
  * class and overriding the method(s) whose behavior you are
  * interested in changing.
  *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  */
 class RequestProcessor
 {

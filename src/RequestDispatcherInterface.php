@@ -6,7 +6,6 @@ namespace Phruts;
 
 /**
  * Interface RequestDispatcherInterface
- * @author Cameron Manderson <cameronmanderson@gmail.com>
  * @package Phruts
  */
 interface RequestDispatcherInterface

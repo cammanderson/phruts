@@ -4,9 +4,7 @@ namespace Phruts\Action;
 /**
  * This class is used to store a set of messages associated with a property/key
  * and the position it was initially added to list.
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 class ActionMessageItem
 {
     /**

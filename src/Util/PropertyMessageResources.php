@@ -22,9 +22,7 @@ namespace Phruts\Util;
  *   config + "_" + default locale
  *   config
  * </pre>
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 class PropertyMessageResources extends MessageResources
 {
     /**

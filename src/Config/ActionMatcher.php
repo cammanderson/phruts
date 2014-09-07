@@ -5,7 +5,6 @@ namespace Phruts\Config;
 /**
  * Class used for fallback when an action config is not found. Also provides
  * Wildcard mapping support
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
  */
 class ActionMatcher
 {

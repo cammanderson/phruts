@@ -3,7 +3,6 @@ namespace Phruts;
 
 /**
  * Class PhrutsServiceProvider
- * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @package Phruts
  */
 class PhrutsServiceProvider implements \Silex\ServiceProviderInterface

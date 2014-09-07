@@ -5,10 +5,7 @@ namespace Phruts\Util;
 /**
  * General purpose utility methods related to processing a actionKernel request
  * in the PHruts controller framework.
- *
- * @author Cameron MANDERSON <cameronmanderson@gmail.com> (Phruts Contributor)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ * */
 class RequestUtils
 {
     /**

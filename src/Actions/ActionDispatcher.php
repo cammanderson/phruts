@@ -43,11 +43,6 @@ namespace Phruts\Actions;
  * this action must be shared by the various handlers.  This places some
  * constraints over what types of handlers may reasonably be packaged into
  * the same <code>DispatchAction</code> subclass.</p>
- *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (Phruts Contributor)
- * @author Niall Pemberton <niall.pemberton@btInternet.com>
- * @author Craig R. McClanahan
- * @author Ted Husted
  */
 class ActionDispatcher extends \Phruts\Action
 {

@@ -14,9 +14,7 @@ namespace Phruts\Util;
  * Locale will return null if the <samp>returnNull</samp> property is
  * set to true. Otherwise, a suitable error message will be returned
  * instead.</p>
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 abstract class MessageResources
 {
     /**

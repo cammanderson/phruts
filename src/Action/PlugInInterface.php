@@ -15,9 +15,6 @@ namespace Phruts\Action;
  * providing standard PHPBeans property setter methods, which will all have
  * been called before the <samp>init</samp> method is invoked.</p>
  *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  */
 interface PlugInInterface
 {

@@ -6,10 +6,8 @@ namespace Phruts\Config;
  * <p>A PHPBean representing the configuration information of an
  * <code>&lt;exception&gt;</code> element from a Struts
  * configuration file.</p>
- *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Craig R. McClanahan
- * @since Struts 1.1 */
+ * @since Struts 1.1
+ */
 class ExceptionConfig
 {
     /**

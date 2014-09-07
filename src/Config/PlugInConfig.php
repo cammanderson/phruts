@@ -5,9 +5,7 @@ namespace Phruts\Config;
 /**
  * A PHPBean representing the configuration information of a <plug-in> element
  * in a PHruts configuration file.
- *
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+ */
 class PlugInConfig
 {
     /**
@@ -67,12 +65,12 @@ class PlugInConfig
 	 *
 	 * @param string $name Property name
 	 * @param string $value Property value
-	 * @throws \Phruts\Exception\IllegalState
+	 * @throws \Phruts\Exception\IllegalStateException
 	 */
     public function addProperty($name, $value)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $name = (string) $name;
         $this->properties[$name] = (string) $value;

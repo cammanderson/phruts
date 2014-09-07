@@ -6,9 +6,6 @@ namespace Phruts\Config {
      * The set of Digester rules required to parse a PHruts configuration file
      * (phruts-config.xml).
      *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
      * @TODO: Update the reference to the locale in the Controller config to be str
      */
     class ConfigRuleSet extends \Phigester\RuleSetBase

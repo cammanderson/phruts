@@ -6,9 +6,8 @@ namespace Phruts\Config;
  * A PHPBean representing the configuration information of a <controller>
  * element in a PHruts configuration file.
  *
- * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
+ * // TODO: Add in tmpdir/pagepattern etc
+ *
  */
 class ControllerConfig
 {
@@ -76,7 +75,7 @@ class ControllerConfig
 	 */
     public function setContentType($contentType)
     {
-        if (!$this->configured) {
+        if ($this->configured) {
             throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $this->contentType = (string) $contentType;

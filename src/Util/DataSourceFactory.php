@@ -13,9 +13,6 @@ namespace Phruts\Util;
  * a newly instantiated data source instance.</li>
  * </ul>
  *
- * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  */
 abstract class DataSourceFactory
 {

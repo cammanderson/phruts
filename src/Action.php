@@ -17,9 +17,6 @@ namespace Phruts;
  * can be used to clean up any allocated resources in use by this
  * Action.</p>
  *
- * @author Cameron Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts)
  * @todo Manage setActionKernel() calls with or without null argument.
  */
 class Action

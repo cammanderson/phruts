@@ -24,9 +24,7 @@ namespace Phruts\Action;
  * properties they wish to expose, plus override any of the public or protected
  * methods for which they wish to provide modified functionality.</p>
  *
- * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
- * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
- * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @todo Manage setActionKernel() calls with or without null argument.
+ * @todo Manage setActionKernel() calls with or without null argument.
  */
 abstract class AbstractActionForm
 {
