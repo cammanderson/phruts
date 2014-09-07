@@ -24,6 +24,7 @@ namespace Phruts\Action;
  * properties they wish to expose, plus override any of the public or protected
  * methods for which they wish to provide modified functionality.</p>
  *
+ * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
  * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
  * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) * @todo Manage setActionKernel() calls with or without null argument.
  */
@@ -34,12 +35,12 @@ abstract class AbstractActionForm
 	 *
 	 * @var \Phruts\Action\ActionKernel
 	 */
-    protected $actionKernel = null;
+    protected $actionKernel;
 
     /**
 	 * Return the controller actionKernel instance to which we are attached.
 	 *
-	 * @return ActionKernel
+	 * @return \Phruts\Action\ActionKernel
 	 */
     public function getActionKernel()
     {
@@ -47,13 +48,11 @@ abstract class AbstractActionForm
     }
 
     /**
-	 * Set the controller actionKernel instance to which we are attached (if actionKernel
-	 * is non-null), or release any allocated resources (if actionKernel is null).
+	 * Set the controller actionKernel instance to which we are attached.
 	 *
-	 * @param ActionKernel $actionKernel The new controller actionKernel, if any
-	 * @todo Check if the parameter is a ActionKernel object.
+	 * @param \Phruts\Action\ActionKernel $actionKernel The new controller actionKernel, if any
 	 */
-    public function setActionKernel($actionKernel)
+    public function setActionKernel(\Phruts\Action\ActionKernel $actionKernel)
     {
         $this->actionKernel = $actionKernel;
     }

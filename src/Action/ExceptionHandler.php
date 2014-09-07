@@ -16,9 +16,9 @@ class ExceptionHandler
      * Return the <code>ActionForward</code> instance (if any) returned by
      * the called <code>ExceptionHandler</code>.
      *
-     * @param ex The exception to handle
-     * @param ae The ExceptionConfig corresponding to the exception
-     * @param mapping The ActionMapping we are processing
+     * @param ex \Exception The exception to handle
+     * @param ae \Phruts\Config\ExceptionConfig The ExceptionConfig corresponding to the exception
+     * @param mapping \Phruts\Action\ActionMapping The ActionMapping we are processing
      * @param formInstance The \Phruts\Action\AbstractActionForm we are processing
      * @param request The actionKernel request we are processing
      * @param response The actionKernel response we are creating
@@ -29,7 +29,7 @@ class ExceptionHandler
      */
     public function execute(\Exception $ex,
                                  \Phruts\Config\ExceptionConfig $ae,
-                                 \Phruts\Config\ActionConfig $mapping,
+                                 \Phruts\Action\ActionMapping $mapping,
                                  $formInstance,
                                  \Symfony\Component\HttpFoundation\Request $request,
                                  \Symfony\Component\HttpFoundation\Response $response) {
@@ -48,8 +48,8 @@ class ExceptionHandler
         }
 
         // Figure out the error
-        if ($ex instanceof \Phruts\Config\ModuleException) {
-            $error = $ex->getError();
+        if ($ex instanceof \Phruts\Util\ModuleException) {
+            $error = $ex->getActionMessage();
             $property = $ex->getProperty();
         } else {
             $error = new \Phruts\Action\ActionError($ae->getKey(), $ex->getMessage());
@@ -89,7 +89,9 @@ class ExceptionHandler
         if ($scope == "request") {
             $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
         } else {
-            $request->getSession()->setAttribute(\Phruts\Globals::ERROR_KEY, $errors);
+            $session = $request->getSession();
+            if(!empty($session))
+                $request->getSession()->set(\Phruts\Globals::ERROR_KEY, $errors);
         }
     }
 }

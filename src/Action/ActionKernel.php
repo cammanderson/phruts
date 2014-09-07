@@ -70,6 +70,7 @@ class ActionKernel implements HttpKernelInterface
     {
         // TODO: Handle exception using internal messaging?
         $response = new Response('An error occurred processing this request', 501);
+        return $response;
     }
 
     /**
