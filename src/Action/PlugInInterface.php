@@ -1,5 +1,5 @@
 <?php
-namespace Phruts;
+namespace Phruts\Action;
 
 /**
  * A PlugIn is a configuration wrapper for a module-specific resource or
