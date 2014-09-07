@@ -114,7 +114,7 @@ class Action
     {
         $session = $request->getSession();
         $locale = null;
-        if(!empty($session)) {
+        if (!empty($session)) {
             $locale = $session->get(\Phruts\Globals::LOCALE_KEY);
         }
 
@@ -187,6 +187,7 @@ class Action
         // Remove any error messages attribute if none are required
         if (is_null($errors) || $errors->isEmpty()) {
             $request->attributes->remove(\Phruts\Globals::ERROR_KEY);
+
             return;
         }
 
@@ -212,6 +213,7 @@ class Action
         // Remove the error attribute if none are required
         if (($errors == null) || $errors->isEmpty()) {
             $session->remove(\Phruts\Globals::ERROR_KEY);
+
             return;
         }
 
@@ -342,7 +344,7 @@ class Action
      * of creating a <code>new \Phruts\Action\ActionMessages()<code> at the beginning of an <code>Action<code>
      * This will prevent saveErrors() from wiping out any existing Errors
      *
-     * @return array Errors that already exist in the request, or a new \Phruts\Action\ActionMessages object if empty.
+     * @return array                         Errors that already exist in the request, or a new \Phruts\Action\ActionMessages object if empty.
      * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
      * @return \Phruts\Action\ActionMessages
      * @since Struts 1.2.1
