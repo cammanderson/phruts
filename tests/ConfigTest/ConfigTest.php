@@ -253,11 +253,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testModuleConfig()
     {
         $config = new ModuleConfig('prefix');
+        $this->assertEquals('prefix', $config->getPrefix());
 
-        // TODO: Test exception
-        $config->freeze();
-        $this->setExpectedException('\Phruts\Exception\IllegalStateException');
-        $config->setPrefix('prefix2');
 
         $controllerConfig = new ControllerConfig();
         $controllerConfig->setProcessorClass('\Mock\Proccessor');
@@ -274,15 +271,69 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $actionConfig1 = new ActionConfig();
         $actionConfig1->setPath('action1');
         $actionConfig1->setType('\ForwardConfig');
+        $config->addActionConfig($actionConfig1);
 
         $actionConfig2 = new ActionConfig();
         $actionConfig2->setPath('action2');
         $actionConfig2->setType('\ForwardConfig');
+        $config->addActionConfig($actionConfig2);
 
-        $this->assertNotEmpty($config->findActionConfig('action1'));
-        $this->assertNotEmpty($config->findActionConfig('action2'));
+        $this->assertNotEmpty($config->findActionConfig('/action1'));
+        $this->assertNotEmpty($config->findActionConfig('/action2'));
 
+        $actionClass = '\MyActionConfigClass';
+        $config->setActionClass($actionClass);
+        $this->assertEquals('\MyActionConfigClass', $config->getActionClass());
 
+        $formBeanConfig1 = new FormBeanConfig();
+        $formBeanConfig1->setName('myForm1');
+        $formBeanConfig1->setType('\MyForm1');
+        $formBeanConfig2 = new FormBeanConfig();
+        $formBeanConfig2->setName('myForm2');
+        $formBeanConfig2->setType('\MyForm2');
+
+        $config->addFormBeanConfig($formBeanConfig1);
+        $config->addFormBeanConfig($formBeanConfig2);
+
+        $this->assertEquals(2, count($config->findFormBeanConfigs()));
+        $this->assertEquals($formBeanConfig1, $config->findFormBeanConfig('myForm1'));
+        $this->assertEquals($formBeanConfig2, $config->findFormBeanConfig('myForm2'));
+
+        $forwardConfig1 = new ForwardConfig();
+        $forwardConfig1->setName('welcome');
+        $forwardConfig1->setPath('welcome.html.twig');
+        $forwardConfig2 = new ForwardConfig();
+        $forwardConfig2->setName('login');
+        $forwardConfig1->setPath('login.html.twig');
+        $config->addForwardConfig($forwardConfig1);
+        $config->addForwardConfig($forwardConfig2);
+        $this->assertEquals($forwardConfig1, $config->findForwardConfig('welcome'));
+        $this->assertEquals($forwardConfig2, $config->findForwardConfig('login'));
+        $config->removeForwardConfig($forwardConfig1);
+        $this->assertEmpty($config->findForwardConfig('welcome'));
+
+        $dataSourceConfig = new DataSourceConfig();
+        $dataSourceConfig->setKey('key1');
+        $config->addDataSourceConfig($dataSourceConfig);
+        $dataSourceConfig2 = new DataSourceConfig();
+        $dataSourceConfig2->setKey('key2');
+        $config->addDataSourceConfig($dataSourceConfig2);
+        $this->assertEquals(2, count($config->findDataSourceConfigs()));
+        $this->assertEquals($dataSourceConfig, $config->findDataSourceConfig('key1'));
+        $this->assertEquals($dataSourceConfig2, $config->findDataSourceConfig('key2'));
+        $config->removeDataSourceConfig($dataSourceConfig);
+        $this->assertEmpty($config->findDataSourceConfig('key1'));
+
+        $messageConfig = new MessageResourcesConfig();
+        $messageConfig->setKey('key1');
+        $config->addMessageResourcesConfig($messageConfig);
+        $this->assertEquals($messageConfig, $config->findMessageResourcesConfig('key1'));
+        $this->assertEquals(1, count($config->findMessageResourcesConfigs()));
+
+        // Test exception
+        $config->freeze();
+        $this->setExpectedException('\Phruts\Exception\IllegalStateException');
+        $config->setPrefix('prefix2');
 
     }
 }
