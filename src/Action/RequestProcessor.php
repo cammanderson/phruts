@@ -1,5 +1,5 @@
 <?php
-namespace Phruts;
+namespace Phruts\Action;
 
 /**
  * RequestProcessor contains the processing logic that the PHruts
@@ -28,7 +28,7 @@ class RequestProcessor
 	 *
 	 * @var array
 	 */
-    protected static $actions = array ();
+    protected $actions = array ();
 
     /**
 	 * The ModuleConfiguration we are associated with.
@@ -223,7 +223,7 @@ class RequestProcessor
 
         // Has a Locale already been selected?
         $session = $request->getSession();
-        if (empty($session) || !is_null($session->getLocale())) {
+        if (empty($session) || !is_null($session->get(\Phruts\Globals::LOCALE_KEY))) {
             return;
         }
 
@@ -233,7 +233,7 @@ class RequestProcessor
             if (!empty($this->log)) {
                 $this->log->debug('  Setting user locale "' . (string) $locale . '"');
             }
-            $session->setLocale($locale);
+            $session->set(\Phruts\Globals::LOCALE_KEY, $locale);
         }
     }
 
