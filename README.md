@@ -4,7 +4,7 @@ Modern implementation of Struts in PHP/Silex.
 
 ![Travis build status master]
 (https://travis-ci.org/cammanderson/phruts.svg?branch=master)
-(Low code coverages < 20%)
+(Low code coverages < 25%)
 
 This project is to hopefully assist users with some love/legacy of Struts/Phruts/PHPMVC get on more modern PHP with
 composer, PSR's, Symfony HTTPFoundation/HTTPKernel and Silex.
