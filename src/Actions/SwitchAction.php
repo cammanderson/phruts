@@ -31,7 +31,7 @@ class SwitchAction extends \Phruts\Action
         $page = $request->get("page");
         $prefix = $request->get("prefix");
         if (($page == null) || ($prefix == null)) {
-            $message = $this->getActionKernel()->getInternal()->getMessage("switch.required");
+            $message = $this->getActionKernel()->getInternal()->getMessage("switch.required", $mapping->getPath());
             //$log->error($message);
             throw new \Phruts\Exception($message);
         }

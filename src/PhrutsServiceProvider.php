@@ -19,7 +19,7 @@ class PhrutsServiceProvider implements \Silex\ServiceProviderInterface
     {
         // Register our action server
         $app[\Phruts\Globals::ACTION_KERNEL] = $app->share(function() use ($app) {
-            return new ActionKernel($app);
+            return new \Phruts\Action\ActionKernel($app);
         });
     }
 

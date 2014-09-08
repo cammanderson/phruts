@@ -197,6 +197,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $expected = "\Phruts\Config\ActionConfig[path='/mypath',type='\\\\MyAction',name='myForm',scope='request',attribute='attribute',prefix='prefix',validate=true,input='form.php',roles='role1,role2,role3',unknown=false]";
         $this->assertEquals($expected, (string)$config);
 
+        $config->setParameter('abc');
+        $this->assertEquals('abc', $config->getParameter());
+
         // Test we can find the forward config
         $forwardConfig1 = new ForwardConfig();
         $forwardConfig1->setName('success');

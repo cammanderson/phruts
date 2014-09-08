@@ -130,4 +130,9 @@ class Globals
 	 * A generic attribute key for referencing form beans
 	 */
     const FORM_BEAN = '\Phruts\Action\AbstractActionForm_BEAN';
+
+    /**
+     * Action Kernel
+     */
+    const ACTION_KERNEL = 'phruts.action_kernel';
 }
