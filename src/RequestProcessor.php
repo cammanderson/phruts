@@ -223,7 +223,7 @@ class RequestProcessor
 
         // Has a Locale already been selected?
         $session = $request->getSession();
-        if (!is_null($session->getLocale())) {
+        if (empty($session) || !is_null($session->getLocale())) {
             return;
         }
 
