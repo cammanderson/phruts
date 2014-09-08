@@ -1,6 +1,8 @@
 <?php
 namespace ConfigTest;
 
+use Phruts\Action;
+use Phruts\Config\ActionConfig;
 use Phruts\Config\ControllerConfig;
 use Phruts\Config\DataSourceConfig;
 use Phruts\Config\ExceptionConfig;
@@ -146,11 +148,106 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testExceptionConfig()
     {
         $config = new ExceptionConfig();
+        $config->setType('\Exception');
+        $config->setKey('key1');
+        $config->setPath('exception');
+        $config->setScope('session');
+        $config->setBundle('mybundle');
+        $config->setHandler('\Phruts\Action\ExceptionHandler');
+        $expected = "\Phruts\Config\ExceptionConfig[type=\\Exception,bundle=mybundle,key=key1,path=exception,scope=session]";
+        $this->assertEquals($expected, (string)$config);
 
         // TODO: Test exception
         $config->freeze();
         $this->setExpectedException('\Phruts\Exception\IllegalStateException');
         $config->setHandler('\Handler');
+    }
+
+    public function testActionConfig()
+    {
+
+        $moduleConfig = new ModuleConfig('prefix');
+
+        $globalForward = new ForwardConfig();
+        $globalForward->setPath("login.html.twig");
+        $globalForward->setName('login');
+        $moduleConfig->addForwardConfig($globalForward);
+
+        $config = new ActionConfig();
+        $config->setType('\MyAction');
+        $this->assertEquals('\MyAction', $config->getType());
+        $config->setScope('session');
+        $this->assertEquals('session', $config->getScope());
+        $config->setScope('request');
+        $config->setName('myForm');
+        $this->assertEquals('myForm', $config->getName());
+        $config->setPath('mypath');
+        $this->assertEquals('/mypath', $config->getPath());
+        $config->setInput('form.php');
+        $this->assertEquals('form.php', $config->getInput());
+        $config->setPrefix('prefix');
+        $this->assertEquals('prefix', $config->getPrefix());
+        $config->setRoles("role1,role2,role3");
+        $this->assertEquals('role1,role2,role3', $config->getRoles());
+        $this->assertEquals(array('role1', 'role2', 'role3'), $config->getRoleNames());
+        $config->setAttribute('attribute');
+        $config->setModuleConfig($moduleConfig);
+
+        // Test our sets
+        $expected = "\Phruts\Config\ActionConfig[path='/mypath',type='\\\\MyAction',name='myForm',scope='request',attribute='attribute',prefix='prefix',validate=true,input='form.php',roles='role1,role2,role3',unknown=false]";
+        $this->assertEquals($expected, (string)$config);
+
+        // Test we can find the forward config
+        $forwardConfig1 = new ForwardConfig();
+        $forwardConfig1->setName('success');
+        $forwardConfig1->setPath('mypath.html.twig');
+        $config->addForwardConfig($forwardConfig1);
+        $this->assertNotEmpty($config->findForwardConfig('success'));
+
+        $config->removeForwardConfig($forwardConfig1);
+        $this->assertEmpty($config->findForwardConfig('success'));
+        $this->assertNotEmpty($config->findForwardConfigs());
+        $this->assertNotEmpty($config->findForwardConfig('login'));
+
+        $config->setParameter('myparam');
+        $this->assertEquals('myparam', $config->getParameter());
+
+        $exceptionConfig = new ExceptionConfig();
+        $exceptionConfig->setType('\Exception');
+        $exceptionConfig->setPath('exception.html.twig');
+        $config->addExceptionConfig($exceptionConfig);
+        $this->assertNotEmpty($config->findExceptionConfig('\Exception'));
+        $this->assertEmpty($config->findExceptionConfig('\MyOtherException'));
+        $config->removeExceptionConfig($exceptionConfig);
+        $this->assertEmpty($config->findExceptionConfig('\Exception'));
+
+        $this->assertTrue($config->getValidate());
+        $config->setValidate('no');
+        $this->assertNotTrue($config->getValidate());
+        $config->setValidate('yes');
+        $this->assertTrue($config->getValidate());
+        $config->setValidate('false');
+        $this->assertNotTrue($config->getValidate());
+        $config->setValidate('true');
+        $this->assertTrue($config->getValidate());
+
+        $this->assertNotTrue($config->getUnknown());
+        $config->setUnknown('yes');
+        $this->assertTrue($config->getUnknown());
+        $config->setUnknown('false');
+        $this->assertNotTrue($config->getUnknown());
+        $config->setUnknown('true');
+        $this->assertTrue($config->getUnknown());
+        $config->setUnknown('no');
+        $this->assertNotTrue($config->getUnknown());
+
+        $config->setPath('path');
+        $this->assertEquals('/path', $config->getPath());
+
+        // TODO: Test exception
+        $config->freeze();
+        $this->setExpectedException('\Phruts\Exception\IllegalStateException');
+        $config->setType('\MyOtherActionActually');
     }
 
     public function testModuleConfig()
@@ -161,8 +258,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $config->freeze();
         $this->setExpectedException('\Phruts\Exception\IllegalStateException');
         $config->setPrefix('prefix2');
-
-
 
         $controllerConfig = new ControllerConfig();
         $controllerConfig->setProcessorClass('\Mock\Proccessor');
@@ -175,6 +270,19 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $config->setControllerConfig($controllerConfig);
         $this->assertNotEmpty($config->getControllerConfig());
+
+        $actionConfig1 = new ActionConfig();
+        $actionConfig1->setPath('action1');
+        $actionConfig1->setType('\ForwardConfig');
+
+        $actionConfig2 = new ActionConfig();
+        $actionConfig2->setPath('action2');
+        $actionConfig2->setType('\ForwardConfig');
+
+        $this->assertNotEmpty($config->findActionConfig('action1'));
+        $this->assertNotEmpty($config->findActionConfig('action2'));
+
+
 
     }
 }
