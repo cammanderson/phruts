@@ -13,7 +13,10 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class RequestDispatcher implements RequestDispatcherInterface
 {
 
-    protected $app;
+    /**
+     * @var \Silex\Application
+     */
+    protected $application;
 
     public function doForward(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
@@ -24,9 +27,9 @@ class RequestDispatcher implements RequestDispatcherInterface
         if ($forwardConfig->getRedirect() == false) {
             $subRequest = \Symfony\Component\HttpFoundation\Request::create($forwardConfig->getPath(), 'GET');
 
-            return $this->app->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+            return $this->application->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         } else {
-            $this->app->redirect($forwardConfig->getPath());
+            $this->application->redirect($forwardConfig->getPath());
         }
     }
 

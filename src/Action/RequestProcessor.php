@@ -279,7 +279,7 @@ class RequestProcessor
         $config = $mapping->findExceptionConfig(get_class($exception)); // ExceptionConfig
         if ($config == null) {
             // Check the module config for a global exception
-            if (!emptu($this->log)) {
+            if (!empty($this->log)) {
                 $this->log->debug($this->getInternal()->getMessage(null, 'nonactionException', get_class($exception)));
             }
             $config = $mapping->getModuleConfig()->findExceptionConfig(get_class($exception));
@@ -377,7 +377,13 @@ class RequestProcessor
         }
 
         // No mapping can be found to process this request
-        $msg = $this->getInternal()->getMessage(null, 'processInvalid', $path);
+        $internal = $this->getInternal();
+        if(!empty($internal)) {
+            $msg = $this->getInternal()->getMessage(null, 'processInvalid', $path);
+        } else {
+            $msg = 'processInvalid';
+        }
+
         //$this->log->error($msg);
         $response->setStatusCode(400);
         $response->setContent($msg);

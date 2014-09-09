@@ -18,7 +18,7 @@ class ActionKernel implements HttpKernelInterface
     protected $application;
 
     /**
-     * @var \Phruts\RequestProcessor
+     * @var \Phruts\Action\RequestProcessor
      */
     protected $processor;
 
