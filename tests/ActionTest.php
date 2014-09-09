@@ -43,7 +43,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     {
         $getDataSource = self::getMethod('getDataSource');
 
-        $this->actionKernel->method('getDataSource')->willReturn(new PDO('sqlite:memory:'));
+        $this->actionKernel->method('getDataSource')->willReturn(new PDO('sqlite::memory:'));
 
 //        getDataSource($this->request, $key);
 

@@ -103,7 +103,7 @@ class ClassLoader
         }
 
         // Get reflection information of the class
-        $class = new \ReflectionClass($className);
+        $class = new \ReflectionClass($name);
         if ($class->isAbstract()) {
             throw new \Phruts\Exception\InstantiationException('Cannot instantiate abstract class.');
         }
@@ -125,7 +125,7 @@ class ClassLoader
         }
 
         // Create the new instance of the class
-        $instance = new $className();
+        $instance = new $name();
 
         return $instance;
     }
