@@ -11,7 +11,7 @@ class RequestUtils
     /**
 	 * Commons Logging instance.
 	 *
-	 * @var Logger
+	 * @var \Psr\Log\Logger
 	 */
     //$log = null;
 
@@ -53,6 +53,7 @@ class RequestUtils
 	 */
     public static function getModuleName(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application)
     {
+
         $path = $request->getPathInfo();
 //        if (self::$log->isDebugEnabled()) {
 //            self::$log->debug('Get module name for path "' . $path . '"');
@@ -85,13 +86,13 @@ class RequestUtils
 	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param \Silex\Application $application The application
-	 * @return ModuleConfig The ModuleConfig object
+	 * @return \Phruts\Config\ModuleConfig The ModuleConfig object
 	 */
     public static function getModuleConfig(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application)
     {
         $moduleConfig = $request->attributes->get(\Phruts\Globals::MODULE_KEY);
         if (is_null($moduleConfig)) {
-            $moduleConfig = $application->getAttribute(\Phruts\Globals::MODULE_KEY);
+            $moduleConfig = $application[\Phruts\Globals::MODULE_KEY];
         }
 
         return $moduleConfig;
@@ -106,9 +107,9 @@ class RequestUtils
 	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param \Phruts\Config\ActionConfig $mapping The action mapping for this request
-	 * @param ModuleConfig $moduleConfig The configuration for this
+	 * @param \Phruts\Config\ModuleConfig $moduleConfig The configuration for this
 	 * module
-	 * @param ActionKernel $actionKernel The action actionKernel
+	 * @param \Phruts\Action\ActionKernel $actionKernel The action actionKernel
 	 * @return \Phruts\Action\AbstractActionForm Form instance associated with this
 	 * request
 	 * @todo Manage exception for ClassLoader::loadClass.

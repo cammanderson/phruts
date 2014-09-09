@@ -8,21 +8,6 @@ namespace Phruts;
  */
 class ClassLoader
 {
-    /**
-	 * The PHP extension file used to store PHP class.
-	 *
-	 * @var string
-	 */
-    protected static $phpExtensionFile = '.php';
-
-    /**
-	 * @param string $phpExtensionFile The PHP extension file used to store PHP
-	 * class
-	 */
-    public static function setPhpExtensionFile($phpExtensionFile)
-    {
-        self::$phpExtensionFile = (string) $phpExtensionFile;
-    }
 
     /**
 	 * Check if a fully qualified class name is valid.
@@ -32,9 +17,9 @@ class ClassLoader
 	 */
     public static function isValidClassName($name)
     {
-        // TODO: Update to match the naming conventions of PSR/Namespace/PHP53
-        $classPattern = '`^((([A-Z]|[a-z]|[0-9]|\_|\-)+\:{2})*)';
-        $classPattern .= '(([A-Z]|[a-z]){1}([A-Z]|[a-z]|[0-9]|\_)*)$`';
+        // Match the naming of PSR/Namespace/PHP53
+        $classPattern = '#^\\\\((([a-z\x7f-\xff][a-z0-9_\x7f-\xff]*)\\\\)*)';
+        $classPattern .= '([a-z_\x7f-\xff][a-z0-9_\x7f-\xff]*)$#iU';
 
         return (boolean) preg_match($classPattern, $name);
     }
@@ -47,16 +32,12 @@ class ClassLoader
 	 */
     public static function getClassName($name)
     {
-        // TODO: Update to match the naming conventions of PSR/Namespace/PHP53
-        $name = str_replace('::', '_', $name);
-        $lastDot = strrpos($name, '::');
-        if ($lastDot === false) {
-            $className = $name;
-        } else {
-            $className = substr($name, - (strlen($name) - $lastDot -2));
+        try {
+            $class = new \ReflectionClass($name);
+            return $class->getShortName();
+        } catch(\Exception $e) {
+            throw new \Phruts\Exception\ClassNotFoundException($e->getMessage());
         }
-
-        return $className;
     }
 
     /**
@@ -70,19 +51,7 @@ class ClassLoader
 	 */
     public static function classIsAssignableFrom($class, $classFrom)
     {
-        $className = self::getClassName($class);
-        $classFromName = self::getClassName($class);
-        if ($className == $classFromName) {
-            return true;
-        } else {
-            // Get reflection information of the class from
-            $reflectionClass = new \ReflectionClass($classFromName);
-            if ($reflectionClass->isSubclassOf($className)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        return $class == $classFrom || is_subclass_of($class, $classFrom);
     }
 
     /**
@@ -100,27 +69,14 @@ class ClassLoader
             throw new \Phruts\Exception\IllegalArgumentException('Illegal class name ' . $name . '.');
         }
 
-        // Get only the class name
-        $className = self::getClassName($name);
-
         // Have we already loaded this class?
-        if (class_exists($className, true)) {
+        if (class_exists($name, true)) {
+            // Get only the class name
+            $className = self::getClassName($name);
             return $className;
         } else {
-            // TODO: Remove the loading of the class, this is to be done via autoloader
-            // Try to load the class
-            $pathClassFile = str_replace(array('::', '_'), '/', $name) . self::$phpExtensionFile;
-            $fileExists = @fopen($pathClassFile, 'r', true);
-            if ($fileExists && fclose($fileExists) && require_once $pathClassFile) { // Removed the '@include_once' as we want to see the FATAL
- if (class_exists($className, false)) { return $className;
-                } else {
-                    $msg = '"' . $name . '" class does not exist.';
-                    throw new \Phruts\Exception\ClassNotFoundException($msg);
-                }
-            } else {
-                $msg = 'PHP class file "' . $pathClassFile . '" does not exist.';
-                throw new \Phruts\Exception\ClassNotFoundException($msg);
-            }
+            $msg = 'PHP class "' . $name . '" does not exist.';
+            throw new \Phruts\Exception\ClassNotFoundException($msg);
         }
     }
 
