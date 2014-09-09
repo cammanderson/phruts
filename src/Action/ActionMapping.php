@@ -41,7 +41,7 @@ class ActionMapping extends \Phruts\Config\ActionConfig
         $config = $this->findForwardConfig($forwardName);
 
         if (empty($config)) {
-        $config = $this->getModuleConfig()->findForwardConfig($forwardName);
+            $config = $this->getModuleConfig()->findForwardConfig($forwardName);
         }
 
         if (empty($config)) {
@@ -81,11 +81,18 @@ class ActionMapping extends \Phruts\Config\ActionConfig
      */
     public function getInputForward()
     {
-        $controllerInputForward = $this->getModuleConfig()->getControllerConfig()->getInputForward();
-        if (empty($controllerInputForward)) {
+        $controllerInputForward = null;
+        $controllerConfig = $this->getModuleConfig()->getControllerConfig();
+        if(!empty($controllerConfig)) {
+            $controllerInputForward = $controllerConfig->getInputForward();
+        }
+
+        if ($controllerInputForward == true) {
             return ($this->findForward($this->getInput()));
         } else {
-            return (new ForwardConfig($this->getInput()));
+            $forward = new \Phruts\Config\ForwardConfig();
+            $forward->setPath($this->getInput());
+            return $forward;
         }
     }
 }
