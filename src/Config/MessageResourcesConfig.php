@@ -85,7 +85,7 @@ class MessageResourcesConfig
 	 *
 	 * @var string
 	 */
-    protected $key = \Phruts\Globals::MESSAGES_KEY;
+    protected $key = \Phruts\Util\Globals::MESSAGES_KEY;
 
     /**
 	 * @return string

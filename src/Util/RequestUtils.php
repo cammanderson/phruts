@@ -29,17 +29,17 @@ class RequestUtils
         $prefix = self::getModuleName($request, $application);
 
         // Expose the resources for this module
-        $config = $application[\Phruts\Globals::MODULE_KEY . $prefix];
+        $config = $application[\Phruts\Util\Globals::MODULE_KEY . $prefix];
         if (is_null($config)) {
-            $request->attributes->remove(\Phruts\Globals::MODULE_KEY);
+            $request->attributes->remove(\Phruts\Util\Globals::MODULE_KEY);
         } else {
-            $request->attributes->set(\Phruts\Globals::MODULE_KEY, $config);
+            $request->attributes->set(\Phruts\Util\Globals::MODULE_KEY, $config);
         }
-        $resources = $application[\Phruts\Globals::MESSAGES_KEY . $prefix];
+        $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
         if (is_null($resources)) {
-            $request->attributes->remove(\Phruts\Globals::MESSAGES_KEY);
+            $request->attributes->remove(\Phruts\Util\Globals::MESSAGES_KEY);
         } else {
-            $request->attributes->set(\Phruts\Globals::MESSAGES_KEY, $resources);
+            $request->attributes->set(\Phruts\Util\Globals::MESSAGES_KEY, $resources);
         }
     }
 
@@ -59,7 +59,7 @@ class RequestUtils
 //            self::$log->debug('Get module name for path "' . $path . '"');
 //        }
 
-        $prefixes = $application[\Phruts\Globals::PREFIXES_KEY];
+        $prefixes = $application[\Phruts\Util\Globals::PREFIXES_KEY];
         if (is_null($prefixes)) {
             $prefix = '';
         } else {
@@ -90,9 +90,9 @@ class RequestUtils
 	 */
     public static function getModuleConfig(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application)
     {
-        $moduleConfig = $request->attributes->get(\Phruts\Globals::MODULE_KEY);
+        $moduleConfig = $request->attributes->get(\Phruts\Util\Globals::MODULE_KEY);
         if (is_null($moduleConfig)) {
-            $moduleConfig = $application[\Phruts\Globals::MODULE_KEY];
+            $moduleConfig = $application[\Phruts\Util\Globals::MODULE_KEY];
         }
 
         return $moduleConfig;
@@ -244,20 +244,20 @@ class RequestUtils
     public static function retrieveMessageResources(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application, $bundle)
     {
         if (is_null($bundle)) {
-            $bundle = \Phruts\Globals::MESSAGES_KEY;
+            $bundle = \Phruts\Util\Globals::MESSAGES_KEY;
         } else {
             $bundle = (string) $bundle;
         }
         $resources = $request->attributes->get($bundle);
 
         if (is_null($resources)) {
-            $config = $request->attributes->get(\Phruts\Globals::MODULE_KEY);
+            $config = $request->attributes->get(\Phruts\Util\Globals::MODULE_KEY);
             if (is_null($config)) {
                 $prefix = '';
             } else {
                 $prefix = $config->getPrefix();
             }
-            $resources = $application[\Phruts\Globals::MESSAGES_KEY . $prefix];
+            $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
         }
 
         return $resources;

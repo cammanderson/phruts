@@ -56,7 +56,7 @@ class ExceptionHandler
         }
 
         // Store the exception
-        $request->attributes->set(\Phruts\Globals::EXCEPTION_KEY, $ex);
+        $request->attributes->set(\Phruts\Util\Globals::EXCEPTION_KEY, $ex);
         $this->storeException($request, $property, $error, $forward, $ae->getScope());
 
         return $forward;
@@ -68,7 +68,7 @@ class ExceptionHandler
      * implementation is to set an attribute of the request or session, as
      * defined by the scope provided (the scope from the exception mapping).  An
      * <b>\Phruts\Action\ActionErrors</b> instance is created, the error is added to the collection
-     * and the collection is set under the \Phruts\Globals.ERROR_KEY.
+     * and the collection is set under the \Phruts\Util\Globals.ERROR_KEY.
      *
      * @param request - The request we are handling
      * @param property  - The property name to use for this error
@@ -86,11 +86,11 @@ class ExceptionHandler
         $errors->add($property, $error);
 
         if ($scope == "request") {
-            $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
+            $request->attributes->set(\Phruts\Util\Globals::ERROR_KEY, $errors);
         } else {
             $session = $request->getSession();
             if(!empty($session))
-                $request->getSession()->set(\Phruts\Globals::ERROR_KEY, $errors);
+                $request->getSession()->set(\Phruts\Util\Globals::ERROR_KEY, $errors);
         }
     }
 }

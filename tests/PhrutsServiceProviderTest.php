@@ -12,7 +12,7 @@ class PhrutsServiceProviderTest extends \PHPUnit_Framework_TestCase
         $service = new \Phruts\PhrutsServiceProvider();
         $service->register($application);
         $service->boot($application);
-        $this->assertNotEmpty($application[\Phruts\Globals::ACTION_KERNEL]);
+        $this->assertNotEmpty($application[\Phruts\Util\Globals::ACTION_KERNEL]);
     }
 }
  

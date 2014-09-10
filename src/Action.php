@@ -115,7 +115,7 @@ class Action
         $session = $request->getSession();
         $locale = null;
         if (!empty($session)) {
-            $locale = $session->get(\Phruts\Globals::LOCALE_KEY);
+            $locale = $session->get(\Phruts\Util\Globals::LOCALE_KEY);
         }
 
         if (is_null($locale)) {
@@ -142,7 +142,7 @@ class Action
     protected function getResources(\Symfony\Component\HttpFoundation\Request $request, $key = '')
     {
         if ($key == '') {
-            return $request->attributes->get(\Phruts\Globals::MESSAGES_KEY);
+            return $request->attributes->get(\Phruts\Util\Globals::MESSAGES_KEY);
         } else {
             // Identify the current module
             $app = $this->actionKernel->getApplication();
@@ -156,7 +156,7 @@ class Action
     /**
 	 * Returns true if the current form's cancel button was pressed.
 	 *
-	 * This method will check if the <samp>\Phruts\Globals::CANCEL_KEY</samp>
+	 * This method will check if the <samp>\Phruts\Util\Globals::CANCEL_KEY</samp>
 	 * request attribute has been set, which normally occurs if the cancel button
 	 * was pressed by the user in the current request. If true, validation
 	 * performed by a \Phruts\Action\AbstractActionForm <samp>validate</samp> method will have
@@ -168,7 +168,7 @@ class Action
 	 */
     protected function isCancelled(\Symfony\Component\HttpFoundation\Request $request)
     {
-        return (!is_null($request->attributes->get(\Phruts\Globals::CANCEL_KEY)));
+        return (!is_null($request->attributes->get(\Phruts\Util\Globals::CANCEL_KEY)));
     }
 
     /**
@@ -186,13 +186,13 @@ class Action
     {
         // Remove any error messages attribute if none are required
         if (is_null($errors) || $errors->isEmpty()) {
-            $request->attributes->remove(\Phruts\Globals::ERROR_KEY);
+            $request->attributes->remove(\Phruts\Util\Globals::ERROR_KEY);
 
             return;
         }
 
         // Save the error messages we need
-        $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
+        $request->attributes->set(\Phruts\Util\Globals::ERROR_KEY, $errors);
     }
 
     /**
@@ -212,13 +212,13 @@ class Action
     {
         // Remove the error attribute if none are required
         if (($errors == null) || $errors->isEmpty()) {
-            $session->remove(\Phruts\Globals::ERROR_KEY);
+            $session->remove(\Phruts\Util\Globals::ERROR_KEY);
 
             return;
         }
 
         // Save the errors we need
-        $session->set(\Phruts\Globals::ERROR_KEY, $errors);
+        $session->set(\Phruts\Util\Globals::ERROR_KEY, $errors);
     }
 
     /**
@@ -239,7 +239,7 @@ class Action
         }
 
         // get any existing errors from the request, or make a new one
-        $requestErrors = $request->attributes->get(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
+        $requestErrors = $request->attributes->get(\Phruts\Util\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
         if ($requestErrors == null) {
             $requestErrors = new \Phruts\Action\ActionMessages();
         }
@@ -248,13 +248,13 @@ class Action
 
         // if still empty, just wipe it out from the request
         if ($requestErrors->isEmpty()) {
-            $request->attributes->remove(\Phruts\Globals::ERROR_KEY);
+            $request->attributes->remove(\Phruts\Util\Globals::ERROR_KEY);
 
             return;
         }
 
         // Save the errors
-        $request->attributes->set(\Phruts\Globals::ERROR_KEY, $requestErrors);
+        $request->attributes->set(\Phruts\Util\Globals::ERROR_KEY, $requestErrors);
     }
 
     /**
@@ -273,13 +273,13 @@ class Action
     {
         // Remove any messages attribute if none are required
         if (($messages == null) || $messages->isEmpty()) {
-            $request->attributes->remove(\Phruts\Globals::MESSAGE_KEY);
+            $request->attributes->remove(\Phruts\Util\Globals::MESSAGE_KEY);
 
             return;
         }
 
         // Save the messages we need
-        $request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $messages);
+        $request->attributes->set(\Phruts\Util\Globals::MESSAGE_KEY, $messages);
     }
 
     /**
@@ -298,13 +298,13 @@ class Action
     {
         // Remove any messages attribute if none are required
         if (($messages == null) || $messages->isEmpty()) {
-            $session->remove(\Phruts\Globals::MESSAGE_KEY);
+            $session->remove(\Phruts\Util\Globals::MESSAGE_KEY);
 
             return;
         }
 
         // Save the messages we need
-        $session->set(\Phruts\Globals::MESSAGE_KEY, $messages);
+        $session->set(\Phruts\Util\Globals::MESSAGE_KEY, $messages);
     }
 
     /**
@@ -321,7 +321,7 @@ class Action
     protected function addMessages(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Action\ActionMessages $messages)
     {
         // get any existing errors from the request, or make a new one
-        $requestMessages = $request->attributes->get(\Phruts\Globals::MESSAGE_KEY); //\Phruts\Action\ActionMessages
+        $requestMessages = $request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY); //\Phruts\Action\ActionMessages
         if ($requestMessages == null) {
             $requestMessages = new \Phruts\Action\ActionMessages();
         }
@@ -330,13 +330,13 @@ class Action
 
         // if still empty, just wipe it out from the request
         if ($requestMessages->isEmpty()) {
-            $request->attributes->remove(\Phruts\Globals::MESSAGE_KEY);
+            $request->attributes->remove(\Phruts\Util\Globals::MESSAGE_KEY);
 
             return;
         }
 
         // Save the errors
-        $request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $requestMessages);
+        $request->attributes->set(\Phruts\Util\Globals::MESSAGE_KEY, $requestMessages);
     }
 
     /**
@@ -351,7 +351,7 @@ class Action
      */
     protected function getErrors(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $errors = $request->attributes->get(\Phruts\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
+        $errors = $request->attributes->get(\Phruts\Util\Globals::ERROR_KEY); //\Phruts\Action\ActionMessages
         if (empty($errors)) {
             $errors = new \Phruts\Action\ActionErrors();
         }
@@ -371,7 +371,7 @@ class Action
 	 */
     protected function getMessages(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $messages = $request->attributes->get(\Phruts\Globals::MESSAGE_KEY); // \Phruts\Action\ActionMessages
+        $messages = $request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY); // \Phruts\Action\ActionMessages
         if ($messages == null) {
             $messages = new \Phruts\Action\ActionMessages();
         }
@@ -395,7 +395,7 @@ class Action
             $app = $this->actionKernel->getApplication();
             $locale = $app['locale'];
         }
-        $session->set(\Phruts\Globals::LOCALE_KEY, $locale);
+        $session->set(\Phruts\Util\Globals::LOCALE_KEY, $locale);
     }
 
     /**

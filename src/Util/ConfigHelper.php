@@ -141,7 +141,7 @@ class ConfigHelper
     {
         if ($this->actionKernel == null)
             return null;
-        return $this->actionKernel->getAttribute(\Phruts\Globals::DATA_SOURCE_KEY);
+        return $this->actionKernel->getAttribute(\Phruts\Util\Globals::DATA_SOURCE_KEY);
 
     }
 
@@ -152,7 +152,7 @@ class ConfigHelper
     {
         if ($this->actionKernel == null)
             return null;
-        return $this->actionKernel->getAttribute(\Phruts\Globals::MESSAGE_KEY);
+        return $this->actionKernel->getAttribute(\Phruts\Util\Globals::MESSAGE_KEY);
 
     }
 
@@ -166,7 +166,7 @@ class ConfigHelper
             return null;
         }
 
-        return $this->actionKernel->getAttribute(\Phruts\Globals::MESSAGES_KEY);
+        return $this->actionKernel->getAttribute(\Phruts\Util\Globals::MESSAGES_KEY);
     }
 
     /**
@@ -179,7 +179,7 @@ class ConfigHelper
         if ($this->actionKernel == null) {
             return null;
         }
-        //return $this->actionKernel->getAttribute(\Phruts\Globals::SERVLET_KEY);
+        //return $this->actionKernel->getAttribute(\Phruts\Util\Globals::SERVLET_KEY);
         return $this->actionKernel->getActionKernelConfig()->getActionKernelMapping();
     }
 
@@ -195,7 +195,7 @@ class ConfigHelper
             return null;
         }
 
-        return $this->session->getAttribute(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
+        return $this->session->getAttribute(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY);
 
     }
 
@@ -213,7 +213,7 @@ class ConfigHelper
             return null;
         }
 
-        return $this->request->getAttribute(\Phruts\Globals::EXCEPTION_KEY);
+        return $this->request->getAttribute(\Phruts\Util\Globals::EXCEPTION_KEY);
 
     }
 
@@ -225,7 +225,7 @@ class ConfigHelper
 //        if ($this->request == null) {
 //            return null;
 //        }
-//        return (MultipartRequestWrapper) $this->request->getAttribute(\Phruts\Globals::MULTIPART_KEY);
+//        return (MultipartRequestWrapper) $this->request->getAttribute(\Phruts\Util\Globals::MULTIPART_KEY);
 //    }
 
     /**
@@ -239,7 +239,7 @@ class ConfigHelper
             return null;
         }
 
-        return $this->request->getAttribute(\Phruts\Globals::MAPPING_KEY);
+        return $this->request->getAttribute(\Phruts\Util\Globals::MAPPING_KEY);
     }
 
     // ---------------------------------------------------- Utility Methods

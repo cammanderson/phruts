@@ -81,7 +81,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $isCancelled = self::getMethod('isCancelled');
         $this->assertEquals(false, $isCancelled->invokeArgs($this->action, array($this->request)));
 
-        $this->request->attributes->set(\Phruts\Globals::CANCEL_KEY, true);
+        $this->request->attributes->set(\Phruts\Util\Globals::CANCEL_KEY, true);
         $this->assertEquals(true, $isCancelled->invokeArgs($this->action, array($this->request)));
     }
 
@@ -90,19 +90,19 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $saveErrors = self::getMethod('saveErrors');
 
         $saveErrors->invokeArgs($this->action, array($this->request, null));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
 
         $errors = new \Phruts\Action\ActionErrors();
 
         $saveErrors->invokeArgs($this->action, array($this->request, $errors));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
 
         $errors->add('1', new \Phruts\Action\ActionMessage('abc'));
         $saveErrors->invokeArgs($this->action, array($this->request, $errors));
-        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
 
         $saveErrors->invokeArgs($this->action, array($this->request, null));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
     }
 
     public function testSaveErrorsSessions()
@@ -111,19 +111,19 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $session = $this->request->getSession();
 
         $saveErrors->invokeArgs($this->action, array($session, null));
-        $this->assertEmpty($session->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertEmpty($session->get(\Phruts\Util\Globals::ERROR_KEY));
 
         $errors = new \Phruts\Action\ActionErrors();
 
         $saveErrors->invokeArgs($this->action, array($session, $errors));
-        $this->assertEmpty($session->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertEmpty($session->get(\Phruts\Util\Globals::ERROR_KEY));
 
         $errors->add('1', new \Phruts\Action\ActionMessage('abc'));
         $saveErrors->invokeArgs($this->action, array($session, $errors));
-        $this->assertNotEmpty($session->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertNotEmpty($session->get(\Phruts\Util\Globals::ERROR_KEY));
 
         $saveErrors->invokeArgs($this->action, array($session, null));
-        $this->assertEmpty($session->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertEmpty($session->get(\Phruts\Util\Globals::ERROR_KEY));
     }
 
     public function testAddErrors()
@@ -136,21 +136,21 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $saveErrors = self::getMethod('addErrors');
         $saveErrors->invokeArgs($this->action, array($this->request, $errors));
 
-        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
-        $errorsRequest = $this->request->attributes->get(\Phruts\Globals::ERROR_KEY);
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
+        $errorsRequest = $this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY);
         $this->assertEquals(1, $errorsRequest->size());
 
         $errors2 = new \Phruts\Action\ActionErrors();
         $errors2->add('key2', new \Phruts\Action\ActionError('message'));
         $saveErrors->invokeArgs($this->action, array($this->request, $errors2));
 
-        $errorsRequest = $this->request->attributes->get(\Phruts\Globals::ERROR_KEY);
+        $errorsRequest = $this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY);
         $this->assertEquals(2, $errorsRequest->size());
 
         $errors = new \Phruts\Action\ActionErrors();
-        $this->request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
+        $this->request->attributes->set(\Phruts\Util\Globals::ERROR_KEY, $errors);
         $saveErrors->invokeArgs($this->action, array($this->request, $errors));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
     }
 
     public function testGetErrors()
@@ -167,7 +167,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $saveErrors = self::getMethod('saveErrors');
         $saveErrors->invokeArgs($this->action, array($this->request, $errors));
 
-        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::ERROR_KEY));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
 
         $result = $getErrors->invokeArgs($this->action, array($this->request));
 
@@ -180,19 +180,19 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $saveMessages = self::getMethod('saveMessages');
 
         $saveMessages->invokeArgs($this->action, array($this->request, null));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY));
 
         $messages = new \Phruts\Action\ActionMessages();
 
         $saveMessages->invokeArgs($this->action, array($this->request, $messages));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY));
 
         $messages->add('1', new \Phruts\Action\ActionMessage('abc'));
         $saveMessages->invokeArgs($this->action, array($this->request, $messages));
-        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY));
 
         $saveMessages->invokeArgs($this->action, array($this->request, null));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY));
     }
 
     public function testSaveMessagesSessions()
@@ -201,19 +201,19 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $saveMessages = self::getMethod('saveMessagesSession');
 
         $saveMessages->invokeArgs($this->action, array($session, null));
-        $this->assertEmpty($session->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertEmpty($session->get(\Phruts\Util\Globals::MESSAGE_KEY));
 
         $messages = new \Phruts\Action\ActionMessages();
 
         $saveMessages->invokeArgs($this->action, array($session, $messages));
-        $this->assertEmpty($session->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertEmpty($session->get(\Phruts\Util\Globals::MESSAGE_KEY));
 
         $messages->add('1', new \Phruts\Action\ActionMessage('abc'));
         $saveMessages->invokeArgs($this->action, array($session, $messages));
-        $this->assertNotEmpty($session->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertNotEmpty($session->get(\Phruts\Util\Globals::MESSAGE_KEY));
 
         $saveMessages->invokeArgs($this->action, array($session, null));
-        $this->assertEmpty($session->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertEmpty($session->get(\Phruts\Util\Globals::MESSAGE_KEY));
     }
 
     public function testAddMessages()
@@ -224,21 +224,21 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $saveMessages = self::getMethod('addMessages');
         $saveMessages->invokeArgs($this->action, array($this->request, $messages));
 
-        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
-        $messagesRequest = $this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY);
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY));
+        $messagesRequest = $this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY);
         $this->assertEquals(1, $messagesRequest->size());
 
         $messages2 = new \Phruts\Action\ActionMessages();
         $messages2->add('key2', new \Phruts\Action\ActionMessage('message'));
         $saveMessages->invokeArgs($this->action, array($this->request, $messages2));
 
-        $messagesRequest = $this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY);
+        $messagesRequest = $this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY);
         $this->assertEquals(2, $messagesRequest->size());
 
         $messages = new \Phruts\Action\ActionMessages();
-        $this->request->attributes->set(\Phruts\Globals::MESSAGE_KEY, $messages);
+        $this->request->attributes->set(\Phruts\Util\Globals::MESSAGE_KEY, $messages);
         $saveMessages->invokeArgs($this->action, array($this->request, $messages));
-        $this->assertEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertEmpty($this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY));
     }
 
     public function testGetMessages()
@@ -255,7 +255,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $saveMessages = self::getMethod('saveMessages');
         $saveMessages->invokeArgs($this->action, array($this->request, $messages));
 
-        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Globals::MESSAGE_KEY));
+        $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::MESSAGE_KEY));
 
         $result = $getMessages->invokeArgs($this->action, array($this->request));
 

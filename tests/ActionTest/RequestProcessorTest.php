@@ -83,7 +83,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $method = self::getMethod('processLocale');
 
         $method->invokeArgs($this->requestProcessor, array($this->request, $this->response));
-        $this->assertEquals('en', $this->request->getSession()->get(\Phruts\Globals::LOCALE_KEY));
+        $this->assertEquals('en', $this->request->getSession()->get(\Phruts\Util\Globals::LOCALE_KEY));
     }
 
     public function testProcessContent()

@@ -38,7 +38,7 @@ class SwitchAction extends \Phruts\Action
 
         // Switch to the requested module
         \Phruts\Util\RequestUtils::selectModule($prefix, $request, $this->getActionKernel()->getApplication());
-        if ($request->attributes->get(\Phruts\Globals::MODULE_KEY) == null) {
+        if ($request->attributes->get(\Phruts\Util\Globals::MODULE_KEY) == null) {
             $message = $this->getActionKernel()->getInternal()->getMessage("switch.prefix", $prefix);
             //$log->error($message);
             $response->setContent(400);

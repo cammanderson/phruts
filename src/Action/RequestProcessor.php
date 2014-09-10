@@ -223,7 +223,7 @@ class RequestProcessor
 
         // Has a Locale already been selected?
         $session = $request->getSession();
-        if (empty($session) || !is_null($session->get(\Phruts\Globals::LOCALE_KEY))) {
+        if (empty($session) || !is_null($session->get(\Phruts\Util\Globals::LOCALE_KEY))) {
             return;
         }
 
@@ -233,7 +233,7 @@ class RequestProcessor
             if (!empty($this->log)) {
                 $this->log->debug('  Setting user locale "' . (string) $locale . '"');
             }
-            $session->set(\Phruts\Globals::LOCALE_KEY, $locale);
+            $session->set(\Phruts\Util\Globals::LOCALE_KEY, $locale);
         }
     }
 
@@ -361,7 +361,7 @@ class RequestProcessor
         // Is there a directly defined mapping for this path?
         $mapping = $this->moduleConfig->findActionConfig($path);
         if (!is_null($mapping)) {
-            $request->attributes->set(\Phruts\Globals::MAPPING_KEY, $mapping);
+            $request->attributes->set(\Phruts\Util\Globals::MAPPING_KEY, $mapping);
 
             return $mapping;
         }
@@ -370,7 +370,7 @@ class RequestProcessor
         $configs = $this->moduleConfig->findActionConfigs();
         foreach ($configs as $config) {
             if ($config->getUnknown()) {
-                $request->attributes->set(\Phruts\Globals::MAPPING_KEY, $config);
+                $request->attributes->set(\Phruts\Util\Globals::MAPPING_KEY, $config);
 
                 return $config;
             }
@@ -474,7 +474,7 @@ class RequestProcessor
 	 * Populate the properties of the specified ActionForm instance from
 	 * the request parameters included with this request.
 	 *
-	 * In addition, request attribute <samp>\Phruts\Globals::CANCEL_KEY</samp> will be
+	 * In addition, request attribute <samp>\Phruts\Util\Globals::CANCEL_KEY</samp> will be
 	 * set if the request was submitted with a cancel button.
 	 *
 	 * @param \Symfony\Component\HttpFoundation\Request $request The kernel request we are
@@ -507,8 +507,8 @@ class RequestProcessor
         }
 
         // Set the cancellation request attribute if appropriate
-        if (!is_null($request->get(\Phruts\Globals::CANCEL_PROPERTY))) {
-            $request->attributes->set(\Phruts\Globals::CANCEL_KEY, true);
+        if (!is_null($request->get(\Phruts\Util\Globals::CANCEL_PROPERTY))) {
+            $request->attributes->set(\Phruts\Util\Globals::CANCEL_KEY, true);
         }
     }
 
@@ -537,7 +537,7 @@ class RequestProcessor
         }
 
         // Was this request cancelled?
-        if (!is_null($request->attributes->get(\Phruts\Globals::CANCEL_KEY))) {
+        if (!is_null($request->attributes->get(\Phruts\Util\Globals::CANCEL_KEY))) {
             if (!empty($this->log)) {
                 $this->log->debug('  Cancelled transaction, skipping validation');
             }
@@ -579,7 +579,7 @@ class RequestProcessor
         if (!empty($this->log)) {
             //$this->log->debug('  Validation failed, returning to "' . $input . '"');
         }
-        $request->attributes->set(\Phruts\Globals::ERROR_KEY, $errors);
+        $request->attributes->set(\Phruts\Util\Globals::ERROR_KEY, $errors);
 
         if ($this->moduleConfig->getControllerConfig()->getInputForward()) {
             $forward = $mapping->findForward($input);

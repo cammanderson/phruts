@@ -29,7 +29,7 @@ class DataSourceConfig
 	 *
 	 * @var string
 	 */
-    protected $key = \Phruts\Globals::DATA_SOURCE_KEY;
+    protected $key = \Phruts\Util\Globals::DATA_SOURCE_KEY;
 
     /**
 	 * @return string

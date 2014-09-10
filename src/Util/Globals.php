@@ -1,5 +1,5 @@
 <?php
-namespace Phruts;
+namespace Phruts\Util;
 
 /**
  * Global manifest constants for the entire PHruts framework.

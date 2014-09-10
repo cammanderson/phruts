@@ -67,16 +67,16 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 
         $scope = "request";
         $storeException->invokeArgs($this->exceptionHandler, array($request, $property, $error, $forwardConfig, $scope));
-        $this->assertNotEmpty($request->attributes->get(\Phruts\Globals::ERROR_KEY));
-        $this->assertTrue($request->attributes->get(\Phruts\Globals::ERROR_KEY) instanceof \Phruts\Action\ActionErrors);
+        $this->assertNotEmpty($request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
+        $this->assertTrue($request->attributes->get(\Phruts\Util\Globals::ERROR_KEY) instanceof \Phruts\Action\ActionErrors);
 
         $scope = "session";
         $storage = new  \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage();
         $session = new \Symfony\Component\HttpFoundation\Session\Session($storage);
         $request->setSession($session);
         $storeException->invokeArgs($this->exceptionHandler, array($request, $property, $error, $forwardConfig, $scope));
-        $this->assertNotEmpty($request->getSession()->get(\Phruts\Globals::ERROR_KEY));
-        $this->assertTrue($request->getSession()->get(\Phruts\Globals::ERROR_KEY) instanceof \Phruts\Action\ActionErrors);
+        $this->assertNotEmpty($request->getSession()->get(\Phruts\Util\Globals::ERROR_KEY));
+        $this->assertTrue($request->getSession()->get(\Phruts\Util\Globals::ERROR_KEY) instanceof \Phruts\Action\ActionErrors);
     }
 
     protected static function getMethod($name)

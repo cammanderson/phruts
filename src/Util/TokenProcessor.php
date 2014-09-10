@@ -59,7 +59,7 @@ class TokenProcessor
 
         // Retrieve the transaction token from this session, and
         // reset it if requested
-        $saved = $session->get(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
+        $saved = $session->get(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY);
         if ($saved == null) {
             return false;
         }
@@ -69,7 +69,7 @@ class TokenProcessor
         }
 
         // Retrieve the transaction token included in this request
-        $token = $request->get(\Phruts\Globals::TOKEN_KEY);
+        $token = $request->get(\Phruts\Util\Globals::TOKEN_KEY);
         if ($token == null) {
             return false;
         }
@@ -90,7 +90,7 @@ class TokenProcessor
         if ($session == null) {
             return;
         }
-        $session->remove(\Phruts\Globals::TRANSACTION_TOKEN_KEY);
+        $session->remove(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY);
     }
 
     /**
@@ -104,7 +104,7 @@ class TokenProcessor
         $session = $request->getSession(); //\Symfony\Component\HttpFoundation\Session\Session
         $token = $this->generateToken($request);
         if ($token != null) {
-            $session->set(\Phruts\Globals::TRANSACTION_TOKEN_KEY, $token);
+            $session->set(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY, $token);
         }
     }
 

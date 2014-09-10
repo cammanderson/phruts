@@ -108,7 +108,7 @@ class ActionKernel implements HttpKernelInterface
     public function initModulePrefixes()
     {
         $prefixes = array();
-        foreach($this->application[\Phruts\Globals::CONFIG] as $prefix => $config) {
+        foreach($this->application[\Phruts\Util\Globals::CONFIG] as $prefix => $config) {
             if(strlen($prefix) > 7) continue;
             $prefixes[] = substr($prefix, 7);
         }
@@ -125,7 +125,7 @@ class ActionKernel implements HttpKernelInterface
     protected function getRequestProcessor(\Phruts\Config\ModuleConfig $config)
     {
         // Access from the dependency injector
-        $key = \Phruts\Globals::REQUEST_PROCESSOR_KEY . $config->getPrefix();
+        $key = \Phruts\Util\Globals::REQUEST_PROCESSOR_KEY . $config->getPrefix();
         $processor = $this->application[$key];
 
         // If not found

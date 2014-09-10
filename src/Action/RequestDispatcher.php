@@ -18,7 +18,7 @@ class RequestDispatcher implements RequestDispatcherInterface
     public function doForward(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         // Obtain the information about the forward
-        $forwardConfig = $request->attributes->get(\Phruts\Globals::FORWARD_CONFIG);
+        $forwardConfig = $request->attributes->get(\Phruts\Util\Globals::FORWARD_CONFIG);
 
         // Perform the forward
         if ($forwardConfig->getRedirect() == false) {
