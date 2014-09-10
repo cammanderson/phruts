@@ -86,7 +86,7 @@ class DataSourceConfig
 	 *
 	 * @var string
 	 */
-    protected $type = 'phruts::util::PDODataSourceFactory';
+    protected $type = '\Phruts\Util\PDODataSourceFactory';
 
     /**
 	 * @return string

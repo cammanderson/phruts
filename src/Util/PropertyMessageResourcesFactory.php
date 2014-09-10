@@ -11,7 +11,7 @@ class PropertyMessageResourcesFactory extends MessageResourcesFactory
 	 * Create and return a newly instansiated MessageResources.
 	 *
 	 * @param string $config Configuration parameter(s) for the requested bundle
-	 * @return MessageResources
+	 * @return \Phruts\Util\MessageResources
 	 */
     public function createResources($config)
     {

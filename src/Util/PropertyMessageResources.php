@@ -132,7 +132,7 @@ class PropertyMessageResources extends MessageResources
         $this->locales[$localeKey] = $localeKey;
 
         // Set up to load the property resource for this locale key, if we can
-        $name = str_replace(array('::', '_'), '/', $this->config);
+        $name = str_replace(array('::', '_', '\\'), '/', $this->config);
 
         if (strlen($localeKey) > 0)
             $name .= '_' . $localeKey;
@@ -145,7 +145,7 @@ class PropertyMessageResources extends MessageResources
         try {
             $props = new \Phruts\Util\Properties();
             $props->load($name);
-        } catch (IOException $e) {
+        } catch (\Phruts\Exception\IOException $e) {
             //self::$log->error('loadLocale() - ' . $e->getMessage());
         }
 

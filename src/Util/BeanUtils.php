@@ -12,13 +12,13 @@ class BeanUtils
 	 *
 	 * @param object $bean
 	 * @param array $properties
-	 * @throws \Phruts\Exception\IllegalArgument - If the bean object has not been
+	 * @throws \Phruts\Exception\IllegalArgumentException - If the bean object has not been
 	 * specified
 	 */
     public static function populate($bean, array $properties)
     {
         if (is_null($bean)) {
-            throw new \Phruts\Exception\IllegalArgument('Bean object to populate must be not null.');
+            throw new \Phruts\Exception\IllegalArgumentException('Bean object to populate must be not null.');
         }
 
         // Loop through the property name/value pairs to be set
@@ -35,7 +35,10 @@ class BeanUtils
             } else {
                 $propertySetter = 'set' . ucfirst($name);
                 if (method_exists($bean, $propertySetter)) {
-                    $bean->$propertySetter ($value);
+                    $reflectionMethod = $reflection->getMethod($propertySetter);
+                    if(!empty($reflectionMethod) && $reflectionMethod->isPublic()) {
+                        $bean->$propertySetter($value);
+                    }
                 }
             }
         }
