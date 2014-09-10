@@ -2,7 +2,9 @@
 namespace ActionTest;
 
 use Phruts\Action\ActionMapping;
+use Phruts\ClassLoader;
 use Phruts\Config\ActionConfig;
+use Phruts\Config\ForwardConfig;
 
 class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,6 +49,10 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         // Add a default action mapping
         $this->actionConfig1 = new ActionMapping();
         $this->actionConfig1->setPath('/mypath');
+        $this->actionConfig1->setType('\Phruts\Action');
+        $forwardConfig = new ForwardConfig();
+        $forwardConfig->setName('success');
+        $forwardConfig->setPath('success.html.twig');
         $this->actionConfig1->setModuleConfig($this->moduleConfig);
         $this->moduleConfig->addActionConfig($this->actionConfig1);
 
@@ -146,6 +152,69 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $form = null;
 
         $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $form, $mapping));
+    }
+
+    public function testProcessForward()
+    {
+        $method = self::getMethod('processForward');
+
+        $mapping = $this->actionConfig1;
+
+        $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $mapping));
+    }
+
+    public function testProcessInclude()
+    {
+        $method = self::getMethod('processInclude');
+
+        $mapping = $this->actionConfig1;
+
+        $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $mapping));
+    }
+
+    public function testProcessActionCreate()
+    {
+        $method = self::getMethod('processActionCreate');
+
+        $mapping = $this->actionConfig1;
+
+        $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $mapping));
+    }
+
+    public function testProcessActionPerform()
+    {
+        $method = self::getMethod('processActionPerform');
+
+        $mapping = $this->actionConfig1;
+        $action = ClassLoader::newInstance($this->actionConfig1->getType(), '\Phruts\Action');
+        $form = null;
+
+        $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $action, $form, $mapping));
+    }
+
+    public function testProcessForwardConfig()
+    {
+        $method = self::getMethod('processForwardConfig');
+
+        $mapping = $this->actionConfig1;
+        $forward = $mapping->findForward('success');
+
+        $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $forward));
+    }
+
+    public function testDoForward()
+    {
+        $method = self::getMethod('doForward');
+        $uri = 'index.html';
+
+        $method->invokeArgs($this->requestProcessor, array($uri, $this->request, $this->response));
+    }
+
+    public function testDoInclude()
+    {
+        $method = self::getMethod('doInclude');
+        $uri = 'index.html';
+        $method->invokeArgs($this->requestProcessor, array($uri, $this->request, $this->response));
     }
 
     protected static function getMethod($name)

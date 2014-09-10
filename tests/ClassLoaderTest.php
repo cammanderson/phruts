@@ -48,6 +48,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
     public function testNewInstance()
     {
         $this->assertNotEmpty(\Phruts\ClassLoader::newInstance('\Phruts\Actions\ActionDispatcher', '\Phruts\Action'));
+        $this->assertNotEmpty(\Phruts\ClassLoader::newInstance('\Phruts\Action', '\Phruts\Action'));
 
     }
     public function testNewInstanceAbstract()
@@ -67,6 +68,8 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
     public function testNewInstancePrivateConstructor()
     {
         // TODO: Test private constructor
+//        $this->setExpectedException('\Phruts\Exception\InstantiationException');
+//        \Phruts\ClassLoader::newInstance('C');
     }
 
 }

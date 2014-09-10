@@ -525,9 +525,9 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param ActionForm $form The ActionForm instance we are
+	 * @param \Phruts\Action\AbstractActionForm $form The ActionForm instance we are
 	 * populating
-	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig we are using
+	 * @param \Phruts\Action\ActionMapping $mapping The \Phruts\Config\ActionConfig we are using
 	 * @return boolean
 	 */
     protected function processValidate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $form, \Phruts\Config\ActionConfig $mapping)
@@ -569,7 +569,7 @@ class RequestProcessor
             if (!empty($this->log)) {
                 //$this->log->debug('  Validation failed but no input form available');
             }
-            $response->sendError(500);
+            $response->setStatusCode(500);
             $response->setContent($this->getInternal()->getMessage(null, 'noInput', $mapping->getPath()), $mapping->getPath());
 
             return false;
@@ -662,7 +662,7 @@ class RequestProcessor
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
 	 * @param \Phruts\Config\ActionConfig $mapping The mapping we are using
-	 * @return ForwardConfig
+	 * @return \Phruts\Config\ForwardConfig
 	 */
     protected function processActionCreate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ActionConfig $mapping)
     {
@@ -719,12 +719,12 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param Action $action The Action instance to be used
-	 * @param ActionForm $form The ActionForm instance to pass to
+	 * @param \Phruts\Action $action The Action instance to be used
+	 * @param \Phruts\Action\AbstractActionForm $form The ActionForm instance to pass to
 	 * this Action
 	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig instance to
 	 * pass to this Action
-	 * @return ForwardConfig
+	 * @return \Phruts\Config\ForwardConfig
 	 * @throws \Phruts\Exception
 	 */
     protected function processActionPerform(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action $action, $form, \Phruts\Config\ActionConfig $mapping)
@@ -748,7 +748,7 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param ForwardConfig $forward The ForwardConfig controlling
+	 * @param \Phruts\Config\ForwardConfig $forward The ForwardConfig controlling
 	 * where we go next
 	 */
     protected function processForwardConfig(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $forward)

@@ -30,7 +30,7 @@ abstract class MessageResources
 	 *
 	 * @var string
 	 */
-    protected static $config = null;
+    protected $config = null;
 
     /**
 	 * The default Locale for our environment.

@@ -107,7 +107,7 @@ class ClassLoader
         if ($class->isAbstract()) {
             throw new \Phruts\Exception\InstantiationException('Cannot instantiate abstract class.');
         }
-        if (!is_null($parent) && ($className != $parent) && !$class->isSubclassOf($parent)) {
+        if (!is_null($parent) && ($name != $parent) && !$class->isSubclassOf($parent)) {
             throw new \Phruts\Exception\InstantiationException('"' . $name . '" is not a subclass of "' . $parent . '".');
         }
 

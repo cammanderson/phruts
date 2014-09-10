@@ -1,6 +1,8 @@
 <?php
 namespace Phruts\Action;
 
+use Phruts\Config\MessageResourcesConfig;
+use Phruts\Util\PropertyMessageResources;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -159,7 +161,7 @@ class ActionKernel implements HttpKernelInterface
      * @return \Phruts\Util\MessageResources
      */
     public function getInternal() {
-        // TODO:
+        return new PropertyMessageResources(__DIR__ . '/ActionResources');
     }
 
     /**
