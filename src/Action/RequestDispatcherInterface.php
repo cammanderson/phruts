@@ -1,8 +1,5 @@
 <?php
-/*
- * Author; Cameron Manderson <cameronmanderson@gmail.com>
- */
-namespace Phruts;
+namespace Phruts\Action;
 
 /**
  * Interface RequestDispatcherInterface

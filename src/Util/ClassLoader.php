@@ -1,5 +1,5 @@
 <?php
-namespace Phruts;
+namespace Phruts\Util;
 
 /**
  * The ClassLoader is a way of customizing the way PHP gets its classes

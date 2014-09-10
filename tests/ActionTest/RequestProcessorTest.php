@@ -2,7 +2,8 @@
 namespace ActionTest;
 
 use Phruts\Action\ActionMapping;
-use Phruts\ClassLoader;
+use Phruts\Action\RequestDispatcherMatcher;
+use Phruts\Util\ClassLoader;
 use Phruts\Config\ActionConfig;
 use Phruts\Config\ForwardConfig;
 
@@ -61,6 +62,18 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->requestProcessor = new \Phruts\Action\RequestProcessor();
         $this->requestProcessor->init($this->actionKernel, $this->moduleConfig);
+
+        // Stub the request matcher
+        $dispatcher = $this->getMock('\Phruts\Action\RequestDispatcher');
+
+        $dispatcher->method('doInclude')
+            ->willReturn(null);
+
+        $dispatcher->method('doForward')
+            ->willReturn(null);
+
+        $requestMatcher = new RequestDispatcherMatcher($dispatcher);
+        $this->application['request_dispatcher_matcher'] = $requestMatcher;
 
     }
 
@@ -214,6 +227,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $method = self::getMethod('doInclude');
         $uri = 'index.html';
+
         $method->invokeArgs($this->requestProcessor, array($uri, $this->request, $this->response));
     }
 
