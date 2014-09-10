@@ -138,7 +138,7 @@ class RequestUtils
         if ($mapping->getScope() == 'request') {
             $instance = $request->attributes->get($attribute);
         } else {
-            \Phruts\ClassLoader::loadClass($config->getType());
+            \Phruts\Util\ClassLoader::loadClass($config->getType());
 
             $session = $request->getSession();
             $instance = $session->get($attribute);
@@ -148,7 +148,7 @@ class RequestUtils
         if (!is_null($instance)) {
             $configClass = $config->getType();
             $instanceClass = get_class($instance);
-            if (\Phruts\ClassLoader::classIsAssignableFrom($configClass, $instanceClass)) {
+            if (\Phruts\Util\ClassLoader::classIsAssignableFrom($configClass, $instanceClass)) {
 //                if (self::$log->isDebugEnabled()) {
 //                    self::$log->debug('  Recycling existing \Phruts\Action\AbstractActionForm instance' . ' of class "' . $instanceClass . '"');
 //                }
@@ -159,7 +159,7 @@ class RequestUtils
 
         // Create and return a new form bean instance
         try {
-            $instance = \Phruts\ClassLoader::newInstance($config->getType(), '\Phruts\Action\AbstractActionForm');
+            $instance = \Phruts\Util\ClassLoader::newInstance($config->getType(), '\Phruts\Action\AbstractActionForm');
 //            if (self::$log->isDebugEnabled()) {
 //                self::$log->debug('  Creating new \Phruts\Action\AbstractActionForm instance of type "' . $config->getType() . '"');
 //            }

@@ -151,7 +151,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $actionConfig = null;
             try {
-                $actionConfig = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ActionConfig');
+                $actionConfig = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\ActionConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('\Phruts\Config\ActionConfigFactory->createObject(): ' . $e->getMessage());
             }
@@ -184,7 +184,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $config = null;
             try {
-                $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ForwardConfig');
+                $config = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\ForwardConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('ForwardConfigFactory->createObject(): ' . $e->getMessage());
             }
@@ -217,7 +217,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $config = null;
             try {
-                $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ControllerConfig');
+                $config = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\ControllerConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('\Phruts\Config\ControllerConfigFactory->createObject(): ' . $e->getMessage());
             }
@@ -250,7 +250,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $config = null;
             try {
-                $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\FormPropertyConfig');
+                $config = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\FormPropertyConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('FormPropertyConfigFactory->createObject(): ' . $e->getMessage());
             }
@@ -283,7 +283,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $config = null;
             try {
-                $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\FormBeanConfig');
+                $config = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\FormBeanConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('\Phruts\Config\FormBeanConfigFactory->createObject(): ' . $e->getMessage());
             }
@@ -316,7 +316,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $config = null;
             try {
-                $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\MessageResourcesConfig');
+                $config = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\MessageResourcesConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('\Phruts\Config\MessageResourcesConfigFactory->createObject(): ' . $e->getMessage());
             }
@@ -349,7 +349,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $config = null;
             try {
-                $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\DataSourceConfig');
+                $config = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\DataSourceConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('\Phruts\Config\DataSourceConfigFactory->createObject(): ' . $e->getMessage());
             }
@@ -381,7 +381,7 @@ namespace Phruts\Config {
             // Instantiate the new object and return it
             $config = null;
             try {
-                $config = \Phruts\ClassLoader::newInstance($className, '\Phruts\Config\ExceptionConfig');
+                $config = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\ExceptionConfig');
             } catch (\Exception $e) {
                 $this->digester->getLogger()->error('ExceptionConfigFactory->createObject(): ' . $e->getMessage());
             }

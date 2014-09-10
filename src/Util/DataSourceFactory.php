@@ -73,7 +73,7 @@ abstract class DataSourceFactory
     public static function createFactory(\Phruts\Config\DataSourceConfig $config)
     {
         try {
-            $factory = \Phruts\ClassLoader::newInstance(self::$factoryClass, '\Phruts\Util\DataSourceFactory');
+            $factory = \Phruts\Util\ClassLoader::newInstance(self::$factoryClass, '\Phruts\Util\DataSourceFactory');
 
             $factory->setConfig($config);
 

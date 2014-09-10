@@ -296,7 +296,7 @@ class RequestProcessor
 
         // Use the configured exception handling
         try {
-            $handler = \Phruts\ClassLoader::newInstance($config->getHandler(), '\Phruts\Action\ExceptionHandler'); //ExceptionHandler
+            $handler = \Phruts\Util\ClassLoader::newInstance($config->getHandler(), '\Phruts\Action\ExceptionHandler'); //ExceptionHandler
 
             return ($handler->execute($exception, $config, $mapping, $form, $request, $response));
         } catch (\Exception $e) {
@@ -691,7 +691,7 @@ class RequestProcessor
             //$this->log->debug('  Creating new Action instance');
         }
         try {
-            $instance = \Phruts\ClassLoader::newInstance($className, '\Phruts\Action');
+            $instance = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Action');
 
 //			API::addInclude($className);
         } catch (\Exception $e) {

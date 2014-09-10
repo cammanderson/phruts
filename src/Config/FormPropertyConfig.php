@@ -159,7 +159,7 @@ class FormPropertyConfig
                     $baseType = substr($baseType, 0, strlen($baseType) -2);
                     $this->indexed = true;
                 }
-                \Phruts\ClassLoader::loadClass($baseType);
+                \Phruts\Util\ClassLoader::loadClass($baseType);
             } catch (\Exception $e) {
                 $baseClass = null;
             }
@@ -248,11 +248,11 @@ class FormPropertyConfig
                         $size = intval($this->initial);
                         if ($size > 0) {
                             for ($x = 0; $x < $size; $x++) {
-                                $intialValue[] = \Phruts\ClassLoader::newInstance($className);
+                                $intialValue[] = \Phruts\Util\ClassLoader::newInstance($className);
                             }
                         }
                     } else {
-                        $initialValue = \Phruts\ClassLoader::newInstance($className);
+                        $initialValue = \Phruts\Util\ClassLoader::newInstance($className);
                     }
                     break;
             }

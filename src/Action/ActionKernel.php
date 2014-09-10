@@ -132,7 +132,7 @@ class ActionKernel implements HttpKernelInterface
         if (empty($processor)) {
             try {
                 $processorClass = $config->getControllerConfig()->getProcessorClass();
-                $processor = \Phruts\ClassLoader::newInstance($processorClass, '\Phruts\RequestProcessor');
+                $processor = \Phruts\Util\ClassLoader::newInstance($processorClass, '\Phruts\RequestProcessor');
 
                 // TODO: If supports DIC injection...
 
