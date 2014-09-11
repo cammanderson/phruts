@@ -34,7 +34,7 @@ class ExceptionConfig
     }
 
     /**
-     * The fully qualified Java class name of the exception handler class
+     * The fully qualified PHP class name of the exception handler class
      * which should be instantiated to handle this exception.
      */
     protected $handler = "\Phruts\Action\ExceptionHandler";
@@ -105,7 +105,7 @@ class ExceptionConfig
     }
 
     /**
-     * The fully qualified Java class name of the exception that is to be
+     * The fully qualified PHP class name of the exception that is to be
      * handled by this handler.
      */
     protected $type = null;

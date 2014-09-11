@@ -67,7 +67,7 @@ class FormPropertyConfig
     }
 
     /**
-     * The JavaBean property name of the property described by this element.
+     * The PHPBean property name of the property described by this element.
      */
     protected $name = null;
 
@@ -108,7 +108,7 @@ class FormPropertyConfig
     }
 
     /**
-     * The fully qualified Java class name of the implementation class
+     * The fully qualified PHP class name of the implementation class
      * of this bean property, optionally followed by <code>[]</code> to
      * indicate that the property is indexed.
      */

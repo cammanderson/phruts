@@ -177,7 +177,7 @@ class RequestUtils
     /**
 	 * Populate the properties of the specified PHPBean from the specified HTTP
 	 * request, based on matching each parameter name (plus an optional prefix
-	 * and/or suffix) against the corresponding JavaBeans "property setter"
+	 * and/or suffix) against the corresponding PHPBeans "property setter"
 	 * methods in the bean's class.
 	 *
 	 * If you specify a non-null prefix and non-null suffix, the parameter name
