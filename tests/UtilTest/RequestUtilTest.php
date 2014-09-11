@@ -56,6 +56,9 @@ class RequestUtilTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::MODULE_KEY));
         // TODO: Test that the messages is assigned
 
+        $this->assertNotEmpty(RequestUtils::getModuleConfig($this->request, $application));
     }
+
+
 }
  

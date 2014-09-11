@@ -11,7 +11,7 @@ class RequestUtils
     /**
 	 * Commons Logging instance.
 	 *
-	 * @var \Psr\Log\Logger
+	 * @var \Psr\Log\LoggerInterface
 	 */
     //$log = null;
 
