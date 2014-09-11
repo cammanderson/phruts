@@ -1,8 +1,10 @@
 <?php
 namespace UtilTest;
 
+use Phruts\Action\AbstractActionForm;
 use Phruts\Action\ActionKernel;
 use Phruts\Action\ActionMapping;
+use Phruts\Config\FormBeanConfig;
 use Phruts\Config\ModuleConfig;
 use Phruts\Util\RequestUtils;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,12 +68,25 @@ class RequestUtilTest extends \PHPUnit_Framework_TestCase
         $moduleConfig = new ModuleConfig('');
         $application = new \Silex\Application();
         $actionMapping = new ActionMapping();
+        $actionMapping->setName('form');
         $actionMapping->setModuleConfig($moduleConfig);
+        $actionMapping->setScope('request');
         $actionKernel = new ActionKernel($application);
+        $formBeanConfig = new FormBeanConfig();
+        $formBeanConfig->setName('form');
+        $formBeanConfig->setType('\UtilTest\MyActionForm');
+        $moduleConfig->addFormBeanConfig($formBeanConfig);
+        $moduleConfig->addActionConfig($actionMapping);
 
-        $this->assertEmpty(RequestUtils::createActionForm($this->request, $actionMapping, $moduleConfig, $actionKernel));
+        $actionMapping->setAttribute('attribute');
+        $form = RequestUtils::createActionForm($this->request, $actionMapping, $moduleConfig, $actionKernel);
+        $this->assertNotEmpty($form);
+        $this->assertEquals('UtilTest\MyActionForm', get_class($form));
     }
 
 
 }
+
+class MyActionForm extends AbstractActionForm
+{}
  
