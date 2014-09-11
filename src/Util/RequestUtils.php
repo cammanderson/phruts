@@ -35,11 +35,13 @@ class RequestUtils
         } else {
             $request->attributes->set(\Phruts\Util\Globals::MODULE_KEY, $config);
         }
-        $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
-        if (is_null($resources)) {
-            $request->attributes->remove(\Phruts\Util\Globals::MESSAGES_KEY);
-        } else {
-            $request->attributes->set(\Phruts\Util\Globals::MESSAGES_KEY, $resources);
+        if(!empty($application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix])) {
+            $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
+            if (is_null($resources)) {
+                $request->attributes->remove(\Phruts\Util\Globals::MESSAGES_KEY);
+            } else {
+                $request->attributes->set(\Phruts\Util\Globals::MESSAGES_KEY, $resources);
+            }
         }
     }
 

@@ -38,7 +38,7 @@ class Globals
 	 * for the module selected by the request URI currently being processed will
 	 * also be exposed under this key as a request attribute.
 	 */
-    const MESSAGES_KEY = '\Phruts\Action\ActionMessageS';
+    const MESSAGES_KEY = '\Phruts\Action\ActionMessages';
 
     /**
 	 * The base of the context attribute key under which our ModuleConfig
