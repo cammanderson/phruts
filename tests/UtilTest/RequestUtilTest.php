@@ -1,6 +1,8 @@
 <?php
 namespace UtilTest;
 
+use Phruts\Action\ActionKernel;
+use Phruts\Action\ActionMapping;
 use Phruts\Config\ModuleConfig;
 use Phruts\Util\RequestUtils;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,6 +59,17 @@ class RequestUtilTest extends \PHPUnit_Framework_TestCase
         // TODO: Test that the messages is assigned
 
         $this->assertNotEmpty(RequestUtils::getModuleConfig($this->request, $application));
+    }
+
+    public function testCreateActionForm()
+    {
+        $moduleConfig = new ModuleConfig('');
+        $application = new \Silex\Application();
+        $actionMapping = new ActionMapping();
+        $actionMapping->setModuleConfig($moduleConfig);
+        $actionKernel = new ActionKernel($application);
+
+        $this->assertEmpty($this->request, $actionMapping, $moduleConfig, $actionKernel);
     }
 
 
