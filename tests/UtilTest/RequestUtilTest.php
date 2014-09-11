@@ -69,7 +69,7 @@ class RequestUtilTest extends \PHPUnit_Framework_TestCase
         $actionMapping->setModuleConfig($moduleConfig);
         $actionKernel = new ActionKernel($application);
 
-        $this->assertEmpty($this->request, $actionMapping, $moduleConfig, $actionKernel);
+        $this->assertEmpty(RequestUtils::createActionForm($this->request, $actionMapping, $moduleConfig, $actionKernel));
     }
 
 
