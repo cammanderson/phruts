@@ -14,17 +14,18 @@ class RequestUtilTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Symfony\Component\HttpFoundation\Request
-     * @var \Symfony\Component\HttpFoundation\Response
      */
     protected $request;
+
+    /**
+     * @var \Symfony\Component\HttpFoundation\Response
+     */
+    protected $response;
 
     public function setUp()
     {
         $this->request = new Request();
         $this->response = new Response();
-
-
-
     }
 
     public function testGetModuleName()
@@ -84,8 +85,80 @@ class RequestUtilTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('UtilTest\MyActionForm', get_class($form));
     }
 
+    public function testPopulate()
+    {
+        $this->request->initialize(array('valueOne' => 'value1', 'valueTwo' => 'value2', 'myValue' => 'myResult'));
+
+        $bean = new MyBean();
+        RequestUtils::populate($bean, '', '', $this->request);
+        $this->assertEquals('value1', $bean->valueOne);
+
+        $bean = new MyBean();
+        RequestUtils::populate($bean, 'value', '', $this->request);
+        $this->assertEquals('value1', $bean->One);
+        $this->assertEquals('value2', $bean->Two);
+        $this->assertEmpty($bean->myValue);
+
+        $bean = new MyBean();
+        RequestUtils::populate($bean, '', 'Value', $this->request);
+        $this->assertEquals('myResult', $bean->my);
+        $this->assertEmpty($bean->valueOne);
+
+        $this->setExpectedException('\Exception');
+        RequestUtils::populate(null, '', '', $this->request);
+    }
+
+    public function testRetrieveMessageResources()
+    {
+        $application = new \Silex\Application();
+
+        $moduleConfig = new ModuleConfig('');
+
+
+
+        $application[\Phruts\Util\Globals::PREFIXES_KEY] = array();
+        $application[\Phruts\Util\Globals::MODULE_KEY . RequestUtils::getModuleName($this->request, $application)] = $moduleConfig;
+
+        RequestUtils::selectModule($this->request, $application);
+
+        $this->assertEmpty(RequestUtils::retrieveMessageResources($this->request, $application, null));
+
+        $application[\Phruts\Util\Globals::MESSAGES_KEY] = 'PMR';
+        $this->assertNotEmpty(RequestUtils::retrieveMessageResources($this->request, $application, null));
+    }
+
+
+    public function testRetrieveUserLocale()
+    {
+        // TODO:
+    }
+
+    public function testRequestToServerStringBuffer()
+    {
+        $this->request->initialize(array(), array(), array(), array(), array(), array('HTTP_PORT' => 80, 'HTTP_HOST' => 'localhost') );
+        $this->assertEquals('http://localhost', RequestUtils::requestToServerStringBuffer($this->request));
+
+        $this->request->initialize(array(), array(), array(), array(), array(), array('HTTP_PORT' => 443, 'HTTP_HOST' => 'github.com', 'HTTPS' => 'on') );
+        $this->assertEquals('https://github.com', RequestUtils::requestToServerStringBuffer($this->request));
+    }
+
+
+
+
 
 }
+
+class MyBean
+{
+    public $One;
+    public $Two;
+    public $my;
+    public $Value;
+    public $myValue;
+    public $valueOne;
+    public $valueTwo;
+}
+
 
 class MyActionForm extends AbstractActionForm
 {}

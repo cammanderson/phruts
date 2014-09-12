@@ -203,7 +203,7 @@ class RequestUtils
 
         // Build a list of revelant request parameters from this request
         $properties = array ();
-        $names = $request->getNames();
+        $names = $request->query->keys();
         foreach ($names as $name) {
             $stripped = $name;
             if ($prefix != '') {
@@ -214,7 +214,7 @@ class RequestUtils
                 $stripped = substr($stripped, $prefixLength);
             }
             if ($suffix != '') {
-                $subString = substr($stripped, -1, $suffixLength);
+                $subString = substr($stripped, -$suffixLength);
                 if ($subString != $suffix) {
                     continue;
                 }
@@ -245,7 +245,7 @@ class RequestUtils
 	 */
     public static function retrieveMessageResources(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application, $bundle)
     {
-        if (is_null($bundle)) {
+        if (empty($bundle)) {
             $bundle = \Phruts\Util\Globals::MESSAGES_KEY;
         } else {
             $bundle = (string) $bundle;
@@ -259,7 +259,9 @@ class RequestUtils
             } else {
                 $prefix = $config->getPrefix();
             }
-            $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
+            if(!empty($application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix])) {
+                $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
+            }
         }
 
         return $resources;
@@ -304,16 +306,16 @@ class RequestUtils
      */
     public static function requestToServerStringBuffer(\Symfony\Component\HttpFoundation\Request $request)
     {
-        return self::createServerStringBuffer($request->getScheme(), $request->getServerName(), $request->getServerPort());
+        return self::createServerStringBuffer($request->getScheme(), $request->getHost(), $request->getPort());
     }
 
     /**
      * <p>Return <code>StringBuffer</code> representing the scheme, server, and port number of
      * the current request.</p>
      *
-     * @param scheme The scheme name to use
-     * @param server The server name to use
-     * @param port The port value to use
+     * @param scheme - The scheme name to use
+     * @param server - The server name to use
+     * @param port - The port value to use
      *
      * @return string in the form scheme: server: port
      * @since Struts 1.2.0
@@ -339,12 +341,12 @@ class RequestUtils
      * <p>Return <code>string</code> representing the scheme, server, and port
      * number of the current request.</p>
      *
-     * @param scheme The scheme name to use
-     * @param server The server name to use
-     * @param port The port value to use
-     * @param uri The uri value to use
+     * @param scheme - The scheme name to use
+     * @param server - The server name to use
+     * @param port - The port value to use
+     * @param uri - The uri value to use
      *
-     * @return StringBuffer in the form scheme: server: port
+     * @return string in the form scheme: server: port
      * @since Struts 1.2.0
      */
     public static function createServerUriStringBuffer($scheme, $server, $port, $uri)
@@ -356,5 +358,3 @@ class RequestUtils
 
     }
 }
-
-//\Phruts\Util\RequestUtils::$log = Phruts_Util_Logger_Manager::getLogger('\Phruts\Util\RequestUtils');

@@ -67,7 +67,7 @@ class ForwardConfig
     public function setContextRelative($contextRelative)
     {
         if ($this->configured) {
-            throw new \Phruts\Exception\IllegalState('Configuration is frozen');
+            throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
         $temp = strtolower($contextRelative);
         if ($temp === 'false' || $temp === 'no') {

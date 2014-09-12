@@ -34,8 +34,9 @@ class ClassLoader
     {
         try {
             $class = new \ReflectionClass($name);
+
             return $class->getShortName();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \Phruts\Exception\ClassNotFoundException($e->getMessage());
         }
     }
@@ -73,6 +74,7 @@ class ClassLoader
         if (class_exists($name, true)) {
             // Get only the class name
             $className = self::getClassName($name);
+
             return $className;
         } else {
             $msg = 'PHP class "' . $name . '" does not exist.';

@@ -17,7 +17,9 @@ class MessageResourcesTest extends \PHPUnit_Framework_TestCase
         // Create the resources
         $propertyMessageResources = $propertyMessageResourcesFactory->createResources(__DIR__ . '/Example');
         $this->assertNotEmpty($propertyMessageResources->getMessage(null, 'example'));
-    }
+        $this->assertEquals('Example Response', $propertyMessageResources->getMessage(null, 'example'));
 
+        $this->assertTrue($propertyMessageResources->getReturnNull());
+    }
 }
  

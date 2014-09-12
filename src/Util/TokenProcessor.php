@@ -25,9 +25,9 @@ class TokenProcessor
         return $instance;
     }
 
-//	private function __construct() {
-//
-//	}
+	private function __construct() {
+
+	}
 
     /**
      * The timestamp used most recently to generate a token value.
@@ -47,7 +47,7 @@ class TokenProcessor
      * </ul>
      *
      * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
-     * @param reset Should we reset the token after checking it?
+     * @param reset boolean Should we reset the token after checking it?
      */
     public function isTokenValid(\Symfony\Component\HttpFoundation\Request $request, $reset = false)
     {

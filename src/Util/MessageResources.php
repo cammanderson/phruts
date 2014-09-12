@@ -20,7 +20,7 @@ abstract class MessageResources
     /**
 	 * Logging instance.
 	 *
-	 * @var \Psr\Log\Logger
+	 * @var \Psr\Log\LoggerInterface
 	 */
     protected $log = null;
 
