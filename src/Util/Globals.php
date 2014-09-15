@@ -135,4 +135,21 @@ class Globals
      * Action Kernel
      */
     const ACTION_KERNEL = 'phruts.action_kernel';
+
+    /**
+     * Module Config Paths
+     */
+    const ACTION_KERNEL_CONFIG = 'phruts.action_kernel_config';
+
+    /**
+     * The provider for the module config
+     * Allows the service to be replaced with alternative module config
+     * strategies (e.g. non-file)
+     */
+    const MODULE_CONFIG_PROVIDER = 'phruts.module_config_provider';
+
+    /**
+     *
+     */
+    const DIGESTER = 'phruts.digester';
 }

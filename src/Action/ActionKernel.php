@@ -24,6 +24,8 @@ class ActionKernel implements HttpKernelInterface
      */
     protected $processor;
 
+    protected $init = false;
+
     public function __construct(\Silex\Application $application)
     {
         $this->application = $application;
@@ -82,37 +84,65 @@ class ActionKernel implements HttpKernelInterface
      */
     protected function process(Request $request, Response $response)
     {
-        // Get the module config
+        $this->init();
         $this->getRequestProcessor($this->getModuleConfig($request))->process($request, $response);
+    }
+
+
+    /**
+     * Initialise the module configurations
+     * @throws \Phruts\Exception
+     */
+    protected function init() {
+        // Initialise once
+        if($this->init) return;
+
+        $prefixes = array();
+
+        // Obtain the module config provider (implements caching, etc)
+        if(empty($this->application[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER])) {
+            throw new \Phruts\Exception('Unable to locate the module config provider service');
+        }
+        $moduleConfigProvider = $this->application[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER];
+
+        // Get the configured modules
+        foreach($this->application[\Phruts\Util\Globals::ACTION_KERNEL_CONFIG] as $prefixParam => $config) {
+            if(strlen($prefixParam) > 7 && substr($prefixParam, 0, 7) == 'config/') continue;
+            $prefix = substr($prefixParam, 7);
+
+            // Get the module config
+            $moduleConfig = $moduleConfigProvider->getModuleConfig($prefix, $config);
+            if(empty($moduleConfig)) {
+                throw new \Phruts\Exception('Unable to locate the module config for ' . $prefix);
+            }
+            $this->application[\Phruts\Util\Globals::MODULE_KEY . $prefix] = $moduleConfig;
+
+            // Initialise the module config
+            $this->initModuleMessageResources($moduleConfig);
+            $this->initModuleDataSources($moduleConfig);
+            $this->initModulePlugIns($moduleConfig);
+
+            $prefixes[] = $prefix;
+        }
+        $this->application[\Phruts\Util\Globals::PREFIXES_KEY] = $prefixes;
+
+        $this->init = true;
+        return;
     }
 
     /**
      * @param Request $request
      * @return \Phruts\Config\ModuleConfig
      */
-    protected function getModuleConfig(Request $request)
-    {
-        $this->initModulePrefixes();
-        // Check we have a module prefix/match
-            // Digest the modules configs
-            // Obtain the matching module config
-                // Initialise the module config (e.g. all the datasource/plugins)
-            // Return module config
-        return;
-    }
-
-    /**
-     * Add the modules (not including the default)
-     * @return void
-     */
-    public function initModulePrefixes()
-    {
-        $prefixes = array();
-        foreach($this->application[\Phruts\Util\Globals::CONFIG] as $prefix => $config) {
-            if(strlen($prefix) > 7) continue;
-            $prefixes[] = substr($prefix, 7);
+    protected function getModuleConfig(Request $request) {
+        $config = $request->attributes->get(\Phruts\Util\Globals::MODULE_KEY);
+        if (empty($config)) {
+            if(empty($this->application[\Phruts\Util\Globals::MODULE_KEY])) {
+                throw new \Phruts\Exception('Can not locate the default module for this request');
+            }
+            $config = $this->application[\Phruts\Util\Globals::MODULE_KEY];
         }
-        $this->application['phruts.module_prefixes'] = $prefixes;
+        return $config;
     }
 
 
@@ -132,28 +162,30 @@ class ActionKernel implements HttpKernelInterface
         if (empty($processor)) {
             try {
                 $processorClass = $config->getControllerConfig()->getProcessorClass();
-                $processor = \Phruts\Util\ClassLoader::newInstance($processorClass, '\Phruts\RequestProcessor');
+                $processor = \Phruts\Util\ClassLoader::newInstance($processorClass, '\Phruts\Action\RequestProcessor');
 
-                // TODO: If supports DIC injection...
-
+                $processor->init($this, $config);
+                $this->application[$key] = $processor;
+                return $this->application[$key];
             } catch (\Exception $e) {
                 throw new \Exception('Cannot initialize RequestProcessor of class ' . $processorClass . ': ' . $e->getMessage());
             }
-            $processor->init($this, $config);
-            $this->application[$key] = $processor;
         }
-
-        return $this->application[$key];
     }
 
-    protected function initPlugIns()
+    protected function initModuleMessageResources($moduleConfig)
     {
-
+        // TODO:
     }
 
-    protected function initDataSources()
+    protected function initModuleDataSources($moduleConfig)
     {
+        // TODO:
+    }
 
+    protected function initModulePlugIns($moduleConfig)
+    {
+        // TODO:
     }
 
     /**
@@ -171,7 +203,7 @@ class ActionKernel implements HttpKernelInterface
      */
     public function getDataSource(Request $request, $key)
     {
-        
+        // TODO:
     }
 
     /**
