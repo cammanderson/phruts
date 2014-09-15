@@ -101,7 +101,7 @@ class FormPropertyConfig
         if ($this->configured) {
             throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
-        if ($this->size < 0) {
+        if ($size < 0) {
             throw new \Phruts\Exception\IllegalArgumentException("size < 0");
         }
         $this->size = $size;
@@ -135,10 +135,10 @@ class FormPropertyConfig
     {
         // Identify the base class (in case an array was specified)
         $baseType = $this->getType();
-        $indexed = false;
-//        if (baseType.endsWith("[]")) {
-//            baseType = baseType.substring(0, baseType.length() - 2);
-//            indexed = true;
+        $this->indexed = false;
+//        if (substr($baseType, -2) == "[]") {
+//            $baseType = substr($baseType, 0, strlen($baseType) - 2);
+//            $this->indexed = true;
 //        }
 
         // Construct an appropriate Class instance for the base class
@@ -156,10 +156,10 @@ class FormPropertyConfig
         } else {
             try {
                 if (substr($baseType, strlen($baseType) - 2) == '[]') {
-                    $baseType = substr($baseType, 0, strlen($baseType) -2);
+                    $baseClass = substr($baseType, 0, strlen($baseType) -2);
                     $this->indexed = true;
                 }
-                \Phruts\Util\ClassLoader::loadClass($baseType);
+//                \Phruts\Util\ClassLoader::loadClass($baseClass);
             } catch (\Exception $e) {
                 $baseClass = null;
             }
@@ -248,7 +248,7 @@ class FormPropertyConfig
                         $size = intval($this->initial);
                         if ($size > 0) {
                             for ($x = 0; $x < $size; $x++) {
-                                $intialValue[] = \Phruts\Util\ClassLoader::newInstance($className);
+                                $initialValue[] = \Phruts\Util\ClassLoader::newInstance($className);
                             }
                         }
                     } else {

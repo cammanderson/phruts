@@ -86,10 +86,70 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(2, $config->initial());
 
+        $config->setSize(255);
+        $this->assertEquals(255, $config->getSize());
+
+        $this->assertEquals('int', $config->getType());
+
         // TODO: Test exception
         $config->freeze();
         $this->setExpectedException('\Phruts\Exception\IllegalStateException');
         $config->setName('name');
+    }
+
+    public function testFormPropertyConfigSize()
+    {
+        $config = new FormPropertyConfig();
+        $this->setExpectedException('\Exception');
+        $config->setSize(-255);
+    }
+
+    public function testInitial()
+    {
+        $config = new FormPropertyConfig();
+        $config->setType('boolean');
+        $config->setInitial('yes');
+        $this->assertEquals(true, $config->initial());
+
+        $config = new FormPropertyConfig();
+        $config->setType('boolean');
+        $config->setInitial('true');
+        $this->assertEquals(true, $config->initial());
+
+        $config = new FormPropertyConfig();
+        $config->setType('boolean');
+        $config->setInitial('false');
+        $this->assertEquals(false, $config->initial());
+
+        $config = new FormPropertyConfig();
+        $config->setType('int');
+        $config->setInitial(28);
+        $this->assertEquals(28, $config->initial());
+
+        $config = new FormPropertyConfig();
+        $config->setType('float');
+        $config->setInitial('28.5');
+        $this->assertEquals(floatval('28.5'), $config->initial());
+
+        $config = new FormPropertyConfig();
+        $config->setType('string');
+        $config->setInitial('myString');
+        $this->assertEquals('myString', $config->initial());
+
+        $config = new FormPropertyConfig();
+        $config->setType('array');
+        $config->setInitial('a,b,c,d');
+        $this->assertEquals(4, count($config->initial()));
+
+        $config = new FormPropertyConfig();
+        $config->setType('array');
+        $config->setInitial(null);
+        $this->assertTrue(is_array($config->initial()));
+
+        $config = new FormPropertyConfig();
+        $config->setType('\stdClass[]');
+        $config->setInitial(4);
+        $this->assertEquals(4, count($config->initial()));
     }
 
     public function testFormBeanConfig()
@@ -106,10 +166,17 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $expected = "\Phruts\Config\FormBeanConfig[name='name',type='\\\\MyForm',properties=array (" . "\n" . "  0 => 'myName'," . "\n" .")]";
         $this->assertEquals($expected, (string)$config);
 
+        $config->setModuleConfig(new ModuleConfig('prefix'));
+        $this->assertEquals('prefix', $config->getModuleConfig()->getPrefix());
+
+        $this->assertEquals(1, count($config->findFormPropertyConfigs()));
+        $this->assertEquals('2', $config->findFormPropertyConfig('myName')->getInitial());
+
+
         // TODO: Test exception
         $config->freeze();
         $this->setExpectedException('\Phruts\Exception\IllegalStateException');
-        $config->setName('name');
+        $config->setModuleConfig(new ModuleConfig('prefix'));
     }
 
     public function testForwardConfig()
@@ -134,10 +201,17 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $config = new MessageResourcesConfig();
         $config->setKey('myKey');
+        $this->assertEquals('myKey', $config->getKey());
         $config->setNull('false');
+        $this->assertFalse($config->getNull());
         $config->setParameter('myParameter');
+        $this->assertEquals('myParameter', $config->getParameter());
         $expected = "\Phruts\Config\MessageResourcesConfig[key='myKey',factory='\\\\Phruts\\\\Util\\\\PropertyMessageResourcesFactory',parameter='myParameter',null=false]";
         $this->assertEquals($expected, (string)$config);
+
+        $config->setFactory('\Phruts\Util\PropertyMessageResourcesFactory');
+        $this->assertEquals('\Phruts\Util\PropertyMessageResourcesFactory', $config->getFactory());
+
 
         // TODO: Test exception
         $config->freeze();
@@ -255,9 +329,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testModuleConfig()
     {
-        $config = new ModuleConfig('prefix');
+        $config = new ModuleConfig('prefix2');
+        $this->assertEquals('prefix2', $config->getPrefix());
+        $config->setPrefix('prefix');
         $this->assertEquals('prefix', $config->getPrefix());
-
 
         $controllerConfig = new ControllerConfig();
         $controllerConfig->setProcessorClass('\Mock\Proccessor');
@@ -284,6 +359,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($config->findActionConfig('/action1'));
         $this->assertNotEmpty($config->findActionConfig('/action2'));
 
+        $config->removeActionConfig($actionConfig2);
+        $this->assertEmpty($config->findActionConfig('/action2'));
+
         $actionClass = '\MyActionConfigClass';
         $config->setActionClass($actionClass);
         $this->assertEquals('\MyActionConfigClass', $config->getActionClass());
@@ -301,6 +379,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($config->findFormBeanConfigs()));
         $this->assertEquals($formBeanConfig1, $config->findFormBeanConfig('myForm1'));
         $this->assertEquals($formBeanConfig2, $config->findFormBeanConfig('myForm2'));
+
+        $config->removeFormBeanConfig($formBeanConfig2);
+        $this->assertEmpty($config->findFormBeanConfig('myForm2'));
 
         $forwardConfig1 = new ForwardConfig();
         $forwardConfig1->setName('welcome');
@@ -332,9 +413,27 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $config->addMessageResourcesConfig($messageConfig);
         $this->assertEquals($messageConfig, $config->findMessageResourcesConfig('key1'));
         $this->assertEquals(1, count($config->findMessageResourcesConfigs()));
+        $config->removeMessageResourcesConfig($messageConfig);
+        $this->assertEmpty($config->findMessageResourcesConfig('key1'));
+
+        $plugInConfig = new PlugInConfig();
+        $plugInConfig->setKey('test');
+        $plugInConfig->setClassName('\stdClass');
+        $config->addPlugInConfig($plugInConfig);
+        $this->assertEquals(1, count($config->findPlugInConfigs()));
+
+        $exceptionConfig = new ExceptionConfig();
+        $exceptionConfig->setType('\Exception');
+        $config->addExceptionConfig($exceptionConfig);
+        $this->assertEquals(1, count($config->findExceptionConfigs()));
+        $this->assertEquals($exceptionConfig, $config->findExceptionConfig('\Exception'));
+        $config->removeExceptionConfig($exceptionConfig);
+        $this->assertEmpty($config->findExceptionConfig('\Exception'));
+
 
         // Test exception
         $config->freeze();
+        $this->assertTrue($config->getConfigured());
         $this->setExpectedException('\Phruts\Exception\IllegalStateException');
         $config->setPrefix('prefix2');
 

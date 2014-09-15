@@ -1,0 +1,9 @@
+<phruts-config>
+    <action-mappings>
+        <action path="/test" type="\\Phruts\\Actions\\ForwardAction">
+
+        </action>
+
+    </action-mappings>
+
+</phruts-config>

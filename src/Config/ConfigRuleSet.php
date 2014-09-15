@@ -96,9 +96,7 @@ namespace Phruts\Config {
      * The value is set on the object on the top of the stack, which
      * must be a ModuleConfig.
      *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class SetClassRule extends \Phigester\AbstractRule
     {
         /**
@@ -129,9 +127,7 @@ namespace Phruts\Config {
      * the parent element and which is made available through the object on
      * the top of the stack, which must be a ModuleConfig.
      *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class ActionConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
         /**
@@ -163,9 +159,7 @@ namespace Phruts\Config {
     /**
      * An object creation factory which creates forward config instances.
      *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class ForwardConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
         /**
@@ -195,10 +189,7 @@ namespace Phruts\Config {
 
     /**
      * An object creation factory which creates controller config instances.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class ControllerConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
         /**
@@ -228,10 +219,7 @@ namespace Phruts\Config {
 
     /**
      * An object creation factory which creates form property config instances.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class FormPropertyConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
         /**
@@ -261,10 +249,7 @@ namespace Phruts\Config {
 
     /**
      * An object creation factory which creates form bean config instances.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class FormBeanConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
         /**
@@ -294,10 +279,7 @@ namespace Phruts\Config {
 
     /**
      * An object creation factory which creates message resources config instances.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class MessageResourcesConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
         /**
@@ -327,10 +309,7 @@ namespace Phruts\Config {
 
     /**
      * An object creation factory which creates data source config instances.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class DataSourceConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
         /**
@@ -360,8 +339,6 @@ namespace Phruts\Config {
 
     /**
      * An object creation factory which creates exception config instances.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
      */
     final class ExceptionConfigFactory extends \Phigester\AbstractObjectCreationFactory
     {
@@ -393,16 +370,13 @@ namespace Phruts\Config {
     /**
      * Class that calls addProperty for the top object on the stack, which must be
      * a DataSourceConfig.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class AddDataSourcePropertyRule extends \Phigester\AbstractRule
     {
         /**
          * @param array $attributes
          */
-        public function begin($attributes)
+        public function begin(array $attributes)
         {
             $dataSourceConfig = $this->digester->peek();
             $dataSourceConfig->addProperty($attributes['property'], $attributes['value']);
@@ -420,16 +394,13 @@ namespace Phruts\Config {
     /**
      * Class that records the name and value of a configuration property to
      * be used in configuring a PlugIn instance when instantiated.
-     *
-     * @author Cam Manderson <cameronmanderson@gmail.com> (PHP53 port of Struts)
-     * @author Olivier HENRY <oliv.henry@gmail.com> (PHP5 port of Struts)
-     * @author John WILDENAUER <jwilde@users.sourceforge.net> (PHP4 port of Struts) */
+     */
     final class PlugInSetPropertyRule extends \Phigester\AbstractRule
     {
         /**
          * @param array $attributes
          */
-        public function begin($attributes)
+        public function begin(array $attributes)
         {
             $plugInConfig = $this->digester->peek();
             $plugInConfig->addProperty($attributes['property'], $attributes['value']);

@@ -558,7 +558,7 @@ class ModuleConfig
         if ($this->configured) {
             throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');
         }
-        unset ($this->actionConfigs[$config->getName()]);
+        unset ($this->formBeans[$config->getName()]);
     }
 
     /**
@@ -662,6 +662,6 @@ class ModuleConfig
         if ($this->configured) {
             throw new \Phruts\Exception\IllegalStateException("Configuration is frozen");
         }
-        unset($this->exceptions[config.getType()]);
+        unset($this->exceptions[$config->getType()]);
     }
 }
