@@ -269,7 +269,7 @@ class RequestProcessor
 	 * @param \Phruts\Action\AbstractActionForm form The ActionForm we are processing
 	 * @param \Phruts\Config\ActionConfig mapping The ActionMapping we are using
 	 *
-	 * @return \Phruts\Action\Forward
+	 * @return \Phruts\Action\ActionForward
 	 * @exception IOException if an input/output error occurs
 	 * @exception kernelException if a kernel exception occurs
 	 */
@@ -484,8 +484,7 @@ class RequestProcessor
 	 * @param \Phruts\Action\AbstractActionForm $form The ActionForm instance we are
 	 * populating
 	 * @param \Phruts\Config\ActionConfig $mapping The ActionMapping we are using
-	 * @throws \Phruts\Exception - If thrown by
-	 * \Phruts\Util\RequestUtils->populate()
+	 * @throws \Phruts\Exception - If thrown by \Phruts\Util\RequestUtils->populate()
 	 */
     protected function processPopulate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $form, \Phruts\Config\ActionConfig $mapping)
     {
@@ -497,12 +496,12 @@ class RequestProcessor
         if (!empty($this->log)) {
             $this->log->debug('  Populating bean properties from this request');
         }
-        $form->setkernel($this->actionKernel);
+        $form->setActionKernel($this->actionKernel);
         $form->reset($mapping, $request);
 
         try {
             \Phruts\Util\RequestUtils::populate($form, $mapping->getPrefix(), $mapping->getSuffix(), $request);
-        } catch (kernelException $e) {
+        } catch (\Phruts\Exception $e) {
             throw $e;
         }
 

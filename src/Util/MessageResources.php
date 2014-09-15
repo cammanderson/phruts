@@ -259,7 +259,7 @@ abstract class MessageResources
             if (!is_null($arg3))
                 $args[3] = (string) $arg3;
         } else {
-            $args = array_slice($args, 0, 4);
+            $args = array_slice($arg0, 0, 4);
         }
         $params = array (
             '{0}',

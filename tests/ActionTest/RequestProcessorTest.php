@@ -1,8 +1,12 @@
 <?php
 namespace ActionTest;
 
+use Phruts\Action\AbstractActionForm;
+use Phruts\Action\ActionError;
+use Phruts\Action\ActionErrors;
 use Phruts\Action\ActionMapping;
 use Phruts\Action\RequestDispatcherMatcher;
+use Phruts\Config\FormBeanConfig;
 use Phruts\Config\ModuleConfig;
 use Phruts\Util\ClassLoader;
 use Phruts\Config\ActionConfig;
@@ -283,6 +287,40 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $this->response->getStatusCode());
     }
 
+    public function testInvalidActionForm()
+    {
+        // Mock a request
+        $request = Request::create('http://localhost/test', 'GET', array(), array(), array(), array('PATH_INFO' => '/test'));
+
+        // Update the mock
+        $dispatcher = $this->getMock('\Phruts\Action\RequestDispatcher');
+        $dispatcher->expects($this->once())
+            ->method('doForward')
+            ->willReturn(null);
+        $this->application['request_dispatcher'] = $dispatcher;
+
+
+        $formConfig = new FormBeanConfig();
+        $formConfig->setName('form1');
+        $formConfig->setType('\ActionTest\MyInvalidForm');
+        $this->moduleConfig->addFormBeanConfig($formConfig);
+        $actionMapping = new ActionMapping();
+        $actionMapping->setScope('request');
+        $actionMapping->setPath('/test');
+        $actionMapping->setType('\Phruts\Actions\ForwardAction');
+        $actionMapping->setParameter('success');
+        $actionMapping->setName('form1');
+        $actionMapping->setInput('myinput.html.twig');
+        $forwardConfig = new ForwardConfig();
+        $forwardConfig->setName('success');
+        $forwardConfig->setPath('success.html.twig');
+        $actionMapping->addForwardConfig($forwardConfig);
+        $actionMapping->setModuleConfig($this->moduleConfig);
+        $this->moduleConfig->addActionConfig($actionMapping);
+
+        $this->requestProcessor->process($request, $this->response);
+    }
+
 //    public function testNextActionForward()
 //    {
 //        $request = $this->getMock('\Symfony\Component\HttpFoundation\Request');
@@ -320,5 +358,17 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         return $method;
     }
+
+}
+
+class MyInvalidForm extends AbstractActionForm
+{
+    public function validate(\Phruts\Config\ActionConfig $mapping, \Symfony\Component\HttpFoundation\Request $request)
+    {
+        $errors = new ActionErrors();
+        $errors->add('property', new ActionError('message'));
+        return $errors;
+    }
+
 
 }
