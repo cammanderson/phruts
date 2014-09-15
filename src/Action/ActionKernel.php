@@ -101,7 +101,7 @@ class ActionKernel implements HttpKernelInterface
 
         // Obtain the module config provider (implements caching, etc)
         if(empty($this->application[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER])) {
-            throw new \Phruts\Exception('Unable to locate the module config provider service');
+            throw new \Phruts\Exception($this->getInternal()->getMessage('', 'moduleConfig.provider.missing'));
         }
         $moduleConfigProvider = $this->application[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER];
 
@@ -113,7 +113,7 @@ class ActionKernel implements HttpKernelInterface
             // Get the module config
             $moduleConfig = $moduleConfigProvider->getModuleConfig($prefix, $config);
             if(empty($moduleConfig)) {
-                throw new \Phruts\Exception('Unable to locate the module config for ' . $prefix);
+                throw new \Phruts\Exception($this->getInternal()->getMessage('', 'moduleConfig.missing', $prefix));
             }
             $this->application[\Phruts\Util\Globals::MODULE_KEY . $prefix] = $moduleConfig;
 
@@ -138,7 +138,7 @@ class ActionKernel implements HttpKernelInterface
         $config = $request->attributes->get(\Phruts\Util\Globals::MODULE_KEY);
         if (empty($config)) {
             if(empty($this->application[\Phruts\Util\Globals::MODULE_KEY])) {
-                throw new \Phruts\Exception('Can not locate the default module for this request');
+                throw new \Phruts\Exception($this->getInternal()->getMessage('', 'moduleConfig.missing.default'));
             }
             $config = $this->application[\Phruts\Util\Globals::MODULE_KEY];
         }
