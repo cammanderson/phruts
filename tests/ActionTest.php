@@ -50,6 +50,38 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $datasource = $getDataSource->invokeArgs($this->action, array(new \Symfony\Component\HttpFoundation\Request(), 'key'));
         $this->assertNotEmpty($datasource);
         $this->assertTrue($datasource instanceof PDO);
+
+        $this->actionKernel->method('getDataSource')->will($this->throwException(new Exception));
+        $this->setExpectedException('\Exception');
+        $datasource = $getDataSource->invokeArgs($this->action, array(new \Symfony\Component\HttpFoundation\Request(), 'key'));
+    }
+
+    public function testGetResources()
+    {
+        $getDataSource = self::getMethod('getResources');
+
+        // Get from the request
+        $messages = new \Phruts\Util\PropertyMessageResources(__DIR__ .'/UtilTest/Example');
+        $this->request->attributes->set(\Phruts\Util\Globals::MESSAGES_KEY, $messages);
+        $result = $getDataSource->invokeArgs($this->action, array($this->request));
+        $this->assertNotEmpty($result);
+
+        // Get from the application
+        $request = \Symfony\Component\HttpFoundation\Request::create('http://localhost/test', 'GET', array(), array(), array(), array('PATH_INFO' => '/test'));
+
+        $application = new Silex\Application;
+        $application[\Phruts\Util\Globals::PREFIXES_KEY] = array();
+        $moduleConfig = new \Phruts\Config\ModuleConfig('');
+        $application[\Phruts\Util\Globals::MODULE_KEY] = $moduleConfig;
+        \Phruts\Util\RequestUtils::selectModule($request, $application);
+
+        $key = 'key';
+        $application[$key] = $messages;
+        $actionKernel = new \Phruts\Action\ActionKernel($application);
+        $this->action->setActionKernel($actionKernel);
+
+        $result = $getDataSource->invokeArgs($this->action, array($this->request, $key));
+        $this->assertNotEmpty($result);
     }
 
     public function testLocale()
@@ -69,11 +101,6 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
         $setLocale->invokeArgs($this->action, array($this->request, null));
         $this->assertEquals('fr', $getLocale->invokeArgs($this->action, array($this->request)));
-    }
-
-    public function testGetResources()
-    {
-        // TODO: Test
     }
 
     public function testIsCancelled()
@@ -134,6 +161,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $errors->add('key', new \Phruts\Action\ActionError('message'));
 
         $saveErrors = self::getMethod('addErrors');
+        $this->assertEmpty($saveErrors->invokeArgs($this->action, array($this->request, null)));
         $saveErrors->invokeArgs($this->action, array($this->request, $errors));
 
         $this->assertNotEmpty($this->request->attributes->get(\Phruts\Util\Globals::ERROR_KEY));
@@ -265,22 +293,37 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     public function testGenerateToken()
     {
-        $generateLocale = self::getMethod('generateToken');
+        $generateToken = self::getMethod('generateToken');
+
+        $result = $generateToken->invokeArgs($this->action, array($this->request));
+        $this->assertNotEmpty($result);
     }
 
     public function testIsTokenValid()
     {
+        $saveToken = self::getMethod('saveToken');
         $isTokenValid = self::getMethod('isTokenValid');
+        $saveToken->invokeArgs($this->action, array($this->request));
+        $token = $this->request->getSession()->get(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY);
+        $this->request->query->set(\Phruts\Util\Globals::TOKEN_KEY, $token);
+        $this->assertTrue($isTokenValid->invokeArgs($this->action, array($this->request)));
     }
 
     public function testResetToken()
     {
+        $saveToken = self::getMethod('saveToken');
         $resetToken = self::getMethod('resetToken');
+        $saveToken->invokeArgs($this->action, array($this->request));
+        $this->assertNotEmpty($this->request->getSession()->get(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY));
+        $resetToken->invokeArgs($this->action, array($this->request));
+        $this->assertEmpty($this->request->getSession()->get(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY));
     }
 
     public function testSaveToken()
     {
-        $isTokenValid = self::getMethod('isTokenValid');
+        $saveToken = self::getMethod('saveToken');
+        $saveToken->invokeArgs($this->action, array($this->request));
+        $this->assertNotEmpty($this->request->getSession()->get(\Phruts\Util\Globals::TRANSACTION_TOKEN_KEY));
     }
 
     public function testExecute()

@@ -3,12 +3,19 @@ namespace ActionTest;
 
 use Phruts\Action\ActionMapping;
 use Phruts\Action\RequestDispatcherMatcher;
+use Phruts\Config\ModuleConfig;
 use Phruts\Util\ClassLoader;
 use Phruts\Config\ActionConfig;
 use Phruts\Config\ForwardConfig;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Phruts\Action\RequestProcessor
+     */
     protected $requestProcessor;
     protected $request;
     protected $response;
@@ -33,10 +40,11 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $storage = new \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage();
         $session = new \Symfony\Component\HttpFoundation\Session\Session($storage);
         $this->request->setSession($session);
+        $this->request->initialize();
         $this->response = new \Symfony\Component\HttpFoundation\Response();
 
 
-        $this->moduleConfig = new \Phruts\Config\ModuleConfig('default');
+        $this->moduleConfig = new \Phruts\Config\ModuleConfig('');
         $actionConfig = new \Phruts\Config\ActionConfig();
         $actionConfig->setPath('/default');
         $actionConfig->setType('\Phruts\Actions\ForwardAction');
@@ -72,11 +80,27 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $dispatcher->method('doForward')
             ->willReturn(null);
 
-        $requestMatcher = new RequestDispatcherMatcher($dispatcher);
-        $this->application['request_dispatcher_matcher'] = $requestMatcher;
-
+//        $requestMatcher = new RequestDispatcherMatcher($dispatcher);
+        $this->application['request_dispatcher'] = $dispatcher;
     }
 
+
+    public function testProcessPath()
+    {
+        // Mock a request
+        $request = $this->getMock('\Symfony\Component\HttpFoundation\Request');
+        $request->initialize();
+        $request->expects($this->exactly(1))
+            ->method('getPathInfo')
+            ->willReturn('/test');
+
+        $method = self::getMethod('processPath');
+
+        $result = $method->invokeArgs($this->requestProcessor, array($request, $this->response));
+        $this->assertNotEmpty($result);
+        $this->assertNotEquals(400, $this->response->getStatusCode());
+        $this->assertEquals('/test', $result);
+    }
 
     public function testProcessLocale()
     {
@@ -231,6 +255,64 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $method->invokeArgs($this->requestProcessor, array($uri, $this->request, $this->response));
     }
 
+    public function testProcess()
+    {
+        // Mock a request
+        $request = Request::create('http://localhost/test', 'GET', array(), array(), array(), array('PATH_INFO' => '/test'));
+
+        // Update the mock
+        $dispatcher = $this->getMock('\Phruts\Action\RequestDispatcher');
+        $dispatcher->expects($this->once())
+            ->method('doForward')
+            ->willReturn(null);
+        $this->application['request_dispatcher'] = $dispatcher;
+
+        // Setup a base action configuration to forward a success
+        $actionConfig = new ActionMapping();
+        $actionConfig->setPath('/test');
+        $actionConfig->setType('\Phruts\Actions\ForwardAction');
+        $actionConfig->setParameter('success');
+        $actionConfig->setModuleConfig($this->moduleConfig);
+        $this->moduleConfig->addActionConfig($actionConfig);
+        $forwardConfig = new ForwardConfig();
+        $forwardConfig->setName('success');
+        $forwardConfig->setPath('file.html');
+        $actionConfig->addForwardConfig($forwardConfig);
+
+        $this->requestProcessor->process($request, $this->response);
+        $this->assertEquals(200, $this->response->getStatusCode());
+    }
+
+//    public function testNextActionForward()
+//    {
+//        $request = $this->getMock('\Symfony\Component\HttpFoundation\Request');
+//        $request->initialize();
+//        $request->expects($this->exactly(1))
+//            ->method('getPathInfo')
+//            ->willReturn('/test');
+//
+//        // Update the mock
+//        $dispatcher = $this->getMock('\Phruts\Action\RequestDispatcher');
+//        $dispatcher->expects($this->exactly(1))
+//            ->method('doInclude')
+//            ->willReturn(null);
+//        $this->application['request_dispatcher'] = $dispatcher;
+//
+//        // Setup a base action configuration to forward a success
+//        $actionConfig = new ActionMapping();
+//        $actionConfig->setPath('/test');
+//        $actionConfig->setType('\ActionTest\MockAction');
+//        $actionConfig->setModuleConfig($this->moduleConfig);
+//        $this->moduleConfig->addActionConfig($actionConfig);
+//        $forwardConfig = new ForwardConfig();
+//        $forwardConfig->setName('success');
+//        $forwardConfig->setPath('file.html');
+//
+//        $this->requestProcessor->process($request, $this->response);
+//    }
+
+
+
     protected static function getMethod($name)
     {
         $class = new \ReflectionClass('\Phruts\Action\RequestProcessor');
@@ -240,4 +322,3 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
 }
- 

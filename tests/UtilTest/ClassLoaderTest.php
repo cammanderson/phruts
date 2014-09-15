@@ -1,7 +1,5 @@
 <?php
-/*
- * Author; Cameron Manderson <cameronmanderson@gmail.com>
- */
+namespace UtilTest;
 
 class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,7 +40,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\Phruts\Actions\ActionDispatcher', '\Phruts\Action'));
         $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\Phruts\Action', '\Phruts\Action'));
-        $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('B', 'A'));
+        $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\UtilTest\B', '\UtilTest\A'));
     }
 
     public function testNewInstance()

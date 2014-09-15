@@ -34,10 +34,10 @@ class Action
 
     }
 
-    public function __wakeup()
-    {
-
-    }
+//    public function __wakeup()
+//    {
+//
+//    }
 
     /**
 	 * Return the controller action server instance to which we are attached.

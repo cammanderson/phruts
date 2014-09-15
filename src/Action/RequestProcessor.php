@@ -44,9 +44,9 @@ class RequestProcessor
 	 */
     protected $actionKernel = null;
 
-    public function __wakeup()
-    {
-    }
+//    public function __wakeup()
+//    {
+//    }
 
     final public function __construct()
     {
@@ -808,7 +808,7 @@ class RequestProcessor
 
         // TODO: Update to match the request dispatcher
         $app = $this->actionKernel->getApplication();
-        $rd = $app['request_dispatcher_matcher']->getRequestDispatcher($uri);
+        $rd = $app['request_dispatcher'];
         if (is_null($rd)) {
             $response->setStatusCode(500);
             $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
@@ -831,7 +831,7 @@ class RequestProcessor
     {
         // TODO: Update to match the request dispatcher
         $app = $this->actionKernel->getApplication();
-        $rd = $app['request_dispatcher_matcher']->getRequestDispatcher($uri);
+        $rd = $app['request_dispatcher'];
         if (is_null($rd)) {
             $response->setStatusCode(500);
             $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));

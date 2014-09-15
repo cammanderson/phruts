@@ -1,5 +1,5 @@
 <?php
-namespace \Phruts\Action;
+namespace Phruts\Action;
 
 class ActionForward extends \Phruts\Config\ForwardConfig
 {
