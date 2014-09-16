@@ -1,5 +1,5 @@
 <?php
-namespace Phruts\Utils;
+namespace Phruts\Util\ModuleProvider;
 
 interface ModuleProviderInterface
 {

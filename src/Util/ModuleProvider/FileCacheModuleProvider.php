@@ -1,8 +1,8 @@
 <?php
 namespace Phruts\Util\ModuleProvider;
 
+use Phruts\Config\ConfigRuleSet;
 use Phruts\Config\ModuleConfig;
-use Phruts\Utils\ModuleProviderInterface;
 use Phigester\Digester;
 
 class FileCacheModuleProvider implements ModuleProviderInterface
@@ -21,11 +21,12 @@ class FileCacheModuleProvider implements ModuleProviderInterface
 
     public function getModuleConfig($prefix = '', $config)
     {
+        $configPaths = preg_split('/,/', $config);
         $rebuild = false;
 
         // Determine if a cache file is present
-        $cacheFile = $this->cachePath . '/' . $prefix . '.data';
-        $mtime = filemtime($cacheFile);
+        $cacheFile = $this->cachePath . '/phruts' . (strlen($prefix) > 0 ? '-' : '') . $prefix . '.data';
+        $mtime = file_exists($cacheFile) ? filemtime($cacheFile) : false;
 
         // Check the ages of the config paths against the age of the cache file
         if($mtime !== false) {
@@ -47,7 +48,7 @@ class FileCacheModuleProvider implements ModuleProviderInterface
         // Get the module config
         if($rebuild == true) {
             // (re)Build the cache
-            if(!is_writable($cacheFile)) {
+            if(!is_writable(dirname($cacheFile)) || (is_file($cacheFile) && !is_writable($cacheFile))) {
                 throw new \Phruts\Exception('Unable to write to the cache');
             }
 
@@ -57,10 +58,13 @@ class FileCacheModuleProvider implements ModuleProviderInterface
             if(empty($digester)) {
                 throw new \Phruts\Exception('Digester is not present in the application, unable to process the configruation file');
             }
+
+            $digester->clear();
             $digester->push($moduleConfig);
             foreach($configPaths as $path) {
                 $digester->parse($path);
             }
+            $moduleConfig->freeze();
 
             // Write out the cache
             file_put_contents($cacheFile, serialize($moduleConfig));

@@ -15,35 +15,42 @@
     <global-exceptions>
         <exception type="\\Example\\SomeException"
                    key="some.exception.key"
-                   path="../app/Resources/views/error.html.twig"/>
+                   path="error.html.twig"/>
     </global-exceptions>
 
     <global-forwards>
-        <forward name="login" path="../app/Resources/views/login.html.twig"/>
-        <forward name="home" path="../app/Resources/views/home.html.twig"/>
+        <forward name="login" path="login.html.twig"/>
+        <forward name="home" path="home.html.twig"/>
     </global-forwards>
 
     <action-mappings>
         <action path="/login"
-                type="\\Example\\Action\\LoginAction"
+                type="\Example\Action\LoginAction"
                 name="bean1"
                 scope="request"
-                input="../app/Resources/views/login.html.twig">
-            <forward name="ok" path="../app/Resources/views/home.html.twig"/>
-            <forward name="fail" path="../app/Resources/views/login.html.twig"/>
+                input="login.html.twig">
+            <forward name="ok" path="home.html.twig"/>
+            <forward name="fail" path="login.html.twig"/>
         </action>
+        
+        <action path="/test"
+                type="\Phruts\Actions\ForwardAction"
+                parameter="example.html"
+                roles=""/>
 
         <action path="/pay"
-                type="\\Example\\MakePaymentAction"
+                type="\Example\MakePaymentAction"
                 name="bean2"
                 scope="request"
-                input="../app/Resources/views/payment.html.twig">
-            <forward name="success" path="../app/Resources/views/thankYou.html.twig"/>
-            <forward name="error" path="../app/Resources/views/paymentFailure.html.twig"/>
+                input="payment.html.twig">
+            <forward name="success" path="thankYou.html.twig"/>
+            <forward name="error" path="paymentFailure.html.twig"/>
         </action>
     </action-mappings>
 
-    <controller processorClass="\\Example\\MyRequestProcessor"/>
+    <controller>
+        <set-property  property="noCache" value="true"/>
+    </controller>
     <!--<plug-in className="\\Example\\MyExamplePlugin">-->
         <!--<set-property-->
                 <!--property="config"-->

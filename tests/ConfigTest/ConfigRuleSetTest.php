@@ -7,6 +7,7 @@ use Phruts\Config\ModuleConfig;
 
 class ConfigRuleSetTest extends \PHPUnit_Framework_TestCase
 {
+
     public function testRuleSets()
     {
         $digester = new Digester();
@@ -14,6 +15,8 @@ class ConfigRuleSetTest extends \PHPUnit_Framework_TestCase
         $moduleConfig = new ModuleConfig('');
         $digester->push($moduleConfig);
         $digester->parse(__DIR__ . '/full-config.xml');
+        $this->assertTrue(count($moduleConfig->findActionConfigs()) > 0);
+        $this->assertNotEmpty($moduleConfig->findActionConfig('/login'));
     }
 }
  

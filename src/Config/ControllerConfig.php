@@ -32,7 +32,7 @@ class ControllerConfig
 	 *
 	 * @var string
 	 */
-    protected $processorClass = '\Phruts\RequestProcessor';
+    protected $processorClass = '\Phruts\Action\RequestProcessor';
 
     /**
 	 * @return string

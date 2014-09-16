@@ -58,7 +58,7 @@ abstract class MessageResources
     public function __wakeup()
     {
 //        if (is_null(self::$log)) {
-//            self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
+//            self::$log = \Phruts\Utils\LoggerManager::getLogger(__CLASS__);
 //        }
     }
 
@@ -74,7 +74,7 @@ abstract class MessageResources
     public function __construct($config, $returnNull = false)
     {
 //        if (is_null(self::$log)) {
-//            self::$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
+//            self::$log = \Phruts\Utils\LoggerManager::getLogger(__CLASS__);
 //        }
 
         // TODO: Set the default location based on Application

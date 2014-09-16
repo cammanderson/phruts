@@ -3,7 +3,7 @@
  * Author; Cameron Manderson <cameronmanderson@gmail.com>
  */
 
-class DataSourceTest  extends \PHPUnit_Framework_TestCase
+class DataSourceTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testInstantiate()

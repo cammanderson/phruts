@@ -319,7 +319,7 @@ class RequestProcessor
     protected function processNoCache(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         if ($this->moduleConfig->getControllerConfig()->getNocache()) {
-            $response->headers->add('Pragma', 'No-cache');
+            $response->headers->set('Pragma', 'No-cache');
             $response->headers->set('Cache-Control', 'no-cache');
             $response->expire();
         }
@@ -691,8 +691,6 @@ class RequestProcessor
         }
         try {
             $instance = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Action');
-
-//			API::addInclude($className);
         } catch (\Exception $e) {
             $msg = $this->getInternal()->getMessage(null, 'actionCreate', $mapping->getPath());
             //$this->log->error($msg . ' - ' . $e->getMessage());

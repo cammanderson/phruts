@@ -1,7 +1,11 @@
 <?php
 namespace ActionsTest;
 
+use Phruts\Action\ActionKernel;
 use Phruts\Config\ActionConfig;
+use Phruts\Config\ModuleConfig;
+use Phruts\Util\Globals;
+use Satooshi\Bundle\CoverallsBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,28 +22,15 @@ class SwitchActionTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $internal = $this->getMockBuilder('\Phruts\Util\MessageResources')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $internal->expects($this->any())
-            ->method('getMessage')
-            ->willReturn('message')
-        ;
-
-        $actionKernel = $this->getMockBuilder('\Phruts\Action\ActionKernel')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $actionKernel
-            ->expects($this->any())
-            ->method('getInternal')
-            ->willReturn($internal);
+        $application = new \Silex\Application();
+        $application[Globals::PREFIXES_KEY] = array();
+        $application[Globals::MODULE_KEY] = new ModuleConfig('');
+        $actionKernel = new ActionKernel($application);
 
         $this->action = new \Phruts\Actions\SwitchAction();
         $this->action->setActionKernel($actionKernel);
         $this->mapping = new ActionConfig();
-        $this->request = new Request();
+        $this->request = Request::createFromGlobals();
         $this->response = new Response();
     }
 
@@ -52,6 +43,14 @@ class SwitchActionTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('\Phruts\Exception');
         $this->action->execute($this->mapping, null, $this->request, $this->response);
+    }
+
+    public function testSwitch()
+    {
+        $this->request->query->set('page', 'page');
+        $this->request->query->set('prefix', 'invalid');
+        $this->action->execute($this->mapping, null, $this->request, $this->response);
+        // TODO: Check the module has switched
     }
 
 }

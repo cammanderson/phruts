@@ -1,6 +1,8 @@
 <?php
 namespace Phruts;
 
+use Phigester\Digester;
+use Phruts\Config\ConfigRuleSet;
 use Phruts\Util\ModuleProvider\FileCacheModuleProvider;
 
 /**
@@ -26,7 +28,9 @@ class PhrutsServiceProvider implements \Silex\ServiceProviderInterface
 
         // Register our digester for when we need it
         $app[\Phruts\Util\Globals::DIGESTER] = $app->share(function() use ($app) {
-            return new \Phigester\Digester();
+            $digester = new Digester();
+            $digester->addRuleSet(new ConfigRuleSet('phruts-config'));
+            return $digester;
         });
 
         $app[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER] = $app->share(function() use ($app) {

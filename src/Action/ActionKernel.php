@@ -156,10 +156,9 @@ class ActionKernel implements HttpKernelInterface
     {
         // Access from the dependency injector
         $key = \Phruts\Util\Globals::REQUEST_PROCESSOR_KEY . $config->getPrefix();
-        $processor = $this->application[$key];
 
         // If not found
-        if (empty($processor)) {
+        if (empty($this->application[$key])) {
             try {
                 $processorClass = $config->getControllerConfig()->getProcessorClass();
                 $processor = \Phruts\Util\ClassLoader::newInstance($processorClass, '\Phruts\Action\RequestProcessor');
@@ -171,6 +170,8 @@ class ActionKernel implements HttpKernelInterface
                 throw new \Exception('Cannot initialize RequestProcessor of class ' . $processorClass . ': ' . $e->getMessage());
             }
         }
+
+        return $this->application[$key];
     }
 
     protected function initModuleMessageResources($moduleConfig)

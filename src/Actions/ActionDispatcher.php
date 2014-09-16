@@ -66,7 +66,7 @@ class ActionDispatcher extends \Phruts\Action
 	 */
     public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        //$log = Phruts_Util_Logger_Manager::getLogger(__CLASS__);
+        //$log = \Phruts\Utils\LoggerManager::getLogger(__CLASS__);
 
         // See if this is cancelled
         if ($this->isCancelled($request)) {
@@ -109,7 +109,7 @@ class ActionDispatcher extends \Phruts\Action
     protected function unspecified(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
-        //$log = Phruts_Util_Logger_Manager::getRootLogger();
+        //$log = \Phruts\Utils\LoggerManager::getRootLogger();
         //$log->error($message);
         $response->setStatusCode(400);
         $response->setContent($message);
@@ -125,7 +125,7 @@ class ActionDispatcher extends \Phruts\Action
 	 */
     protected function dispatchMethod(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $name)
     {
-        //$log = Phruts_Util_Logger_Manager::getRootLogger();
+        //$log = \Phruts\Utils\LoggerManager::getRootLogger();
 
         // Make sure we have a valid method name to call.
         // This may be null if the user hacks the query string.
