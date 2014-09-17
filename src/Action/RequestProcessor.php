@@ -415,19 +415,23 @@ class RequestProcessor
         }
 
         // Check the current user against the list of required roles
-        foreach ($roles as $role) {
-            if ($request->isUserInRole($role)) {
-                if (!empty($this->log)) {
-                    $this->log->debug('  User "' . $request->getRemoteUser() . '" has role "' . $role . '", granting access');
-                }
+        if(!empty($app['security'])) {
+            $security = $app['security'];
 
-                return true;
+            foreach ($roles as $role) {
+                if($security->isGranted($role)) {
+                    if (!empty($this->log)) {
+                        $this->log->debug('  User has role "' . $role . '", granting access');
+                    }
+
+                    return true;
+                }
             }
         }
 
         // The current user is not authorized for this action
         if (!empty($this->log)) {
-            $this->log->debug('  User "' . $request->getRemoteUser() . '" does not have any required role, denying access');
+            $this->log->debug('  User does not have any required role, denying access');
         }
         $response->setStatusCode(403);
         $response->setContent($this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
