@@ -1,6 +1,12 @@
 <?php
 namespace Phruts\Action;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+
 /**
  * RequestProcessor contains the processing logic that the PHruts
  * controller kernel performs as it receives each kernel request.
@@ -77,6 +83,12 @@ class RequestProcessor
         $this->actions = array ();
         $this->actionKernel = $actionKernel;
         $this->moduleConfig = $moduleConfig;
+
+        // Log
+        $application = $this->actionKernel->getApplication();
+        if(!empty($application['logger'])) {
+            $this->log = $application['logger'];
+        }
     }
 
     /**
@@ -186,11 +198,10 @@ class RequestProcessor
         $prefix = $this->moduleConfig->getPrefix();
         if (substr($path, 0, strlen($prefix)) != $prefix) {
             $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
-            //$this->log->error($msg);
-            $response->setStatusCode(400);
-            $response->setContent($msg);
-
-            return null;
+            if(!empty($this->log)) {
+                $this->log->error($msg);
+            }
+            throw new BadRequestHttpException($msg);
         }
 
         // TODO: Add back in support for kernel path
@@ -253,8 +264,8 @@ class RequestProcessor
     protected function processContent(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         $contentType = $this->moduleConfig->getControllerConfig()->getContentType();
-        if ($contentType != '') {
-            $response->setContent($contentType);
+        if (!empty($contentType)) {
+            $response->headers->set('Content-Type', $contentType);
         }
     }
 
@@ -384,11 +395,10 @@ class RequestProcessor
             $msg = 'processInvalid';
         }
 
-        //$this->log->error($msg);
-        $response->setStatusCode(400);
-        $response->setContent($msg);
-
-        return null;
+        if(!empty($this->log)) {
+            $this->log->error($msg);
+        }
+        throw new BadRequestHttpException($msg);
     }
 
     /**
@@ -419,9 +429,9 @@ class RequestProcessor
             $security = $app['security'];
 
             foreach ($roles as $role) {
-                if($security->isGranted($role)) {
+                if ($security->isGranted($role)) {
                     if (!empty($this->log)) {
-                        $this->log->debug('  User has role "' . $role . '", granting access');
+                        $this->log->debug('  User "' . $request->getRemoteUser() . '" has role "' . $role . '", granting access');
                     }
 
                     return true;
@@ -429,14 +439,12 @@ class RequestProcessor
             }
         }
 
+
         // The current user is not authorized for this action
         if (!empty($this->log)) {
-            $this->log->debug('  User does not have any required role, denying access');
+            $this->log->debug('  User "' . $request->getRemoteUser() . '" does not have any required role, denying access');
         }
-        $response->setStatusCode(403);
-        $response->setContent($this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
-
-        return false;
+        throw new AccessDeniedHttpException($this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
     }
 
     /**
@@ -570,17 +578,16 @@ class RequestProcessor
         $input = $mapping->getInput();
         if (is_null($input)) {
             if (!empty($this->log)) {
-                //$this->log->debug('  Validation failed but no input form available');
+                $this->log->debug('  Validation failed but no input form available');
             }
-            $response->setStatusCode(500);
-            $response->setContent($this->getInternal()->getMessage(null, 'noInput', $mapping->getPath()), $mapping->getPath());
 
-            return false;
+            $msg = $this->getInternal()->getMessage(null, 'noInput', $mapping->getPath());
+            throw new \Phruts\Exception($msg);
         }
 
         // Save our error messages and return to the input form if possible
         if (!empty($this->log)) {
-            //$this->log->debug('  Validation failed, returning to "' . $input . '"');
+            $this->log->debug('  Validation failed, returning to "' . $input . '"');
         }
         $request->attributes->set(\Phruts\Util\Globals::ERROR_KEY, $errors);
 
@@ -590,7 +597,7 @@ class RequestProcessor
         } else {
             // Delegate the processing of this request
             if (!empty($this->log)) {
-                //$this->log->debug('  Delegating via forward to "' . $input . '"');
+                $this->log->debug('  Delegating via forward to "' . $input . '"');
             }
             $this->doForward($input, $request, $response);
         }
@@ -619,7 +626,7 @@ class RequestProcessor
 
         // Delegate the processing of this request
         if (!empty($this->log)) {
-            //$this->log->debug('  Delegating via forward to "' . $forward . '"');
+            $this->log->debug('  Delegating via forward to "' . $forward . '"');
         }
         $this->doForward($forward, $request, $response);
 
@@ -649,7 +656,7 @@ class RequestProcessor
 
         // Delegate the processing of this request
         if (!empty($this->log)) {
-            //$this->log->debug('  Delegating via include to "' . $include . '"');
+            $this->log->debug('  Delegating via include to "' . $include . '"');
         }
         $this->doInclude($include, $request, $response);
 
@@ -672,7 +679,7 @@ class RequestProcessor
         // Acquire the Action instance we will be using (if there is one)
         $className = $mapping->getType();
         if (!empty($this->log)) {
-            //$this->log->debug('  Looking for Action instance for class ' . $className);
+            $this->log->debug('  Looking for Action instance for class ' . $className);
         }
 
         $instance = null;
@@ -683,7 +690,7 @@ class RequestProcessor
         }
         if (!is_null($instance)) {
             if (!empty($this->log)) {
-                //$this->log->debug('  Returning existing Action instance');
+                $this->log->debug('  Returning existing Action instance');
             }
 
             return $instance;
@@ -691,17 +698,16 @@ class RequestProcessor
 
         // Create an return a new Action instance
         if (!empty($this->log)) {
-            //$this->log->debug('  Creating new Action instance');
+            $this->log->debug('  Creating new Action instance');
         }
         try {
             $instance = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Action');
         } catch (\Exception $e) {
             $msg = $this->getInternal()->getMessage(null, 'actionCreate', $mapping->getPath());
-            //$this->log->error($msg . ' - ' . $e->getMessage());
-            $response->setStatusCode(500);
-            $response->setContent($msg);
-
-            return null;
+            if(!empty($this->log)) {
+                $this->log->error($msg . ' - ' . $e->getMessage());
+            }
+            throw new HttpException(500, $msg);
         }
 
         $instance->setActionKernel($this->actionKernel);
@@ -734,7 +740,7 @@ class RequestProcessor
             return $action->execute($mapping, $form, $request, $response);
         } catch (\Exception $e) {
             if (!empty($this->log)) {
-                //$this->log->debug('  Exception caught of type ' . get_class($e));
+                $this->log->debug('  Exception caught of type ' . get_class($e));
             }
 
             return $this->processException($request, $response, $e, $form, $mapping);
@@ -759,23 +765,28 @@ class RequestProcessor
         }
 
         if (!empty($this->log)) {
-            //$this->log->debug('processForwardConfig(' . $forward . ')');
+            $this->log->debug('processForwardConfig(' . $forward . ')');
         }
 
-        // Add back in support for calling 'nextActionPath' in the forward config
-        $nextActionPath = $forward->getNextActionPath();
-        if(!empty($nextActionPath)) $forwardPath = (substr($nextActionPath, 0, 1) == '/' ? '' : '/') . $nextActionPath . '.do'; // TODO: Base on current mapping
-        else $forwardPath = $forward->getPath();
+        $forwardPath = $forward->getPath();
 
         if ($forward->getRedirect()) {
             // Build the forward path with a forward context relative URL
             $contextRelative = $forward->getContextRelative();
             if ($contextRelative) {
-                $forwardPath = $request->getContextPath() . $forwardPath;
+//                $forwardPath = $request->getContextPath() . $forwardPath;
+                $forwardPath = $request->getUriForPath($forwardPath);
             }
 
             // TODO: Author a redirect response
-            $response->sendRedirect($response->encodeRedirectURL($forwardPath));
+            $subResponse = $this->actionKernel->getApplication()->redirect($forwardPath);
+            // Update our current response to bring in the response
+            $response->setContent($subResponse->getContent());
+            $response->setStatusCode($subResponse->getStatusCode());
+            $response->setCharset($subResponse->getCharset());
+            $response->setProtocolVersion($subResponse->getProtocolVersion());
+            // TODO: Determine whether all headers are 'added' or should replace (?)
+            $response->headers->add($subResponse->headers->all());
         } else {
             $this->doForward($forwardPath, $request, $response);
         }
@@ -792,31 +803,22 @@ class RequestProcessor
 	 */
     protected function doForward($uri, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        // Identify configured action chaining
-        if (preg_match('/(\/[A-z0-9]+)\.do$/', $uri, $matches)) { // TODO: Base on current kernel mapping
-            if (!empty($this->log)) {
-                //$this->log->debug('  Forward identified as an action chain request');
-            }
-            // Set the action do path in the request and then process
-            $newPath = $matches[1];
-
-            // TODO: Set the path info on the request
-            $request->setPathInfo($newPath);
-            $this->process($request, $response);
-
-            return;
+        $uri = $request->getUriForPath($uri);
+        $subRequest = Request::create($uri, 'GET', array(), $request->cookies->all(), array(), $request->server->all());
+        if ($request->getSession()) {
+            $subRequest->setSession($request->getSession());
         }
 
-        // TODO: Update to match the request dispatcher
-        $app = $this->actionKernel->getApplication();
-        $rd = $app['request_dispatcher'];
-        if (is_null($rd)) {
-            $response->setStatusCode(500);
-            $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
+        // Obtain a new subresponse
+        $subResponse = $this->actionKernel->getApplication()->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
-            return;
-        }
-        $rd->doForward($request, $response);
+        // Update our current response to bring in the response
+        $response->setContent($subResponse->getContent());
+        $response->setStatusCode($subResponse->getStatusCode());
+        $response->setCharset($subResponse->getCharset());
+        $response->setProtocolVersion($subResponse->getProtocolVersion());
+        // TODO: Determine whether all headers are 'added' or should replace (?)
+        $response->headers->add($subResponse->headers->all());
     }
 
     /**
@@ -830,15 +832,7 @@ class RequestProcessor
 	 */
     protected function doInclude($uri, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        // TODO: Update to match the request dispatcher
-        $app = $this->actionKernel->getApplication();
-        $rd = $app['request_dispatcher'];
-        if (is_null($rd)) {
-            $response->setStatusCode(500);
-            $response->setContent($this->getInternal()->getMessage(null, 'requestDispatcher', $uri));
-
-            return;
-        }
-        $rd->doInclude($request, $response);
+        // Process the same as an internal forward
+        $this->doForward($uri, $request, $response);
     }
 }

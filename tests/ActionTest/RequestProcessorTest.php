@@ -22,6 +22,9 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected $requestProcessor;
     protected $request;
+    /**
+     * @var Response;
+     */
     protected $response;
 
     /**
@@ -69,23 +72,17 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this->actionConfig1->setModuleConfig($this->moduleConfig);
         $this->moduleConfig->addActionConfig($this->actionConfig1);
 
-        $this->application = new \Silex\Application();
+//        $this->application = new \Silex\Application();
+        $this->application = $this->getMock('\Silex\Application', array('handle'));
+        $this->application->expects($this->any())
+            ->method('handle')
+            ->willReturn(new Response());
+
         $this->actionKernel = new \Phruts\Action\ActionKernel($this->application);
 
         $this->requestProcessor = new \Phruts\Action\RequestProcessor();
         $this->requestProcessor->init($this->actionKernel, $this->moduleConfig);
 
-        // Stub the request matcher
-        $dispatcher = $this->getMock('\Phruts\Action\RequestDispatcher');
-
-        $dispatcher->method('doInclude')
-            ->willReturn(null);
-
-        $dispatcher->method('doForward')
-            ->willReturn(null);
-
-//        $requestMatcher = new RequestDispatcherMatcher($dispatcher);
-        $this->application['request_dispatcher'] = $dispatcher;
     }
 
 
@@ -119,7 +116,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $method = self::getMethod('processContent');
 
         $method->invokeArgs($this->requestProcessor, array($this->request, $this->response));
-        $this->assertEquals($this->moduleConfig->getControllerConfig()->getContentType(), $this->response->getContent());
+        $this->assertEquals($this->moduleConfig->getControllerConfig()->getContentType(), $this->response->headers->get('content-type'));
     }
 
     public function testProcessException()
@@ -154,6 +151,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $mapping = $this->actionConfig1;
 
+        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\BadRequestHttpException');
         $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $mapping));
     }
 
@@ -264,13 +262,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         // Mock a request
         $request = Request::create('http://localhost/test', 'GET', array(), array(), array(), array('PATH_INFO' => '/test'));
 
-        // Update the mock
-        $dispatcher = $this->getMock('\Phruts\Action\RequestDispatcher');
-        $dispatcher->expects($this->once())
-            ->method('doForward')
-            ->willReturn(null);
-        $this->application['request_dispatcher'] = $dispatcher;
-
         // Setup a base action configuration to forward a success
         $actionConfig = new ActionMapping();
         $actionConfig->setPath('/test');
@@ -291,14 +282,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         // Mock a request
         $request = Request::create('http://localhost/test', 'GET', array(), array(), array(), array('PATH_INFO' => '/test'));
-
-        // Update the mock
-        $dispatcher = $this->getMock('\Phruts\Action\RequestDispatcher');
-        $dispatcher->expects($this->once())
-            ->method('doForward')
-            ->willReturn(null);
-        $this->application['request_dispatcher'] = $dispatcher;
-
 
         $formConfig = new FormBeanConfig();
         $formConfig->setName('form1');
