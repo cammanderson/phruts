@@ -1,21 +1,26 @@
 phruts
 ======
-Modern PHP implementation of Struts in current PHP-FIG Standards
+PHP implementation of Struts in current framework interoperability group standards.
 
 ![Travis build status master](https://travis-ci.org/cammanderson/phruts.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/cammanderson/phruts/badge.png?branch=master)](https://coveralls.io/r/cammanderson/phruts?branch=master)
 
- * Run through Silex (DIC, Security, support building up of other services)
+ * Run through Silex (e.g. get Dependency Injection, dispatcher, security, etc and support building up of other services)
  * Uses Symfony HTTPFoundation/HTTPKernel
  * Implements PSR's (Naming Conventions, Logging, Autoloading)
+ * Use Twig or your other preference dependencies
+
+What is Phruts?
+---------------
+Phruts is based on Apache Struts, a Java MVC framework. Your controllers are configured through an XML file, which then also controls application flow and forwarding.
 
 Install
 -------
-Add to your composer
+Add to your composer and do a ```composer update```
 ```
-    "require": {
-        "cammanderson/struts": "dev-master"
-    }
+"require": {
+    "cammanderson/phruts": "dev-master"
+}
 ```
 
 Add to your Silex application
@@ -31,20 +36,23 @@ use Symfony\Component\HttpFoundation\Response;
 // Create a silex application
 $app = new Silex\Application();
 
-// Register phruts service provider
+// Add in Twig as the template handler
+$app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => __DIR__.'/../app/Resources/views'))
+    ->register(new Silex\Provider\MonologServiceProvider(), array('monolog.logfile' => __DIR__.'/../app/logs/development.log'));
+
+// Add in phruts to organise your controllers
 $app->register(new \Phruts\PhrutsServiceProvider(), array(
         // Register our modules and configs
         \Phruts\Util\Globals::ACTION_KERNEL_CONFIG => array(
-            'config' => '../app/config/web-config.xml',
+            'config' => '../app/config/web-config.xml', // Supports multiple modules/configurations
         )
     ));
-
 
 // Add template handling, eg.. Twig
 $app->get('{path}', function($path) use ($app) {
         return $app['twig']->render($path);
     })
-    ->assert('path', '.+.html.twig');
+    ->assert('path', '.+\.twig');
 
 // Add routes to be matched by Phruts
 $app->get('{path}', function (Request $request) use ($app) {
@@ -77,7 +85,9 @@ Create your app/config/web-config.xml
     </action-mappings>
 </phruts-config>
 ```
-Note: Create your ```app/cache``` folder (this is a config option)
+Extra things:
+ * Create your ```app/cache``` folder (this is a config option)
+ * Create a twig template ```app/Resources/views/welcome.html.twig```
 
 
 Prelim Dev Stages
