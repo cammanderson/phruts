@@ -64,7 +64,7 @@ class ActionDispatcher extends \Phruts\Action
 	 * @return ForwardConfig
 	 * @exception Exception if an exception occurs
 	 */
-    public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         //$log = \Phruts\Utils\LoggerManager::getLogger(__CLASS__);
 
@@ -106,7 +106,7 @@ class ActionDispatcher extends \Phruts\Action
 	 * "Bad Request" error.
 	 *
 	 */
-    protected function unspecified(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    protected function unspecified(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
         //$log = \Phruts\Utils\LoggerManager::getRootLogger();
@@ -123,7 +123,7 @@ class ActionDispatcher extends \Phruts\Action
 	 * Dispatch to the specified method.
 	 * @return \Phruts\Config\ActionConfig
 	 */
-    protected function dispatchMethod(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $name)
+    protected function dispatchMethod(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $name)
     {
         //$log = \Phruts\Utils\LoggerManager::getRootLogger();
 
@@ -162,7 +162,7 @@ class ActionDispatcher extends \Phruts\Action
      * they wish to provide default behavior different than returning null.
      * @since Struts 1.2.0
      */
-    protected function cancelled(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    protected function cancelled(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         return null;
     }

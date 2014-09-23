@@ -7,7 +7,7 @@ use Phruts\Config\ForwardConfig;
 class ForwardAction extends \Phruts\Action {
     public function execute(
         \Phruts\Config\ActionConfig $mapping,
-        $form,
+        \Phruts\Action\AbstractActionForm $form = null,
         \Symfony\Component\HttpFoundation\Request $request,
         \Symfony\Component\HttpFoundation\Response $response
     ) {

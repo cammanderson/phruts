@@ -495,7 +495,7 @@ class RequestProcessor
 	 * @param \Phruts\Config\ActionConfig $mapping The ActionMapping we are using
 	 * @throws \Phruts\Exception - If thrown by \Phruts\Util\RequestUtils->populate()
 	 */
-    protected function processPopulate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $form, \Phruts\Config\ActionConfig $mapping)
+    protected function processPopulate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\AbstractActionForm $form = null, \Phruts\Config\ActionConfig $mapping)
     {
         if (is_null($form)) {
             return;
@@ -538,7 +538,7 @@ class RequestProcessor
 	 * @param \Phruts\Action\ActionMapping $mapping The \Phruts\Config\ActionConfig we are using
 	 * @return boolean
 	 */
-    protected function processValidate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $form, \Phruts\Config\ActionConfig $mapping)
+    protected function processValidate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\AbstractActionForm $form = null, \Phruts\Config\ActionConfig $mapping)
     {
         if (is_null($form)) {
             return true;
@@ -755,7 +755,7 @@ class RequestProcessor
 	 * @param \Phruts\Config\ForwardConfig $forward The ForwardConfig controlling
 	 * where we go next
 	 */
-    protected function processForwardConfig(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $forward)
+    protected function processForwardConfig(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ForwardConfig $forward = null)
     {
         if (is_null($forward)) {
             return;

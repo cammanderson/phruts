@@ -23,7 +23,7 @@ namespace Phruts\Actions;
 class SwitchAction extends \Phruts\Action
 {
     // See superclass for Doc
-    public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         //$log = \Phruts\Utils\LoggerManager::getLogger( __CLASS__);
 

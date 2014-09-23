@@ -78,7 +78,7 @@ class Action
 	 * @return \Phruts\Config\ForwardConfig
 	 * @throws \Exception - if the application business logic throws an exception
 	 */
-    public function execute(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         return null; // Override this method to provide functionality
     }
@@ -209,7 +209,7 @@ class Action
      *
      * @since Struts 1.2.7
      */
-    protected function saveErrorsSession(\Symfony\Component\HttpFoundation\Session\Session $session, $errors)
+    protected function saveErrorsSession(\Symfony\Component\HttpFoundation\Session\Session $session, \Phruts\Action\ActionMessages $errors = null)
     {
         // Remove the error attribute if none are required
         if (($errors == null) || $errors->isEmpty()) {
@@ -232,7 +232,7 @@ class Action
 	 * @param \Phruts\Action\ActionMessages errors  Errors object
 	 * @since Struts 1.2.1
 	 */
-    protected function addErrors(\Symfony\Component\HttpFoundation\Request $request, $errors)
+    protected function addErrors(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Action\ActionMessages $errors = null)
     {
         if ($errors == null) {
             //	bad programmer! *slap*
@@ -270,7 +270,7 @@ class Action
      *
      * @since Struts 1.1
      */
-    protected function saveMessages(\Symfony\Component\HttpFoundation\Request $request, $messages)
+    protected function saveMessages(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Action\ActionMessages $messages = null)
     {
         // Remove any messages attribute if none are required
         if (($messages == null) || $messages->isEmpty()) {
@@ -295,7 +295,7 @@ class Action
      *
      * @since Struts 1.2
      */
-    protected function saveMessagesSession(\Symfony\Component\HttpFoundation\Session\Session $session, $messages)
+    protected function saveMessagesSession(\Symfony\Component\HttpFoundation\Session\Session $session, \Phruts\Action\ActionMessages $messages = null)
     {
         // Remove any messages attribute if none are required
         if (($messages == null) || $messages->isEmpty()) {
