@@ -97,12 +97,7 @@ class ClassLoader
 	 */
     public static function newInstance($name, $parent = null)
     {
-        try {
-            // Load the class and get only the class name
-            $className = self::loadClass($name);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        self::loadClass($name);
 
         // Get reflection information of the class
         $class = new \ReflectionClass($name);

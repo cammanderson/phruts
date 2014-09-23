@@ -22,7 +22,7 @@ class Properties
         $key = (string) $key;
         $value = (string) $value;
 
-        $properties[$key] = $value;
+        $this->properties[$key] = $value;
     }
 
     /**

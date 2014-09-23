@@ -15,12 +15,12 @@ class ExceptionHandler
      * Return the <code>ActionForward</code> instance (if any) returned by
      * the called <code>ExceptionHandler</code>.
      *
-     * @param ex \Exception The exception to handle
-     * @param ae \Phruts\Config\ExceptionConfig The ExceptionConfig corresponding to the exception
-     * @param mapping \Phruts\Action\ActionMapping The ActionMapping we are processing
-     * @param formInstance The \Phruts\Action\AbstractActionForm we are processing
-     * @param request The actionKernel request we are processing
-     * @param response The actionKernel response we are creating
+     * @param \Exception ex The exception to handle
+     * @param \Phruts\Config\ExceptionConfig ae The ExceptionConfig corresponding to the exception
+     * @param \Phruts\Action\ActionMapping mapping The ActionMapping we are processing
+     * @param \Phruts\Action\AbstractActionForm formInstance The \Phruts\Action\AbstractActionForm we are processing
+     * @param \Symfony\Component\HttpFoundation\Request request The actionKernel request we are processing
+     * @param \Symfony\Component\HttpFoundation\Response response The actionKernel response we are creating
      * @return \Phruts\Config\ForwardConfig
      * @exception ActionKernelException if a actionKernel exception occurs
      *
@@ -29,7 +29,7 @@ class ExceptionHandler
     public function execute(\Exception $ex,
                                  \Phruts\Config\ExceptionConfig $ae,
                                  \Phruts\Action\ActionMapping $mapping,
-                                 $formInstance,
+                                 \Phruts\Action\AbstractActionForm $formInstance = null,
                                  \Symfony\Component\HttpFoundation\Request $request,
                                  \Symfony\Component\HttpFoundation\Response $response) {
 

@@ -145,6 +145,7 @@ class RequestUtils
             $instance->setActionKernel($kernel);
         } catch (\Exception $e) {
             $msg = $kernel->getInternal()->getMessage(null, 'formBean', $config->getType());
+            throw new \Phruts\Exception($msg);
         }
 
         return $instance;
