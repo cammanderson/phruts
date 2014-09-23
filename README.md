@@ -107,7 +107,7 @@ Current Development Status
  * COMPLETE: Finalise ActionKernel for mounting on Silex\Application
  * UNDERWAY: Confirm Struts 1.2 code coverage for framework features
  * UNDERWAY: Write the standard Struts style Twig extensions for accessing form+messages
- * TODO: Documentation on working with Silex
+ * Next: Documentation on working with Silex
  * Consider Struts Validation framework (we never used it, so might not make it forward)
  * Struts 1.3 framework features (for convenience techniques only)
 
