@@ -4,6 +4,8 @@ PHP implementation of Struts in current framework interoperability group standar
 
 ![Travis build status master](https://travis-ci.org/cammanderson/phruts.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/cammanderson/phruts/badge.png?branch=master)](https://coveralls.io/r/cammanderson/phruts?branch=master)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/0910ef32-fcd4-418d-9d88-b9d559881780/mini.png)](https://insight.sensiolabs.com/projects/0910ef32-fcd4-418d-9d88-b9d559881780)
+
 
  * Run through Silex (e.g. get Dependency Injection, dispatcher, security, cache, esi, etc and support building up of other services)
  * Uses Symfony HTTPFoundation/HTTPKernel
