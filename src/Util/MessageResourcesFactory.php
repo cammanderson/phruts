@@ -14,7 +14,6 @@ namespace Phruts\Util;
  * <li>Call the <samp>createResources</samp> method of the factory to retrieve
  * a newly instantiated MessageResources instance.</li>
  * </ul>
- * @todo Set log informations.
  */
 abstract class MessageResourcesFactory
 {
@@ -56,8 +55,6 @@ abstract class MessageResourcesFactory
         try {
             $factory = \Phruts\Util\ClassLoader::newInstance(self::$factoryClass, '\Phruts\Util\MessageResourcesFactory');
 
-            // Save dynamic class path
-//			API::addInclude(self::$factoryClass);
             return $factory;
         } catch (\Exception $e) {
             return null;

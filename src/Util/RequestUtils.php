@@ -114,7 +114,6 @@ class RequestUtils
 	 * @param \Phruts\Action\ActionKernel $actionKernel The action actionKernel
 	 * @return \Phruts\Action\AbstractActionForm Form instance associated with this
 	 * request
-	 * @todo Manage exception for ClassLoader::loadClass.
 	 */
     public static function createActionForm(\Symfony\Component\HttpFoundation\Request $request, \Phruts\Config\ActionConfig $mapping, \Phruts\Config\ModuleConfig $moduleConfig, \Phruts\Action\ActionKernel $kernel)
     {
@@ -131,10 +130,6 @@ class RequestUtils
             return null;
         }
 
-        // Look up any existing form bean instance
-//        if (self::$log->isDebugEnabled()) {
-//            self::$log->debug('  Looking for \Phruts\Action\AbstractActionForm bean instance in scope "' . $mapping->getScope() . '" under attribute key "' . $attribute . '"');
-//        }
         $instance = null;
         $session = null;
         if ($mapping->getScope() == 'request') {
@@ -151,9 +146,6 @@ class RequestUtils
             $configClass = $config->getType();
             $instanceClass = get_class($instance);
             if (\Phruts\Util\ClassLoader::classIsAssignableFrom($configClass, $instanceClass)) {
-//                if (self::$log->isDebugEnabled()) {
-//                    self::$log->debug('  Recycling existing \Phruts\Action\AbstractActionForm instance' . ' of class "' . $instanceClass . '"');
-//                }
 
                 return $instance;
             }
@@ -161,10 +153,8 @@ class RequestUtils
 
         // Create and return a new form bean instance
         try {
+            /** @var \Phruts\Action\AbstractActionForm $instance */
             $instance = \Phruts\Util\ClassLoader::newInstance($config->getType(), '\Phruts\Action\AbstractActionForm');
-//            if (self::$log->isDebugEnabled()) {
-//                self::$log->debug('  Creating new \Phruts\Action\AbstractActionForm instance of type "' . $config->getType() . '"');
-//            }
             $instance->setActionKernel($kernel);
         } catch (\Exception $e) {
             $msg = $kernel->getInternal()->getMessage(null, 'formBean', $config->getType());
@@ -241,7 +231,6 @@ class RequestUtils
 	 * @param string $bundle The bundle name to look for. If this is null, the
 	 * default bundle name is used
 	 * @return MessageResources
-	 * @todo If MessageResources is null throw Exception.
 	 */
     public static function retrieveMessageResources(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $application, $bundle)
     {

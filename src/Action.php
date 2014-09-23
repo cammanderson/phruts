@@ -17,7 +17,6 @@ namespace Phruts;
  * can be used to clean up any allocated resources in use by this
  * Action.</p>
  *
- * @todo Manage setActionKernel() calls with or without null argument.
  */
 class Action
 {
@@ -136,7 +135,6 @@ class Action
 	 * @param string $key The key specified in the <message-resources> element
 	 * for the requested bundle
 	 * @return \Phruts\Util\MessageResources
-	 * @todo Implements the code for returning message resources for the default
 	 * module ($request = null).
 	 */
     protected function getResources(\Symfony\Component\HttpFoundation\Request $request, $key = '')
@@ -180,10 +178,13 @@ class Action
 	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 * @param \Phruts\Action\ActionErrors $errors Error messages object
-	 * @todo Check if the second parameter is a \Phruts\Action\ActionErrors object.
 	 */
     protected function saveErrors(\Symfony\Component\HttpFoundation\Request $request, $errors)
     {
+        if(!empty($errors) && !($errors instanceof \Phruts\Action\ActionErrors)) {
+            throw new \Phruts\Exception\IllegalArgumentException('Errors should be an \Phruts\Action\ActionErrors object');
+        }
+
         // Remove any error messages attribute if none are required
         if (is_null($errors) || $errors->isEmpty()) {
             $request->attributes->remove(\Phruts\Util\Globals::ERROR_KEY);
@@ -385,7 +386,6 @@ class Action
 	 * @param \Symfony\Component\HttpFoundation\Request $request The request we are processing
 	 * @param string $locale The user's selected Locale to be set,
 	 * or null to select the system's default Locale
-	 * @todo Check if the second parameter is a Locale object.
 	 */
     protected function setLocale(\Symfony\Component\HttpFoundation\Request $request, $locale)
     {

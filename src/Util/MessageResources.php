@@ -171,7 +171,6 @@ abstract class MessageResources
 	 * for the system default Locale
 	 * @param string $key The message key to look up
 	 * @return boolean
-	 * @todo Check if the parameter is a Locale object.
 	 */
     public function isPresent($locale, $key)
     {
@@ -193,7 +192,6 @@ abstract class MessageResources
 	 * environment is a zero length String.
 	 * @param string $locale The locale for which a key is desired
 	 * @return string
-	 * @todo Check if the parameter is a Locale object.
 	 */
     protected function localeKey($locale)
     {

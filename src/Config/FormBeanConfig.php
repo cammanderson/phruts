@@ -52,12 +52,11 @@ class FormBeanConfig
 	 * Set the module configuration with which this form bean definition
 	 * is associated.
 	 *
-	 * @param ModuleConfig $moduleConfig The new ModuleConfig or
+	 * @param \Phruts\Config\ModuleConfig $moduleConfig The new ModuleConfig or
 	 * null to disassociate this form bean configuration from any module
 	 * @throws \Phruts\Exception\IllegalStateException
-	 * @todo Check if the parameter is a ModuleConfig object.
 	 */
-    public function setModuleConfig($moduleConfig)
+    public function setModuleConfig(\Phruts\Config\ModuleConfig $moduleConfig)
     {
         if ($this->configured) {
             throw new \Phruts\Exception\IllegalStateException('Configuration is frozen');

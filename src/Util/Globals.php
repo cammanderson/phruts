@@ -8,7 +8,8 @@ namespace Phruts\Util;
 class Globals
 {
     /**
-	 * @todo Comment the constant.
+	 * The session GC last time
+     * @deprecated
 	 */
     const SESSION_GC = '\Phruts\Action\SESSION_GS_LASTTIME';
 

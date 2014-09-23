@@ -24,7 +24,6 @@ namespace Phruts\Action;
  * properties they wish to expose, plus override any of the public or protected
  * methods for which they wish to provide modified functionality.</p>
  *
- * @todo Manage setActionKernel() calls with or without null argument.
  */
 abstract class AbstractActionForm
 {

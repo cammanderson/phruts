@@ -3,7 +3,6 @@ namespace Phruts\Util;
 
 /**
  * A set of persistent properties, which can be loaded from a properties file.
- * @todo Manage UTF8 encodage.
  */
 class Properties
 {
