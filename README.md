@@ -21,7 +21,7 @@ Install
 Add to your composer and do a ```composer update```
 ```
 "require": {
-    "cammanderson/phruts": "dev-master"
+    "cammanderson/phruts": "~0.9"
 }
 ```
 
@@ -50,7 +50,7 @@ $app->register(new \Phruts\PhrutsServiceProvider(), array(
         )
     ));
 
-// Add template handling, eg.. Twig
+// Add template handling for matching forwards to Twig templates
 $app->get('{path}', function($path) use ($app) {
         return $app['twig']->render($path);
     })
@@ -61,15 +61,22 @@ $app->get('{path}', function (Request $request) use ($app) {
         return $app[\Phruts\Util\Globals::ACTION_KERNEL]->handle($request, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST, false);
     })
     ->assert('path', '.*')
-    ->value('path', '/')
+    ->value('path', '/'); // Set the welcome path
+
+$app->run();
 ```
 
 Configure your MVC config
 -------------------------
-Create your app/config/web-config.xml
+Create your app/config/web-config.xml. This configuration is digested using the [Phigester](https://github.com/cammanderson/phigester) which will read in the XML configuration and reflect them onto the application configuration. Configuration is then frozen and cached.
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <phruts-config>
+    <form-beans>
+        <form-bean name="donateForm"
+                   type="\MyProject\Forms\Donate" />
+    </form-beans>
+
     <global-exceptions>
         <exception type="\Exception"
                    key="some.exception.key"
@@ -84,6 +91,14 @@ Create your app/config/web-config.xml
         <action path="/"
                 type="\Phruts\Actions\ForwardAction"
                 parameter="welcome"/>
+
+        <action path="/donate"
+                input="/"
+                name="donateForm"
+                type="\MyProject\DonateAction">
+                <forward name="success" path="/thanks.html.twig"/>
+                <forward name="failure" path="/donate-failed.html.twig"/>
+        </action>
     </action-mappings>
 </phruts-config>
 ```
