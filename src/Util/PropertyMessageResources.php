@@ -53,10 +53,6 @@ class PropertyMessageResources extends MessageResources
     public function __construct($config, $returnNull = false)
     {
         parent::__construct($config, $returnNull);
-
-//		if (//self::$log->isDebugEnabled()) {
-//			//self::$log->debug('Initializing, config="' . $config . '"');
-//		}
     }
 
     /**
@@ -67,15 +63,12 @@ class PropertyMessageResources extends MessageResources
 	 * message resource is found for this key or Locale, if the returnNull
 	 * property is set. Otherwise, an appropriate error message will be returned.
 	 *
-	 * @param Locale $locale The requested message Locale
+	 * @param string $locale The requested message Locale
 	 * @param string $key The message key to look up
 	 * @return string
 	 */
     protected function getBaseMessage($locale, $key)
     {
-//		if (//self::$log->isDebugEnabled()) {
-//			//self::$log->debug('getBaseMessage(' . (is_null($locale) ? 'null' : $locale->__toString()) . ',"' . $key . '")');
-//		}
 
         // Initialize variables we will require
         $localeKey = $this->localeKey($locale);
@@ -88,7 +81,7 @@ class PropertyMessageResources extends MessageResources
             return $message;
         }
 
-        if (!is_null($this->defaultLocale) && !$this->defaultLocale->equals($locale)) {
+        if (!is_null($this->defaultLocale) && $this->defaultLocale != $locale) {
             $localeKey = $this->localeKey($this->defaultLocale);
             $message = $this->findMessageByLocaleKey($localeKey, $key, $originalKey);
         }
@@ -121,10 +114,6 @@ class PropertyMessageResources extends MessageResources
 	 */
     protected function loadLocale($localeKey)
     {
-//		if (//self::$log->isDebugEnabled()) {
-//			//self::$log->debug('loadLocale("' . $localeKey . '")');
-//		}
-
         // Have we already attempted to load messages for this locale?
         if (array_key_exists($localeKey, $this->locales))
             return;
@@ -138,16 +127,8 @@ class PropertyMessageResources extends MessageResources
             $name .= '_' . $localeKey;
         $name .= '.properties';
 
-        // Load the specified property resource
-//		if (//self::$log->isDebugEnabled()) {
-//			//self::$log->debug('  Loading resource "' . $name . '"');
-//		}
-        try {
-            $props = new \Phruts\Util\Properties();
-            $props->load($name);
-        } catch (\Phruts\Exception\IOException $e) {
-            //self::$log->error('loadLocale() - ' . $e->getMessage());
-        }
+        $props = new \Phruts\Util\Properties();
+        $props->load($name);
 
         // Copy the corresponding value into our cache
         if ($props->size() < 1) {
@@ -158,9 +139,6 @@ class PropertyMessageResources extends MessageResources
         foreach ($keys as $key) {
             $localeMsgKey = $this->messageKeyByLocaleKey($localeKey, $key);
 
-//			if (//self::$log->isDebugEnabled()) {
-//				//self::$log->debug('  Saving message key "' . $localeMsgKey . '"');
-//			}
             $this->messages[$localeMsgKey] = $props->getProperty($key);
 
         }
@@ -184,7 +162,6 @@ class PropertyMessageResources extends MessageResources
     {
         // Initialize variables we will require
         $localeKey = $this->localeKey($locale);
-        $messageKey = null;
         $message = null;
         $underscore = 0;
 

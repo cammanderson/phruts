@@ -66,8 +66,6 @@ class ActionDispatcher extends \Phruts\Action
 	 */
     public function execute(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        //$log = \Phruts\Utils\LoggerManager::getLogger(__CLASS__);
-
         // See if this is cancelled
         if ($this->isCancelled($request)) {
             $af = $this->cancelled($mapping, $form, $request, $response);
@@ -80,7 +78,6 @@ class ActionDispatcher extends \Phruts\Action
         $parameter = $mapping->getParameter();
         if ($parameter == null) {
             $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.handler", $mapping->getPath());
-            //$log->error($message);
             throw new \Phruts\Exception($message);
         }
 
@@ -90,7 +87,6 @@ class ActionDispatcher extends \Phruts\Action
 
         if ($name == 'perform' || $name == 'execute') {
             $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.recursive", $mapping->getPath());
-            //$log->error($message);
             throw new \Phruts\Exception($message);
         }
 
@@ -109,8 +105,6 @@ class ActionDispatcher extends \Phruts\Action
     protected function unspecified(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
-        //$log = \Phruts\Utils\LoggerManager::getRootLogger();
-        //$log->error($message);
         $response->setStatusCode(400);
         $response->setContent($message);
 
@@ -125,7 +119,6 @@ class ActionDispatcher extends \Phruts\Action
 	 */
     protected function dispatchMethod(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $name)
     {
-        //$log = \Phruts\Utils\LoggerManager::getRootLogger();
 
         // Make sure we have a valid method name to call.
         // This may be null if the user hacks the query string.
@@ -142,7 +135,6 @@ class ActionDispatcher extends \Phruts\Action
 
         if (empty($method) || !$method->isPublic()) {
             $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.method", $mapping->getPath(), $name);
-            //$log->error($message);
             $response->setStatusCode(500);
             $response->setContent($message);
 

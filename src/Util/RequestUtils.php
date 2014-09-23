@@ -8,12 +8,6 @@ namespace Phruts\Util;
  * */
 class RequestUtils
 {
-    /**
-	 * Commons Logging instance.
-	 *
-	 * @var \Psr\Log\LoggerInterface
-	 */
-    //$log = null;
 
     /**
 	 * Select the module to which the specified request belongs, and add
@@ -35,7 +29,7 @@ class RequestUtils
         } else {
             $request->attributes->set(\Phruts\Util\Globals::MODULE_KEY, $config);
         }
-        if(!empty($application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix])) {
+        if (!empty($application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix])) {
             $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
             if (is_null($resources)) {
                 $request->attributes->remove(\Phruts\Util\Globals::MESSAGES_KEY);
@@ -57,9 +51,6 @@ class RequestUtils
     {
 
         $path = $request->getPathInfo();
-//        if (self::$log->isDebugEnabled()) {
-//            self::$log->debug('Get module name for path "' . $path . '"');
-//        }
 
         $prefixes = $application[\Phruts\Util\Globals::PREFIXES_KEY];
         if (is_null($prefixes)) {
@@ -75,9 +66,6 @@ class RequestUtils
                 }
             }
         }
-//        if (self::$log->isDebugEnabled()) {
-//            self::$log->debug('Module name found: ' . (($prefix == '') ? 'default' : $prefix));
-//        }
 
         return $prefix;
     }
@@ -146,7 +134,6 @@ class RequestUtils
             $configClass = $config->getType();
             $instanceClass = get_class($instance);
             if (\Phruts\Util\ClassLoader::classIsAssignableFrom($configClass, $instanceClass)) {
-
                 return $instance;
             }
         }
@@ -158,7 +145,6 @@ class RequestUtils
             $instance->setActionKernel($kernel);
         } catch (\Exception $e) {
             $msg = $kernel->getInternal()->getMessage(null, 'formBean', $config->getType());
-            //self::$log->error($msg . ' - ' . $e->getMessage());
         }
 
         return $instance;
@@ -248,7 +234,7 @@ class RequestUtils
             } else {
                 $prefix = $config->getPrefix();
             }
-            if(!empty($application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix])) {
+            if (!empty($application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix])) {
                 $resources = $application[\Phruts\Util\Globals::MESSAGES_KEY . $prefix];
             }
         }
@@ -277,7 +263,7 @@ class RequestUtils
 
         $userLocale = null;
         $session = $request->getSession();
-        if(!empty($session)) {
+        if (!empty($session)) {
             $userLocale = $session->get($locale);
         }
 
@@ -286,7 +272,6 @@ class RequestUtils
         }
 
         return $userLocale;
-
 
     }
 

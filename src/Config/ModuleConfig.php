@@ -501,8 +501,6 @@ class ModuleConfig
             $aconfig->freeze();
         }
 
-//        $this->matcher = new \Phruts\Config\ActionMatcher($aconfigs);
-//
         $fbconfigs = $this->findFormBeanConfigs();
         foreach ($fbconfigs as $fbconfig) {
             $fbconfig->freeze();

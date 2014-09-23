@@ -57,9 +57,6 @@ abstract class MessageResources
 
     public function __wakeup()
     {
-//        if (is_null(self::$log)) {
-//            self::$log = \Phruts\Utils\LoggerManager::getLogger(__CLASS__);
-//        }
     }
 
     /**

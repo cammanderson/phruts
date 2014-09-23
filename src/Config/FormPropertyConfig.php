@@ -26,15 +26,15 @@ class FormPropertyConfig
      * @param string name Name of this property
      * @param string type Fully qualified class name of this property
      * @param string initial Initial value of this property (if any)
-     * @param size Size of the array to be created if this property is an  array
+     * @param int Size of the array to be created if this property is an  array
      * with no defined initial value
      */
-    public function __construct()
+    public function __construct($name = null, $type = null, $initial = null, $size = null)
     {
-//        $this->setName($name);
-//        $this->setType($type);
-//        $this->setInitial($initial);
-//        $this->setSize($size);
+        $this->setName($name);
+        $this->setType($type);
+        $this->setInitial($initial);
+        $this->setSize($size);
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -136,10 +136,6 @@ class FormPropertyConfig
         // Identify the base class (in case an array was specified)
         $baseType = $this->getType();
         $this->indexed = false;
-//        if (substr($baseType, -2) == "[]") {
-//            $baseType = substr($baseType, 0, strlen($baseType) - 2);
-//            $this->indexed = true;
-//        }
 
         // Construct an appropriate Class instance for the base class
         $baseClass = null;
@@ -159,7 +155,6 @@ class FormPropertyConfig
                     $baseClass = substr($baseType, 0, strlen($baseType) -2);
                     $this->indexed = true;
                 }
-//                \Phruts\Util\ClassLoader::loadClass($baseClass);
             } catch (\Exception $e) {
                 $baseClass = null;
             }

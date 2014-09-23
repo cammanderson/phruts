@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class RequestProcessor
 {
-    const INCLUDE_kernel_PATH = 'Phruts_Include.actionserver_path';
+    const INCLUDE_KERNEL_PATH = 'Phruts_Include.actionserver_path';
     const INCLUDE_PATH_INFO = 'Phruts_Include.path_info';
 
     /**
@@ -190,10 +190,6 @@ class RequestProcessor
         }
 
         // For extension matching, strip the module prefix and extension
-//        $path = (string) $request->attributes->get(self::INCLUDE_KERNEL_PATH);
-//        if ($path == null) {
-//            $path = $request->getKernelPath();
-//        }
         $prefix = $this->moduleConfig->getPrefix();
         if (substr($path, 0, strlen($prefix)) != $prefix) {
             $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
@@ -771,7 +767,6 @@ class RequestProcessor
             // Build the forward path with a forward context relative URL
             $contextRelative = $forward->getContextRelative();
             if ($contextRelative) {
-//                $forwardPath = $request->getContextPath() . $forwardPath;
                 $forwardPath = $request->getUriForPath($forwardPath);
             }
 

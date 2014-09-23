@@ -5,4 +5,3 @@ class ActionForward extends \Phruts\Config\ForwardConfig
 {
 
 }
- 

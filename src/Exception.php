@@ -6,4 +6,3 @@ namespace Phruts;
  * @package Phruts
  */
 class Exception extends \Exception {}
- 

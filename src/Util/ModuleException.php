@@ -50,4 +50,3 @@ class ModuleException extends \Phruts\Exception
         return $this->property;
     }
 }
- 

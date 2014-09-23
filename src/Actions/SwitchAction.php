@@ -25,14 +25,12 @@ class SwitchAction extends \Phruts\Action
     // See superclass for Doc
     public function execute(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
-        //$log = \Phruts\Utils\LoggerManager::getLogger( __CLASS__);
 
         // Identify the request parameters controlling our actions
         $page = $request->get("page");
         $prefix = $request->get("prefix");
         if (($page == null) || ($prefix == null)) {
             $message = $this->getActionKernel()->getInternal()->getMessage("switch.required", $mapping->getPath());
-            //$log->error($message);
             throw new \Phruts\Exception($message);
         }
 
@@ -40,7 +38,6 @@ class SwitchAction extends \Phruts\Action
         \Phruts\Util\RequestUtils::selectModule($request, $this->getActionKernel()->getApplication());
         if ($request->attributes->get(\Phruts\Util\Globals::MODULE_KEY) == null) {
             $message = $this->getActionKernel()->getInternal()->getMessage("switch.prefix", $prefix);
-            //$log->error($message);
             $response->setContent(400);
             $response->setContent($message);
 

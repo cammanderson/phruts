@@ -13,7 +13,7 @@ class PDODataSourceFactory extends DataSourceFactory
     {
         $config = $this->getConfig();
         $properties = $config->getProperties();
-        if(!empty($properties['dsn'])) {
+        if (!empty($properties['dsn'])) {
             return new \PDO($properties['dsn']);
         }
     }

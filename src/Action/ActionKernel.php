@@ -1,7 +1,6 @@
 <?php
 namespace Phruts\Action;
 
-use Phruts\Config\MessageResourcesConfig;
 use Phruts\Util\PropertyMessageResources;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
