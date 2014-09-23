@@ -5,14 +5,13 @@
 
 namespace Phruts\Config\Digester;
 
-
 /**
  * An object creation factory which creates controller config instances.
  */
 final class ControllerConfigFactory extends \Phigester\AbstractObjectCreationFactory
 {
     /**
-     * @param array $attributes
+     * @param  array  $attributes
      * @return object
      */
     public function createObject(array $attributes)
