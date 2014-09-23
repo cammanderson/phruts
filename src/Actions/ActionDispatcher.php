@@ -162,7 +162,7 @@ class ActionDispatcher extends \Phruts\Action
      * they wish to provide default behavior different than returning null.
      * @since Struts 1.2.0
      */
-    protected function cancelled(ActionMapping $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    protected function cancelled(\Phruts\Config\ActionConfig $mapping, $form, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         return null;
     }

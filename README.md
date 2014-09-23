@@ -106,7 +106,9 @@ Current Development Status
  * COMPLETE: Code Coverage 75%+
  * COMPLETE: Finalise ActionKernel for mounting on Silex\Application
  * UNDERWAY: Confirm Struts 1.2 code coverage for framework features
+ * UNDERWAY: Write the standard Struts style Twig extensions for accessing form+messages
  * TODO: Documentation on working with Silex
- * Struts 1.3 framework features
+ * Consider Struts Validation framework (we never used it, so might not make it forward)
+ * Struts 1.3 framework features (for convenience techniques only)
 
 Why do this? Best way to learn techniques in web development is through studying Request->Response web frameworks. I have a soft-spot for the old Struts application, and we have legacy PHPMVC code which we would like to easily move forward. This project makes it easy for us to port that legacy code and modernise it fast by implementing PSR's, giving that code base a future supported life.

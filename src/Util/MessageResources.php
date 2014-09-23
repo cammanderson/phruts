@@ -186,7 +186,7 @@ abstract class MessageResources
         if (is_null($message)) {
             return false;
         } elseif (preg_match('`^\?{3}.*\?{3}$`', $message)) {
-            return false; // FIXME - Only valid for default implementation
+            return false;
         } else {
             return true;
         }
