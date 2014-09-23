@@ -24,6 +24,16 @@ class ActionKernel implements HttpKernelInterface
      */
     protected $processor;
 
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $log;
+
+    /**
+     * @var array
+     */
+    protected $dataSourceFactories;
+
     protected $init = false;
 
     public function __construct(\Silex\Application $application)
@@ -72,8 +82,11 @@ class ActionKernel implements HttpKernelInterface
      */
     protected function handleException(\Exception $e, Request $request, $type)
     {
-        // TODO: Handle exception using internal messaging?
-        $response = new Response('An error occurred processing this request', 501);
+        // Handle exception using internal messaging?
+        if(!empty($this->log)) {
+            $this->log->error($e->getMessage());
+        }
+        $response = new Response($this->getInternal()->getMessage(null, 'actionKernel.exception'), 501);
         return $response;
     }
 
@@ -174,19 +187,87 @@ class ActionKernel implements HttpKernelInterface
         return $this->application[$key];
     }
 
-    protected function initModuleMessageResources($moduleConfig)
+    protected function initModuleMessageResources(\Phruts\Config\ModuleConfig $config)
     {
-        // TODO:
+        $mrcs = $config->findMessageResourcesConfigs();
+        foreach ($mrcs as $mrc) {
+            /* @var $mrc \Phruts\Config\MessageResourcesConfig */
+            if (!empty($this->log)) {
+                $this->log->debug('Initializing module "' . $config->getPrefix() . '" message resources from "' . $mrc->getParameter() . '"');
+            }
+
+            $factory = $mrc->getFactory();
+            \Phruts\Util\MessageResourcesFactory::setFactoryClass($factory);
+            $factoryObject = \Phruts\Util\MessageResourcesFactory::createFactory($factory);
+            if (is_null($factoryObject)) {
+                $msg = 'Cannot load resources from "' . $mrc->getParameter() . '"';
+                if(!empty($this->log)) {
+                    $this->log->error($msg);
+                }
+                throw new \Phruts\Exception($msg);
+            }
+
+            $resources = $factoryObject->createResources($mrc->getParameter());
+            $resources->setReturnNull($mrc->getNull());
+            $this->application[$mrc->getKey() . $config->getPrefix()] = $resources;
+        }
     }
 
-    protected function initModuleDataSources($moduleConfig)
+    protected function initModuleDataSources(\Phruts\Config\ModuleConfig $config)
     {
-        // TODO:
+        if (!empty($this->log)) {
+            $this->log->debug('Initialization module path "' . $config->getPrefix() . '" data sources');
+        }
+
+        $dscs = $config->findDataSourceConfigs();
+        foreach ($dscs as $dsc) {
+            /* @var $dsc \Phruts\Config\DataSourceConfig */
+            if (!empty($this->log)) {
+                $this->log->debug('Initialization module path "' . $config->getPrefix() . '" data source "' . $dsc->getKey() . '"');
+            }
+
+            try {
+                \Phruts\Util\DataSourceFactory::setFactoryClass($dsc->getType());
+                $dsFactory = \Phruts\Util\DataSourceFactory::createFactory($dsc);
+            } catch (\Exception $e) {
+                $msg = $this->getInternal()->getMessage(null, 'dataSource.init', $dsc->getKey());
+                if(!empty($this->log)) {
+                    $this->log->error($msg . ' - ' . $e->getMessage());
+                }
+                throw new \Phruts\Exception($msg);
+            }
+            $this->dataSourceFactories[$dsc->getKey() . $config->getPrefix()] = $dsFactory;
+        }
     }
 
-    protected function initModulePlugIns($moduleConfig)
+    protected function initModulePlugIns(\Phruts\Config\ModuleConfig $config)
     {
-        // TODO:
+        if (!empty($this->log)) {
+            $this->log->debug('Initializing module "' . $config->getPrefix() . '" plug ins');
+        }
+
+        $plugInConfigs = $config->findPlugInConfigs();
+        $plugIns = array ();
+        foreach ($plugInConfigs as $plugInConfig) {
+            /* @var $plugInConfig \Phruts\Config\PlugInConfig */
+            try {
+
+                /* @var $plugIn \Phruts\Action\PlugInInterface */
+                $plugIn = \Phruts\Util\ClassLoader::newInstance($plugInConfig->getClassName(), '\Phruts\Action\PlugInInterface');
+
+                \Phruts\Util\BeanUtils::populate($plugIn, $plugInConfig->getProperties());
+                $plugIn->init($this, $config);
+
+                $plugIns[] = $plugIn;
+            } catch (\Exception $e) {
+                $msg = $this->getInternal()->getMessage(null, 'plugIn.init', $plugInConfig->getClassName());
+                if(!empty($this->log)) {
+                    $this->log->error($msg . ' - ' . $e->getMessage());
+                }
+                throw new \Phruts\Exception($msg);
+            }
+        }
+        $this->application[\Phruts\Util\Globals::PLUG_INS_KEY . $config->getPrefix()] = $plugIns;
     }
 
     /**
@@ -204,7 +285,26 @@ class ActionKernel implements HttpKernelInterface
      */
     public function getDataSource(Request $request, $key)
     {
-        // TODO:
+        // Identify the current module
+        $moduleConfig = \Phruts\Util\RequestUtils::getModuleConfig($request, $this->getApplication());
+
+        // Return the requested data source instance
+        $keyPrefixed = $key . $moduleConfig->getPrefix();
+        $dataSource = $request->attributes->get($keyPrefixed);
+        if (empty($dataSource)) {
+            if (!array_key_exists($keyPrefixed, $this->dataSourceFactories)) {
+                return null;
+            }
+            /** @var \Phruts\Util\DataSourceFactory $dsFactory */
+            $dsFactory = $this->dataSourceFactories[$keyPrefixed];
+            try {
+                $dataSource = $dsFactory->createDataSource();
+            } catch (\Exception $e) {
+                throw $e;
+            }
+            $request->attributes->set($keyPrefixed, $dataSource);
+        }
+        return $dataSource;
     }
 
     /**
