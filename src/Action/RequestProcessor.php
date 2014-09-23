@@ -430,8 +430,13 @@ class RequestProcessor
 
             foreach ($roles as $role) {
                 if ($security->isGranted($role)) {
+
                     if (!empty($this->log)) {
-                        $this->log->debug('  User "' . $request->getRemoteUser() . '" has role "' . $role . '", granting access');
+                        $token = $app['security']->getToken();
+                        if (null !== $token) {
+                            $user = $token->getUser();
+                        }
+                        $this->log->debug('  User "' . $user . '" has role "' . $role . '", granting access');
                     }
 
                     return true;
@@ -442,7 +447,7 @@ class RequestProcessor
 
         // The current user is not authorized for this action
         if (!empty($this->log)) {
-            $this->log->debug('  User "' . $request->getRemoteUser() . '" does not have any required role, denying access');
+            $this->log->debug('  User does not have any required role, denying access');
         }
         throw new AccessDeniedHttpException($this->getInternal()->getMessage(null, 'notAuthorized', $mapping->getPath()));
     }
