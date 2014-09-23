@@ -129,7 +129,7 @@ class ActionDispatcher extends \Phruts\Action
         // Identify the method object to be dispatched to
         $reflectionClass = new \ReflectionClass(get_class($this));
         $method = null;
-        if($reflectionClass->hasMethod($name)) {
+        if ($reflectionClass->hasMethod($name)) {
             $method = $reflectionClass->getMethod($name);
         }
 

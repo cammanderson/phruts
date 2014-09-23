@@ -769,7 +769,7 @@ class ActionConfig
      * Return the exception configuration for the specified type, if any;
      * otherwise return <code>null</code>.
      * @return \Phruts\Config\ExceptionConfig
-     * @param string $type class name to find a configuration for
+     * @param  string                         $type class name to find a configuration for
      */
     public function findExceptionConfig($type)
     {

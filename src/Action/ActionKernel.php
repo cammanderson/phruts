@@ -47,9 +47,9 @@ class ActionKernel implements HttpKernelInterface
      * and do its best to convert them to a Response instance.
      *
      * @param Request $request A Request instance
-     * @param int $type The type of the request
-     *                          (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
-     * @param bool $catch Whether to catch exceptions or not
+     * @param int     $type    The type of the request
+     *                         (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
+     * @param bool    $catch   Whether to catch exceptions or not
      *
      * @return Response A Response instance
      *
@@ -62,8 +62,9 @@ class ActionKernel implements HttpKernelInterface
         try {
             $response = new Response();
             $this->process($request, $response);
+
             return $response;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             if (false === $catch) {
                 throw $e;
             }
@@ -74,24 +75,25 @@ class ActionKernel implements HttpKernelInterface
     }
 
     /**
-     * @param \Exception $e
-     * @param Request $request
+     * @param  \Exception $e
+     * @param  Request    $request
      * @param $type
      * @return Response
      */
     protected function handleException(\Exception $e, Request $request, $type)
     {
         // Handle exception using internal messaging?
-        if(!empty($this->log)) {
+        if (!empty($this->log)) {
             $this->log->error($e->getMessage());
         }
         $response = new Response($this->getInternal()->getMessage(null, 'actionKernel.exception'), 501);
+
         return $response;
     }
 
     /**
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      */
     protected function process(Request $request, Response $response)
@@ -100,31 +102,31 @@ class ActionKernel implements HttpKernelInterface
         $this->getRequestProcessor($this->getModuleConfig($request))->process($request, $response);
     }
 
-
     /**
      * Initialise the module configurations
      * @throws \Phruts\Exception
      */
-    protected function init() {
+    protected function init()
+    {
         // Initialise once
         if($this->init) return;
 
         $prefixes = array();
 
         // Obtain the module config provider (implements caching, etc)
-        if(empty($this->application[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER])) {
+        if (empty($this->application[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER])) {
             throw new \Phruts\Exception($this->getInternal()->getMessage('', 'moduleConfig.provider.missing'));
         }
         $moduleConfigProvider = $this->application[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER];
 
         // Get the configured modules
-        foreach($this->application[\Phruts\Util\Globals::ACTION_KERNEL_CONFIG] as $prefixParam => $config) {
+        foreach ($this->application[\Phruts\Util\Globals::ACTION_KERNEL_CONFIG] as $prefixParam => $config) {
             if(strlen($prefixParam) > 7 && substr($prefixParam, 0, 7) == 'config/') continue;
             $prefix = substr($prefixParam, 7);
 
             // Get the module config
             $moduleConfig = $moduleConfigProvider->getModuleConfig($prefix, $config);
-            if(empty($moduleConfig)) {
+            if (empty($moduleConfig)) {
                 throw new \Phruts\Exception($this->getInternal()->getMessage('', 'moduleConfig.missing', $prefix));
             }
             $this->application[\Phruts\Util\Globals::MODULE_KEY . $prefix] = $moduleConfig;
@@ -139,24 +141,26 @@ class ActionKernel implements HttpKernelInterface
         $this->application[\Phruts\Util\Globals::PREFIXES_KEY] = $prefixes;
 
         $this->init = true;
+
         return;
     }
 
     /**
-     * @param Request $request
+     * @param  Request                     $request
      * @return \Phruts\Config\ModuleConfig
      */
-    protected function getModuleConfig(Request $request) {
+    protected function getModuleConfig(Request $request)
+    {
         $config = $request->attributes->get(\Phruts\Util\Globals::MODULE_KEY);
         if (empty($config)) {
-            if(empty($this->application[\Phruts\Util\Globals::MODULE_KEY])) {
+            if (empty($this->application[\Phruts\Util\Globals::MODULE_KEY])) {
                 throw new \Phruts\Exception($this->getInternal()->getMessage('', 'moduleConfig.missing.default'));
             }
             $config = $this->application[\Phruts\Util\Globals::MODULE_KEY];
         }
+
         return $config;
     }
-
 
     /**
      * Instantiate the request processor if defined in the config
@@ -177,6 +181,7 @@ class ActionKernel implements HttpKernelInterface
 
                 $processor->init($this, $config);
                 $this->application[$key] = $processor;
+
                 return $this->application[$key];
             } catch (\Exception $e) {
                 throw new \Exception('Cannot initialize RequestProcessor of class ' . $processorClass . ': ' . $e->getMessage());
@@ -200,7 +205,7 @@ class ActionKernel implements HttpKernelInterface
             $factoryObject = \Phruts\Util\MessageResourcesFactory::createFactory($factory);
             if (is_null($factoryObject)) {
                 $msg = 'Cannot load resources from "' . $mrc->getParameter() . '"';
-                if(!empty($this->log)) {
+                if (!empty($this->log)) {
                     $this->log->error($msg);
                 }
                 throw new \Phruts\Exception($msg);
@@ -230,7 +235,7 @@ class ActionKernel implements HttpKernelInterface
                 $dsFactory = \Phruts\Util\DataSourceFactory::createFactory($dsc);
             } catch (\Exception $e) {
                 $msg = $this->getInternal()->getMessage(null, 'dataSource.init', $dsc->getKey());
-                if(!empty($this->log)) {
+                if (!empty($this->log)) {
                     $this->log->error($msg . ' - ' . $e->getMessage());
                 }
                 throw new \Phruts\Exception($msg);
@@ -260,7 +265,7 @@ class ActionKernel implements HttpKernelInterface
                 $plugIns[] = $plugIn;
             } catch (\Exception $e) {
                 $msg = $this->getInternal()->getMessage(null, 'plugIn.init', $plugInConfig->getClassName());
-                if(!empty($this->log)) {
+                if (!empty($this->log)) {
                     $this->log->error($msg . ' - ' . $e->getMessage());
                 }
                 throw new \Phruts\Exception($msg);
@@ -273,12 +278,13 @@ class ActionKernel implements HttpKernelInterface
      * Use for messaging
      * @return \Phruts\Util\MessageResources
      */
-    public function getInternal() {
+    public function getInternal()
+    {
         return new PropertyMessageResources(__DIR__ . '/ActionResources');
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @param $key
      * @return \Phruts\
      */
@@ -303,6 +309,7 @@ class ActionKernel implements HttpKernelInterface
             }
             $request->attributes->set($keyPrefixed, $dataSource);
         }
+
         return $dataSource;
     }
 
@@ -321,6 +328,5 @@ class ActionKernel implements HttpKernelInterface
     {
         return $this->application;
     }
-
 
 }

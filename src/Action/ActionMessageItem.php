@@ -22,7 +22,7 @@ class ActionMessageItem
     protected $iOrder = 0;
 
     /**
-     * @param array $list The list of ActionMessages.
+     * @param array   $list   The list of ActionMessages.
      * @param integer $iOrder The position in the list of messages.
      */
     public function __construct(array $list, $iOrder)

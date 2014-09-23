@@ -25,9 +25,9 @@ class TokenProcessor
         return $instance;
     }
 
-	private function __construct() {
-
-	}
+    private function __construct()
+    {
+    }
 
     /**
      * The timestamp used most recently to generate a token value.

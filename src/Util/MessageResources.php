@@ -158,7 +158,7 @@ abstract class MessageResources
 	 * for the system default Locale
 	 * @param string $key The message key to look up
 	 */
-    protected abstract function getBaseMessage($locale, $key);
+    abstract protected function getBaseMessage($locale, $key);
 
     /**
 	 * Return true if there is a defined message for the specified key

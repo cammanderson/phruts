@@ -181,7 +181,7 @@ class Action
 	 */
     protected function saveErrors(\Symfony\Component\HttpFoundation\Request $request, $errors)
     {
-        if(!empty($errors) && !($errors instanceof \Phruts\Action\ActionErrors)) {
+        if (!empty($errors) && !($errors instanceof \Phruts\Action\ActionErrors)) {
             throw new \Phruts\Exception\IllegalArgumentException('Errors should be an \Phruts\Action\ActionErrors object');
         }
 

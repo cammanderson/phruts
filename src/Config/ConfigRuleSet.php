@@ -25,7 +25,7 @@ class ConfigRuleSet extends \Phigester\RuleSetBase
      * pushed onto the evaluation stack before parsing begins.
      *
      * @param \Phigester\Digester $digester Digester instance to which the
-     * new Rule instances should be added.
+     *                                      new Rule instances should be added.
      */
     public function addRuleInstances(\Phigester\Digester $digester)
     {

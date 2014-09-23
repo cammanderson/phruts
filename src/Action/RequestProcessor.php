@@ -85,7 +85,7 @@ class RequestProcessor
 
         // Log
         $application = $this->actionKernel->getApplication();
-        if(!empty($application['logger'])) {
+        if (!empty($application['logger'])) {
             $this->log = $application['logger'];
         }
     }
@@ -193,7 +193,7 @@ class RequestProcessor
         $prefix = $this->moduleConfig->getPrefix();
         if (substr($path, 0, strlen($prefix)) != $prefix) {
             $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
-            if(!empty($this->log)) {
+            if (!empty($this->log)) {
                 $this->log->error($msg);
             }
             throw new BadRequestHttpException($msg);
@@ -377,13 +377,13 @@ class RequestProcessor
 
         // No mapping can be found to process this request
         $internal = $this->getInternal();
-        if(!empty($internal)) {
+        if (!empty($internal)) {
             $msg = $this->getInternal()->getMessage(null, 'processInvalid', $path);
         } else {
             $msg = 'processInvalid';
         }
 
-        if(!empty($this->log)) {
+        if (!empty($this->log)) {
             $this->log->error($msg);
         }
         throw new BadRequestHttpException($msg);
@@ -413,7 +413,7 @@ class RequestProcessor
         }
 
         // Check the current user against the list of required roles
-        if(!empty($app['security'])) {
+        if (!empty($app['security'])) {
             $security = $app['security'];
 
             foreach ($roles as $role) {
@@ -431,7 +431,6 @@ class RequestProcessor
                 }
             }
         }
-
 
         // The current user is not authorized for this action
         if (!empty($this->log)) {
@@ -697,7 +696,7 @@ class RequestProcessor
             $instance = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Action');
         } catch (\Exception $e) {
             $msg = $this->getInternal()->getMessage(null, 'actionCreate', $mapping->getPath());
-            if(!empty($this->log)) {
+            if (!empty($this->log)) {
                 $this->log->error($msg . ' - ' . $e->getMessage());
             }
             throw new HttpException(500, $msg);

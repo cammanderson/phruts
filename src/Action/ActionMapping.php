@@ -83,7 +83,7 @@ class ActionMapping extends \Phruts\Config\ActionConfig
     {
         $controllerInputForward = null;
         $controllerConfig = $this->getModuleConfig()->getControllerConfig();
-        if(!empty($controllerConfig)) {
+        if (!empty($controllerConfig)) {
             $controllerInputForward = $controllerConfig->getInputForward();
         }
 
@@ -92,6 +92,7 @@ class ActionMapping extends \Phruts\Config\ActionConfig
         } else {
             $forward = new \Phruts\Config\ForwardConfig();
             $forward->setPath($this->getInput());
+
             return $forward;
         }
     }

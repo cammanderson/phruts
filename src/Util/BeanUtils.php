@@ -36,7 +36,7 @@ class BeanUtils
                 $propertySetter = 'set' . ucfirst($name);
                 if (method_exists($bean, $propertySetter)) {
                     $reflectionMethod = $reflection->getMethod($propertySetter);
-                    if(!empty($reflectionMethod) && $reflectionMethod->isPublic()) {
+                    if (!empty($reflectionMethod) && $reflectionMethod->isPublic()) {
                         $bean->$propertySetter($value);
                     }
                 }
