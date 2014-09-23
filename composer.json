@@ -18,7 +18,7 @@
     },
     "require": {
         "php": ">=5.3.7",
-        "cammanderson/phigester": "dev-master",
+        "cammanderson/phigester": "~1.0",
         "symfony/http-foundation" : "*",
         "silex/silex": "~1.2",
         "psr/log" : "*"

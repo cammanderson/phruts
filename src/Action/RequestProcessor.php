@@ -76,7 +76,6 @@ class RequestProcessor
 	 * associated with
 	 * @param \Phruts\Config\ModuleConfig $moduleConfig The \Phruts\Config\ModuleConfig we are
 	 * associated with
-	 * @todo Actions initializations?
 	 */
     public function init(\Phruts\Action\ActionKernel $actionKernel, \Phruts\Config\ModuleConfig $moduleConfig)
     {
@@ -182,13 +181,13 @@ class RequestProcessor
     protected function processPath(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         // For prefix matching, match on the path info (if any)
-//        $path = (string) $request->attributes->get(self::INCLUDE_PATH_INFO);
-//        if ($path == null) {
+        $path = (string) $request->attributes->get(self::INCLUDE_PATH_INFO);
+        if ($path == null) {
             $path = $request->getPathInfo();
-//        }
-//        if (($path != null) && (strlen($path) > 0)) {
-//            return ($path);
-//        }
+        }
+        if (($path != null) && (strlen($path) > 0)) {
+            return ($path);
+        }
 
         // For extension matching, strip the module prefix and extension
 //        $path = (string) $request->attributes->get(self::INCLUDE_KERNEL_PATH);
@@ -202,13 +201,6 @@ class RequestProcessor
                 $this->log->error($msg);
             }
             throw new BadRequestHttpException($msg);
-        }
-
-        // TODO: Add back in support for kernel path
-        $path = substr($path, strlen($prefix));
-        $period = strrpos($path, ".");
-        if (($period >= 0) && $period !== false) {
-            $path = substr($path, 0, $period);
         }
 
         return ($path);
@@ -783,14 +775,14 @@ class RequestProcessor
                 $forwardPath = $request->getUriForPath($forwardPath);
             }
 
-            // TODO: Author a redirect response
+            // Author a redirect response
             $subResponse = $this->actionKernel->getApplication()->redirect($forwardPath);
             // Update our current response to bring in the response
             $response->setContent($subResponse->getContent());
             $response->setStatusCode($subResponse->getStatusCode());
             $response->setCharset($subResponse->getCharset());
             $response->setProtocolVersion($subResponse->getProtocolVersion());
-            // TODO: Determine whether all headers are 'added' or should replace (?)
+            // Determine whether all headers are 'added' or should replace (?)
             $response->headers->add($subResponse->headers->all());
         } else {
             $this->doForward($forwardPath, $request, $response);
@@ -822,7 +814,7 @@ class RequestProcessor
         $response->setStatusCode($subResponse->getStatusCode());
         $response->setCharset($subResponse->getCharset());
         $response->setProtocolVersion($subResponse->getProtocolVersion());
-        // TODO: Determine whether all headers are 'added' or should replace (?)
+        // Determine whether all headers are 'added' or should replace (?)
         $response->headers->add($subResponse->headers->all());
     }
 

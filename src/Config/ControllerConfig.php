@@ -4,10 +4,7 @@ namespace Phruts\Config;
 
 /**
  * A PHPBean representing the configuration information of a <controller>
- * element in a PHruts configuration file.
- *
- * // TODO: Add in tmpdir/pagepattern etc
- *
+ * element in a PHruts configuration file.*
  */
 class ControllerConfig
 {

@@ -279,17 +279,26 @@ class RequestUtils
 	 */
     public static function retrieveUserLocale(\Symfony\Component\HttpFoundation\Request $request, $locale = null)
     {
-        // TODO: Consider what happens if we want our own
-        if(!empty($locale)) return $locale;
 
+        if (is_null($locale)) {
+            $locale = \Phruts\Util\Globals::LOCALE_KEY;
+        } else {
+            $locale = (string) $locale;
+        }
+
+        $userLocale = null;
         $session = $request->getSession();
-        $userLocale = $session->getLocale();
+        if(!empty($session)) {
+            $userLocale = $session->get($locale);
+        }
 
-        if (empty($userLocale)) {
+        if (is_null($userLocale)) {
             $userLocale = $request->getLocale();
         }
 
         return $userLocale;
+
+
     }
 
     /**

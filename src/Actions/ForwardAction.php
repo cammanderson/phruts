@@ -25,10 +25,7 @@ class ForwardAction extends \Phruts\Action {
             $forward->setContextRelative(true);
             return $forward;
         } else {
-            // This implementation of forward action is slightly different that the original
-            // where the forward config must be defined and the key passed as parameter
-            // so that nextAction/action chaining is implemented
-            // TODO: Create an action chaining forward path
+            // Forward the request
             $forward = $mapping->findForwardConfig($parameter);
             if(empty($forward)) {
                 throw new \Phruts\Exception('ForwardAction parameter should reference a forward config name');

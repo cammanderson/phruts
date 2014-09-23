@@ -73,13 +73,6 @@ abstract class MessageResources
 	 */
     public function __construct($config, $returnNull = false)
     {
-//        if (is_null(self::$log)) {
-//            self::$log = \Phruts\Utils\LoggerManager::getLogger(__CLASS__);
-//        }
-
-        // TODO: Set the default location based on Application
-        //$this->defaultLocale = $app['locale'];
-
         $this->config = (string) $config;
         $this->returnNull = (boolean) $returnNull;
     }

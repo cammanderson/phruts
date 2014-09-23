@@ -88,12 +88,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessPath()
     {
-        // Mock a request
-        $request = $this->getMock('\Symfony\Component\HttpFoundation\Request');
-        $request->initialize();
-        $request->expects($this->exactly(1))
-            ->method('getPathInfo')
-            ->willReturn('/test');
+        $request = Request::create('http://localhost/test', 'GET', array(), array(), array(), array('PATH_INFO' => '/test'));
 
         $method = self::getMethod('processPath');
 

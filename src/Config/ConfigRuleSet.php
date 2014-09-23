@@ -6,7 +6,6 @@ namespace Phruts\Config {
      * The set of Digester rules required to parse a PHruts configuration file
      * (phruts-config.xml).
      *
-     * @TODO: Update the reference to the locale in the Controller config to be str
      */
     class ConfigRuleSet extends \Phigester\RuleSetBase
     {
