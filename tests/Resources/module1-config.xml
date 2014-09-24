@@ -23,6 +23,11 @@
                 parameter="resource">
             <forward name="resource" path="/" />
         </action>
+        <action path="/forwardA"
+                type="\Phruts\Actions\ForwardAction"
+                parameter="forward">
+            <forward name="forward" path="/?do=resourceA" />
+        </action>
     </action-mappings>
 
 </phruts-config>

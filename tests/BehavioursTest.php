@@ -35,6 +35,20 @@ class BehavioursTest extends \Silex\WebTestCase
         $this->assertTrue($client->getResponse()->isOk());
         $this->assertCount(1, $crawler->filter('h1:contains("Welcome")'));
 
+        // Test paths as queries (matched by routes)
+        $crawler = $client->request('GET', '/?do=resourceA');
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 1")'));
+
+        $crawler = $client->request('GET', '/forwardA');
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 1")'));
+
+        // Test matched by extenions
+        $crawler = $client->request('GET', '/my/resourceA.do');
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 1")'));
+
         // Test the module
         $crawler = $client->request('GET', '/moduleA/resourceD');
         $this->assertTrue($client->getResponse()->isOk());
@@ -161,11 +175,33 @@ class BehavioursTest extends \Silex\WebTestCase
             ->assert('path', '.+\.html');
 
         // Add routes to be matched by Phruts
+        $app->get('/my/{path}.do', function (Request $request) use ($app) {
+                return $app[Phruts\Util\Globals::ACTION_KERNEL]->handle($request, HttpKernelInterface::SUB_REQUEST, false);
+            })
+            ->assert('path', '.*')
+            ->before(function(Request $request) {
+                    // Match a ".do" as context path
+                    $path = $request->attributes->get('path');
+                    if(!empty($path)) {
+                        $request->attributes->set(\Phruts\Action\RequestProcessor::INCLUDE_PATH_INFO, $path);
+                    }
+                });
+
+        // Add routes to be matched by Phruts
         $app->get('{path}', function (Request $request) use ($app) {
                 return $app[Phruts\Util\Globals::ACTION_KERNEL]->handle($request, HttpKernelInterface::SUB_REQUEST, false);
             })
             ->assert('path', '.*')
-            ->value('path', '/'); // Set the welcome path
+            ->value('path', '/') // Set the welcome path
+            ->before(function(Request $request) {
+                    // Match a "?do=" as context path
+                    $do = $request->get('do');
+                    if(!empty($do)) {
+                        $request->attributes->set(\Phruts\Action\RequestProcessor::INCLUDE_PATH_INFO, $do);
+                    }
+                });
+
+
 
         return $app;
     }

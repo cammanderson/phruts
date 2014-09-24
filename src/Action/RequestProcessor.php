@@ -186,6 +186,9 @@ class RequestProcessor
             $path = $request->getPathInfo();
         }
 
+        // Always have a forward slash in the path
+        if(substr($path, 0, 1) !== '/') $path = '/' . $path;
+
         // For extension matching, strip the module prefix and extension
         $prefix = $this->moduleConfig->getPrefix();
         if (!empty($prefix)) {
