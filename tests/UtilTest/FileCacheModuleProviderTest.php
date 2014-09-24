@@ -10,35 +10,48 @@ use Phruts\Util\ModuleProvider\FileCacheModuleProvider;
 
 class FileCacheModuleProviderTest extends \PHPUnit_Framework_TestCase
 {
+
+    protected $fileCache;
+
     public function setUp()
     {
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('cacheDir'));
-    }
 
-    public function testGetModuleConfig()
-    {
         $application = new \Silex\Application();
         $application[\Phruts\Util\Globals::DIGESTER] = $application->share(function() {
                 $digester = new Digester();
                 $digester->addRuleSet(new ConfigRuleSet('phruts-config'));
                 return $digester;
             });
-        $fileCache = new FileCacheModuleProvider($application);
-        $fileCache->setCachePath(vfsStream::url('cacheDir'));
+        $this->fileCache = new FileCacheModuleProvider($application);
+        $this->fileCache->setCachePath(vfsStream::url('cacheDir'));
+    }
 
-        $moduleConfig = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
+    public function testGetModuleConfig()
+    {
+        $moduleConfig = $this->fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
 
         $this->assertNotEmpty($moduleConfig);
         $this->assertTrue($moduleConfig instanceof \Phruts\Config\ModuleConfig);
         $this->assertTrue(vfsStreamWrapper::getRoot()->hasChild('phruts-test.data'));
         $this->assertTrue(count($moduleConfig->findActionConfigs()) > 0);
 
-        $moduleConfig2 = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
+        $moduleConfig2 = $this->fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
         $this->assertEquals($moduleConfig, $moduleConfig2);
 
         touch(realpath(__DIR__ . '/../Resources/example-config.xml'), strtotime('+10 minutes'));
-        $moduleConfig3 = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
+        $moduleConfig3 = $this->fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
         $this->assertEquals($moduleConfig, $moduleConfig3);
+    }
+
+    public function testGetMultipleModuleConfig()
+    {
+        /** @var \Phruts\Config\ModuleConfig $moduleConfig */
+        $moduleConfig = $this->fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml') . ',' . realpath(__DIR__ . '/../Resources/module1-config.xml'));
+        $this->assertNotEmpty($moduleConfig);
+
+        $this->assertNotEmpty($moduleConfig->findActionConfig('/test'));
+        $this->assertNotEmpty($moduleConfig->findActionConfig('/resourceA'));
     }
 }

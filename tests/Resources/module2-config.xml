@@ -2,7 +2,7 @@
 <phruts-config>
 
     <global-forwards>
-        <forward name="resource" path="/resource.html" />
+        <forward name="resource" path="/resource2.html" />
     </global-forwards>
 
     <action-mappings>

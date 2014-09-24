@@ -16,39 +16,52 @@ class BehavioursTest extends \Silex\WebTestCase
     public function testConfigPaths()
     {
         $client = $this->createClient();
+        $client->followRedirects(true);
 
         // Welcome path
-        $client->request('GET', '');
+        $crawler = $client->request('GET', '');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Welcome")'));
 
-        $client->request('GET', '/resourceA');
+        $crawler = $client->request('GET', '/resourceA');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 1")'));
 
-        $client->request('GET', '/resourceB');
+        $crawler = $client->request('GET', '/resourceB');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 2")'));
 
-        $client->request('GET', '/resourceC');
+        $crawler = $client->request('GET', '/resourceC');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Welcome")'));
 
-        $client->request('GET', '/module/resourceA');
+        // Test the module
+        $crawler = $client->request('GET', '/moduleA/resourceD');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 2")'));
 
-        $client->request('GET', '/module/resourceD');
+        $crawler = $client->request('GET', '/moduleA/resourceA');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 2")'));
 
-        $client->request('GET', '/module/resourceE');
+        // Test merging of configs
+        $crawler = $client->request('GET', '/moduleB/resourceA');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 1")'));
+
+        $crawler = $client->request('GET', '/moduleB/resourceB');
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 2")'));
+
+        $crawler = $client->request('GET', '/moduleB/');
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Welcome")'));
+
+        $crawler = $client->request('GET', '/moduleB/resourceE');
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h1:contains("Resource 1")'));
     }
 
-    public function testGlobalForwards()
-    {
-
-    }
-
-    public function testActionForward()
-    {
-
-    }
 
     public function testActionForms()
     {
@@ -126,7 +139,9 @@ class BehavioursTest extends \Silex\WebTestCase
                 // Register our modules and configs
                 Phruts\Util\Globals::ACTION_KERNEL_CONFIG => array(
                     'config' => __DIR__  . '/Resources/module1-config.xml',
-                    'config/module' => __DIR__ . '/Resources/module2-config.xml'
+                    'config/moduleA' => __DIR__ . '/Resources/module2-config.xml',
+                    'config/moduleB' => __DIR__ . '/Resources/module2-config.xml,' .
+                        __DIR__ . '/Resources/module1-config.xml'
                 )
             ));
 

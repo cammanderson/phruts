@@ -189,8 +189,8 @@ class RequestProcessor
         // For extension matching, strip the module prefix and extension
         $prefix = $this->moduleConfig->getPrefix();
         if (!empty($prefix)) {
-            if (!preg_match('#^/?' . $prefix . '/.+#', $path)) {
-                $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
+            if (!preg_match('#^/?' . $prefix . '/.*#', $path)) {
+                $msg = $this->getInternal()->getMessage(null, "processPath", $request->getRequestURI());
                 if (!empty($this->log)) {
                     $this->log->error($msg);
                 }

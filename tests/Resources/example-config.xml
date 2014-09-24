@@ -35,7 +35,7 @@
         
         <action path="/test"
                 type="\Phruts\Actions\ForwardAction"
-                parameter="example.html"
+                parameter="/example.html"
                 roles=""/>
 
         <action path="/pay"
