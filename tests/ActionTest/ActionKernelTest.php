@@ -2,7 +2,7 @@
 namespace ActionTest;
 
 use Phruts\Action\ActionKernel;
-use Phruts\PhrutsServiceProvider;
+use Phruts\Provider\PhrutsServiceProvider;
 use Phruts\Util\ModuleProvider\FileCacheModuleProvider;
 use Phruts\Util\RequestUtils;
 use Silex\Application;

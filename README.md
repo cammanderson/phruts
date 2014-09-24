@@ -34,6 +34,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 // Use standard HttpFoundation
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 // Create a silex application
 $app = new Silex\Application();
@@ -43,9 +44,9 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => __
     ->register(new Silex\Provider\MonologServiceProvider(), array('monolog.logfile' => __DIR__.'/../app/logs/development.log'));
 
 // Add in phruts to organise your controllers
-$app->register(new \Phruts\PhrutsServiceProvider(), array(
+$app->register(new Phruts\Provider\PhrutsServiceProvider(), array(
         // Register our modules and configs
-        \Phruts\Util\Globals::ACTION_KERNEL_CONFIG => array(
+        Phruts\Util\Globals::ACTION_KERNEL_CONFIG => array(
             'config' => '../app/config/web-config.xml', // Supports multiple modules/configurations
         )
     ));
@@ -58,7 +59,7 @@ $app->get('{path}', function($path) use ($app) {
 
 // Add routes to be matched by Phruts
 $app->get('{path}', function (Request $request) use ($app) {
-        return $app[\Phruts\Util\Globals::ACTION_KERNEL]->handle($request, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST, false);
+        return $app[\Phruts\Util\Globals::ACTION_KERNEL]->handle($request, HttpKernelInterface::SUB_REQUEST, false);
     })
     ->assert('path', '.*')
     ->value('path', '/'); // Set the welcome path

@@ -52,6 +52,9 @@ class RequestUtils
 
         $path = $request->getPathInfo();
 
+        // Clear the first forward slash /module/path
+        if(substr($path, 0, 1) == '/') $path = substr($path, 1);
+
         $prefixes = $application[\Phruts\Util\Globals::PREFIXES_KEY];
         if (is_null($prefixes)) {
             $prefix = '';

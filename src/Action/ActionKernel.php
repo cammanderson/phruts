@@ -2,6 +2,7 @@
 namespace Phruts\Action;
 
 use Phruts\Util\PropertyMessageResources;
+use Phruts\Util\RequestUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -17,11 +18,6 @@ class ActionKernel implements HttpKernelInterface
      * @var \Silex\Application
      */
     protected $application;
-
-    /**
-     * @var \Phruts\Action\RequestProcessor
-     */
-    protected $processor;
 
     /**
      * @var \Psr\Log\LoggerInterface
@@ -99,6 +95,7 @@ class ActionKernel implements HttpKernelInterface
     protected function process(Request $request, Response $response)
     {
         $this->init();
+        RequestUtils::selectModule($request, $this->application);
         $this->getRequestProcessor($this->getModuleConfig($request))->process($request, $response);
     }
 
@@ -121,8 +118,11 @@ class ActionKernel implements HttpKernelInterface
 
         // Get the configured modules
         foreach ($this->application[\Phruts\Util\Globals::ACTION_KERNEL_CONFIG] as $prefixParam => $config) {
-            if(strlen($prefixParam) > 7 && substr($prefixParam, 0, 7) == 'config/') continue;
-            $prefix = substr($prefixParam, 7);
+            // Only read in the config params
+            if(strlen($prefixParam) < 6 || substr($prefixParam, 0, 6) != 'config') continue;
+
+            // Strip the config element
+            $prefix = preg_replace('#config/?#', '', $prefixParam);
 
             // Get the module config
             $moduleConfig = $moduleConfigProvider->getModuleConfig($prefix, $config);

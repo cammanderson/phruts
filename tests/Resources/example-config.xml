@@ -8,12 +8,12 @@
     </data-sources>
 
     <form-beans>
-        <form-bean name="bean1" type="\\Example\\FormBeanOne"/>
-        <form-bean name="bean2" type="\\Example\\FormBeanTwo"/>
+        <form-bean name="bean1" type="\Example\FormBeanOne"/>
+        <form-bean name="bean2" type="\Example\FormBeanTwo"/>
     </form-beans>
 
     <global-exceptions>
-        <exception type="\\Example\\SomeException"
+        <exception type="\Example\SomeException"
                    key="some.exception.key"
                    path="error.html.twig"/>
     </global-exceptions>
@@ -51,11 +51,6 @@
     <controller>
         <set-property  property="noCache" value="true"/>
     </controller>
-    <!--<plug-in className="\\Example\\MyExamplePlugin">-->
-        <!--<set-property-->
-                <!--property="config"-->
-                <!--value="somewhere.yaml"/>-->
-    <!--</plug-in>-->
 
-    <message-resources parameter="\\Action\\MessageResources"/>
+    <message-resources parameter="\Action\MessageResources"/>
 </phruts-config>

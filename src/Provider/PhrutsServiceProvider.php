@@ -1,5 +1,5 @@
 <?php
-namespace Phruts;
+namespace Phruts\Provider;
 
 use Phigester\Digester;
 use Phruts\Config\ConfigRuleSet;

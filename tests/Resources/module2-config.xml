@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phruts-config>
+
+    <global-forwards>
+        <forward name="resource" path="/resource.html" />
+    </global-forwards>
+
+    <action-mappings>
+        <action path="/resourceA"
+                type="\Phruts\Actions\ForwardAction"
+                parameter="resource"/>
+        <action path="/resourceD"
+                type="\Phruts\Actions\ForwardAction"
+                parameter="resource"/>
+        <action path="/resourceE"
+                type="\Phruts\Actions\ForwardAction"
+                parameter="resource"/>
+    </action-mappings>
+</phruts-config>

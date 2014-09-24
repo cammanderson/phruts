@@ -185,21 +185,22 @@ class RequestProcessor
         if ($path == null) {
             $path = $request->getPathInfo();
         }
-        if (($path != null) && (strlen($path) > 0)) {
-            return ($path);
-        }
 
         // For extension matching, strip the module prefix and extension
         $prefix = $this->moduleConfig->getPrefix();
-        if (substr($path, 0, strlen($prefix)) != $prefix) {
-            $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
-            if (!empty($this->log)) {
-                $this->log->error($msg);
+        if (!empty($prefix)) {
+            if (!preg_match('#^/?' . $prefix . '/.+#', $path)) {
+                $msg = $this->getInternal()->getMessage("processPath", $request->getRequestURI());
+                if (!empty($this->log)) {
+                    $this->log->error($msg);
+                }
+                throw new BadRequestHttpException($msg);
             }
-            throw new BadRequestHttpException($msg);
+            // Strip module
+            $path = preg_replace('#^/?' . $prefix . '#', '', $path);
         }
 
-        return ($path);
+        return $path;
     }
 
     /**
