@@ -33,8 +33,8 @@ class ActionKernelTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new Response());
 
         $this->application[\Phruts\Util\Globals::ACTION_KERNEL_CONFIG] = array(
-            'config' => realpath(__DIR__ . '/../ConfigTest/full-config.xml'),
-            'config/admin' => realpath(__DIR__ . '/../ConfigTest/full-config.xml'),
+            'config' => realpath(__DIR__ . '/../Resources/example-config.xml'),
+            'config/admin' => realpath(__DIR__ . '/../Resources/example-config.xml'),
         );
         $serviceProvider = new PhrutsServiceProvider();
         $serviceProvider->register($this->application);

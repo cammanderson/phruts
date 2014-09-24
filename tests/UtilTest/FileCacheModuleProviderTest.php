@@ -27,18 +27,18 @@ class FileCacheModuleProviderTest extends \PHPUnit_Framework_TestCase
         $fileCache = new FileCacheModuleProvider($application);
         $fileCache->setCachePath(vfsStream::url('cacheDir'));
 
-        $moduleConfig = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../ConfigTest/full-config.xml'));
+        $moduleConfig = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
 
         $this->assertNotEmpty($moduleConfig);
         $this->assertTrue($moduleConfig instanceof \Phruts\Config\ModuleConfig);
         $this->assertTrue(vfsStreamWrapper::getRoot()->hasChild('phruts-test.data'));
         $this->assertTrue(count($moduleConfig->findActionConfigs()) > 0);
 
-        $moduleConfig2 = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../ConfigTest/full-config.xml'));
+        $moduleConfig2 = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
         $this->assertEquals($moduleConfig, $moduleConfig2);
 
-        touch(realpath(__DIR__ . '/../ConfigTest/full-config.xml'), strtotime('+10 minutes'));
-        $moduleConfig3 = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../ConfigTest/full-config.xml'));
+        touch(realpath(__DIR__ . '/../Resources/example-config.xml'), strtotime('+10 minutes'));
+        $moduleConfig3 = $fileCache->getModuleConfig('test', realpath(__DIR__ . '/../Resources/example-config.xml'));
         $this->assertEquals($moduleConfig, $moduleConfig3);
     }
 }
