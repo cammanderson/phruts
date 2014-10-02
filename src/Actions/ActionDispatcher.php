@@ -2,6 +2,11 @@
 
 namespace Phruts\Actions;
 
+use Phruts\Action\AbstractActionForm;
+use Phruts\Action\ActionMapping;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * <p>An abstract <strong>Action</strong> that dispatches to a public
  * method that is named by the request parameter whose name is specified
@@ -44,7 +49,7 @@ namespace Phruts\Actions;
  * constraints over what types of handlers may reasonably be packaged into
  * the same <code>DispatchAction</code> subclass.</p>
  */
-class ActionDispatcher extends \Phruts\Action
+class ActionDispatcher extends \Phruts\Action\Action
 {
     // ----------------------------------------------------- Instance Variables
 
@@ -64,7 +69,7 @@ class ActionDispatcher extends \Phruts\Action
 	 * @return ForwardConfig
 	 * @exception Exception if an exception occurs
 	 */
-    public function execute(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(ActionMapping $mapping, AbstractActionForm $form = null, Request $request, Response $response)
     {
         // See if this is cancelled
         if ($this->isCancelled($request)) {
@@ -102,7 +107,7 @@ class ActionDispatcher extends \Phruts\Action
 	 * "Bad Request" error.
 	 *
 	 */
-    protected function unspecified(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    protected function unspecified(ActionMapping $mapping, AbstractActionForm $form = null, Request $request, Response $response)
     {
         $message = $this->getActionKernel()->getInternal()->getMessage("dispatch.parameter", $mapping->getPath(), $mapping->getParameter());
         $response->setStatusCode(400);
@@ -117,7 +122,7 @@ class ActionDispatcher extends \Phruts\Action
 	 * Dispatch to the specified method.
 	 * @return \Phruts\Config\ActionConfig
 	 */
-    protected function dispatchMethod(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, $name)
+    protected function dispatchMethod(ActionMapping $mapping, AbstractActionForm $form = null, Request $request, Response $response, $name)
     {
 
         // Make sure we have a valid method name to call.
@@ -154,7 +159,7 @@ class ActionDispatcher extends \Phruts\Action
      * they wish to provide default behavior different than returning null.
      * @since Struts 1.2.0
      */
-    protected function cancelled(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    protected function cancelled(ActionMapping $mapping, AbstractActionForm $form = null, Request $request, Response $response)
     {
         return null;
     }

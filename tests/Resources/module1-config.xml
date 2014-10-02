@@ -10,6 +10,11 @@
         <action path="/"
                 type="\Phruts\Actions\ForwardAction"
                 parameter="welcome"/>
+
+
+
+
+
         <action path="/resourceA"
                 type="\Phruts\Actions\ForwardAction"
                 parameter="resource"/>

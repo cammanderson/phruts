@@ -84,48 +84,48 @@ class BehavioursTest extends \Silex\WebTestCase
 
     public function testActionFormValidate()
     {
-
+        // Test that we can implement a validate that will then bail to an input
     }
 
     public function testExceptionHandler()
     {
-
+        // Test that we can define an exception handler to handle the exception nicely
     }
 
     public function testFormBeanProperties()
     {
-
+        // Test that we can configure form beans
     }
 
 
     public function testCustomRequestProcessor()
     {
-
+        // Test that we can implement our own request processor per module
     }
 
     public function testPlugin()
     {
-
+        // Test that our plugins are called, and are accessible from the 'application' container
     }
 
     public function testDataSource()
     {
-
+        // Test that we can run our datasources
     }
 
     public function testRoles()
     {
-
+        // Test a role on the security framework
     }
 
     public function testActionMessages()
     {
-
+        // Test we can access action messages
     }
 
     public function testMessageResources()
     {
-
+        // Test that we can access message resources from the config
     }
 
     public function testCustomActionConfig()
@@ -135,7 +135,7 @@ class BehavioursTest extends \Silex\WebTestCase
 
     public function testTwigExtensions()
     {
-
+        // Test that our twig extensions can be used
     }
 
     public function createApplication()
@@ -143,7 +143,7 @@ class BehavioursTest extends \Silex\WebTestCase
         // Create a silex application
         $app = new Silex\Application();
 
-        // Configure
+        // Configure test environments
         $app['debug'] = true;
         $app['exception_handler']->disable();
         $app['session.test'] = true;
@@ -152,8 +152,13 @@ class BehavioursTest extends \Silex\WebTestCase
         $app->register(new Phruts\Provider\PhrutsServiceProvider(), array(
                 // Register our modules and configs
                 Phruts\Util\Globals::ACTION_KERNEL_CONFIG => array(
+                    // Default module
                     'config' => __DIR__  . '/Resources/module1-config.xml',
+
+                    // A module (single config)
                     'config/moduleA' => __DIR__ . '/Resources/module2-config.xml',
+
+                    // B module (merged config where module1 prevails)
                     'config/moduleB' => __DIR__ . '/Resources/module2-config.xml,' .
                         __DIR__ . '/Resources/module1-config.xml'
                 )

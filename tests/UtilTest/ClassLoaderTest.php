@@ -22,14 +22,14 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetClassName()
     {
-        $this->assertEquals('Action', \Phruts\Util\ClassLoader::getClassName('\Phruts\Action'), 'Action');
+        $this->assertEquals('Action', \Phruts\Util\ClassLoader::getClassName('\Phruts\Action\Action'), 'Action');
         $this->setExpectedException('\Phruts\Exception\ClassNotFoundException');
         \Phruts\Util\ClassLoader::getClassName('\NonExistant\Class');
     }
 
     public function testLoadClass()
     {
-        $this->assertEquals('Action', \Phruts\Util\ClassLoader::loadClass('\Phruts\Action'), '\Phruts\Action');
+        $this->assertEquals('Action', \Phruts\Util\ClassLoader::loadClass('\Phruts\Action\Action'), '\Phruts\Action\Action');
         $this->setExpectedException('\Phruts\Exception\ClassNotFoundException');
         \Phruts\Util\ClassLoader::loadClass('\NonExistant\Class');
         $this->setExpectedException('\Phruts\Exception\IllegalArgumentException');
@@ -38,15 +38,15 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testClassIsAssignableFrom()
     {
-        $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\Phruts\Actions\ActionDispatcher', '\Phruts\Action'));
-        $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\Phruts\Action', '\Phruts\Action'));
+        $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\Phruts\Actions\ActionDispatcher', '\Phruts\Action\Action'));
+        $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\Phruts\Action\Action', '\Phruts\Action\Action'));
         $this->assertTrue(\Phruts\Util\ClassLoader::classIsAssignableFrom('\UtilTest\B', '\UtilTest\A'));
     }
 
     public function testNewInstance()
     {
-        $this->assertNotEmpty(\Phruts\Util\ClassLoader::newInstance('\Phruts\Actions\ActionDispatcher', '\Phruts\Action'));
-        $this->assertNotEmpty(\Phruts\Util\ClassLoader::newInstance('\Phruts\Action', '\Phruts\Action'));
+        $this->assertNotEmpty(\Phruts\Util\ClassLoader::newInstance('\Phruts\Actions\ActionDispatcher', '\Phruts\Action\Action'));
+        $this->assertNotEmpty(\Phruts\Util\ClassLoader::newInstance('\Phruts\Action\Action', '\Phruts\Action\Action'));
 
     }
     public function testNewInstanceAbstract()

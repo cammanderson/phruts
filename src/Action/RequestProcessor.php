@@ -697,7 +697,7 @@ class RequestProcessor
             $this->log->debug('  Creating new Action instance');
         }
         try {
-            $instance = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Action');
+            $instance = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Action\Action');
         } catch (\Exception $e) {
             $msg = $this->getInternal()->getMessage(null, 'actionCreate', $mapping->getPath());
             if (!empty($this->log)) {
@@ -730,7 +730,7 @@ class RequestProcessor
 	 * @return \Phruts\Config\ForwardConfig
 	 * @throws \Phruts\Exception
 	 */
-    protected function processActionPerform(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action $action, $form, \Phruts\Config\ActionConfig $mapping)
+    protected function processActionPerform(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\Action $action, $form, \Phruts\Config\ActionConfig $mapping)
     {
         try {
             return $action->execute($mapping, $form, $request, $response);

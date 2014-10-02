@@ -13,7 +13,7 @@ class ForwardActionTest extends \PHPUnit_Framework_TestCase
     public function testInstantiate()
     {
         $action = new \Phruts\Actions\ForwardAction();
-        $this->assertTrue($action instanceof \Phruts\Action);
+        $this->assertTrue($action instanceof \Phruts\Action\Action);
     }
 
     public function testForward()

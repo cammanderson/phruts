@@ -2,6 +2,8 @@
 
 namespace Phruts\Action;
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * A \Phruts\Action\AbstractActionForm is a PHPBean optionally associated with one or more
  * \Phruts\Config\ActionConfig.
@@ -49,7 +51,7 @@ abstract class AbstractActionForm
 	 *
 	 * @param \Phruts\Action\ActionKernel $actionKernel The new controller actionKernel, if any
 	 */
-    public function setActionKernel(\Phruts\Action\ActionKernel $actionKernel)
+    public function setActionKernel(ActionKernel $actionKernel)
     {
         $this->actionKernel = $actionKernel;
     }
@@ -71,7 +73,7 @@ abstract class AbstractActionForm
 	 * @param \Symfony\Component\HttpFoundation\Request $request The actionKernel request we are
 	 * processing
 	 */
-    public function reset(\Phruts\Config\ActionConfig $mapping, \Symfony\Component\HttpFoundation\Request $request)
+    public function reset(ActionMapping $mapping, Request $request)
     {
         // Default implementation does nothing
     }
@@ -93,7 +95,7 @@ abstract class AbstractActionForm
 	 * processing
 	 * @return \Phruts\Action\ActionErrors
 	 */
-    public function validate(\Phruts\Config\ActionConfig $mapping, \Symfony\Component\HttpFoundation\Request $request)
+    public function validate(ActionMapping $mapping, Request $request)
     {
         return null;
     }

@@ -1,6 +1,8 @@
 <?php
 namespace Phruts\Action;
 
+use Phruts\Config\ModuleConfig;
+
 /**
  * A PlugIn is a configuration wrapper for a module-specific resource or
  * actionKernel that needs to be notified about application startup and application
@@ -33,5 +35,5 @@ interface PlugInInterface
 	 * @throws \Phruts\Exception If this PlugIn cannot be
 	 * successfully initialized
 	 */
-    public function init(\Phruts\Action\ActionKernel $actionKernel, \Phruts\Config\ModuleConfig $config);
+    public function init(ActionKernel $actionKernel, ModuleConfig $config);
 }

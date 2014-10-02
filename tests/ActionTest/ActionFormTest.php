@@ -34,12 +34,12 @@ class ActionFormTest extends \PHPUnit_Framework_TestCase
     public function testReset()
     {
         // Default implementation does nothing..
-        $this->assertEmpty($this->form->reset(new \Phruts\Config\ActionConfig(), new Request()));
+        $this->assertEmpty($this->form->reset(new \Phruts\Action\ActionMapping(), new Request()));
     }
 
     public function testValidate()
     {
         // Default implementation does nothing..
-        $this->assertNull($this->form->validate(new \Phruts\Config\ActionConfig(), new Request()));
+        $this->assertNull($this->form->validate(new \Phruts\Action\ActionMapping(), new Request()));
     }
 }

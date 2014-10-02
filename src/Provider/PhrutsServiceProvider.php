@@ -35,8 +35,12 @@ class PhrutsServiceProvider implements \Silex\ServiceProviderInterface
         });
 
         $app[\Phruts\Util\Globals::MODULE_CONFIG_PROVIDER] = $app->share(function () use ($app) {
-            $provider = new FileCacheModuleProvider($app);
-            $provider->setCachePath(getcwd() . '/../app/cache/');
+                $provider = new FileCacheModuleProvider($app);
+
+                // Set the cache
+                $cache = $app[\Phruts\Util\Globals::CACHE_DIR];
+                if(empty($cache)) $cache = getcwd() . '/../app/cache/';
+                $provider->setCachePath($cache);
 
             return $provider;
         });

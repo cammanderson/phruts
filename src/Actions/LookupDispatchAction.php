@@ -2,4 +2,4 @@
 
 namespace Phruts\Actions;
 
-class LookupDispatchAction extends \Phruts\Action {}
+class LookupDispatchAction extends \Phruts\Action\Action {}

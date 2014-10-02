@@ -2,6 +2,11 @@
 
 namespace Phruts\Actions;
 
+use Phruts\Action\AbstractActionForm;
+use Phruts\Action\ActionMapping;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * <p>A standard <strong>Action</strong> that switches to a new module
  * and then forwards control to a URI (specified in a number of possible ways)
@@ -20,10 +25,10 @@ namespace Phruts\Actions;
  * </ul>
  * @since Struts 1.1
  */
-class SwitchAction extends \Phruts\Action
+class SwitchAction extends \Phruts\Action\Action
 {
     // See superclass for Doc
-    public function execute(\Phruts\Config\ActionConfig $mapping, \Phruts\Action\AbstractActionForm $form = null, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
+    public function execute(ActionMapping $mapping, AbstractActionForm $form = null, Request $request, Response $response)
     {
 
         // Identify the request parameters controlling our actions

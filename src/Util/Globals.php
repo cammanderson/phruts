@@ -153,4 +153,6 @@ class Globals
      *
      */
     const DIGESTER = 'phruts.digester';
+
+    const CACHE_DIR = 'phruts.cache_dir';
 }

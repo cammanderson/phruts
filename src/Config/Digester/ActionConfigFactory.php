@@ -31,9 +31,13 @@ final class ActionConfigFactory extends \Phigester\AbstractObjectCreationFactory
         // Instantiate the new object and return it
         $actionConfig = null;
         try {
-            $actionConfig = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Config\ActionConfig');
+            $actionConfig = \Phruts\Util\ClassLoader::newInstance($className, '\Phruts\Action\ActionMapping');
         } catch (\Exception $e) {
-            $this->digester->getLogger()->error('\Phruts\Config\ActionConfigFactory->createObject(): ' . $e->getMessage());
+            $logger = $this->digester->getLogger();
+            if(!empty($logger)) {
+                $logger->error('\Phruts\Config\ActionConfigFactory->createObject(): ' . $e->getMessage());
+            }
+            throw $e;
         }
 
         return $actionConfig;

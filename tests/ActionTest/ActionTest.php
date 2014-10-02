@@ -1,4 +1,5 @@
 <?php
+namespace ActionTest;
 
 class ActionTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,15 +20,15 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->action = new \Phruts\Action();
+        $this->action = new \Phruts\Action\Action();
 
         $this->actionKernel = $this->getMockBuilder('\Phruts\Action\ActionKernel')->disableOriginalConstructor()->getMock();
 
         $this->action->setActionKernel($this->actionKernel);
 
         $this->request = new \Symfony\Component\HttpFoundation\Request();
-        $storage = new  Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage();
-        $session = new Symfony\Component\HttpFoundation\Session\Session($storage);
+        $storage = new \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage();
+        $session = new \Symfony\Component\HttpFoundation\Session\Session($storage);
 //        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Session')->disableOriginalConstructor()->getMock();
         $this->request->setSession($session);
 
@@ -43,15 +44,15 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     {
         $getDataSource = self::getMethod('getDataSource');
 
-        $this->actionKernel->method('getDataSource')->willReturn(new PDO('sqlite::memory:'));
+        $this->actionKernel->method('getDataSource')->willReturn(new \PDO('sqlite::memory:'));
 
 //        getDataSource($this->request, $key);
 
         $datasource = $getDataSource->invokeArgs($this->action, array(new \Symfony\Component\HttpFoundation\Request(), 'key'));
         $this->assertNotEmpty($datasource);
-        $this->assertTrue($datasource instanceof PDO);
+        $this->assertTrue($datasource instanceof \PDO);
 
-        $this->actionKernel->method('getDataSource')->will($this->throwException(new Exception));
+        $this->actionKernel->method('getDataSource')->will($this->throwException(new \Exception));
         $this->setExpectedException('\Exception');
         $datasource = $getDataSource->invokeArgs($this->action, array(new \Symfony\Component\HttpFoundation\Request(), 'key'));
     }
@@ -69,7 +70,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         // Get from the application
         $request = \Symfony\Component\HttpFoundation\Request::create('http://localhost/test', 'GET', array(), array(), array(), array('PATH_INFO' => '/test'));
 
-        $application = new Silex\Application;
+        $application = new \Silex\Application;
         $application[\Phruts\Util\Globals::PREFIXES_KEY] = array();
         $moduleConfig = new \Phruts\Config\ModuleConfig('');
         $application[\Phruts\Util\Globals::MODULE_KEY] = $moduleConfig;
@@ -333,7 +334,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
 
     protected static function getMethod($name)
     {
-        $class = new \ReflectionClass('\Phruts\Action');
+        $class = new \ReflectionClass('\Phruts\Action\Action');
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method;

@@ -95,7 +95,7 @@ class ModuleConfig
 	 *
 	 * @var string
 	 */
-    protected $actionConfigClass = '\Phruts\Config\ActionConfig';
+    protected $actionConfigClass = '\Phruts\Action\ActionMapping';
 
     /**
      * The set of exception handling configurations for this

@@ -2,15 +2,19 @@
 
 namespace Phruts\Actions;
 
+use Phruts\Action\AbstractActionForm;
+use Phruts\Action\ActionMapping;
 use Phruts\Config\ForwardConfig;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
-class ForwardAction extends \Phruts\Action
+class ForwardAction extends \Phruts\Action\Action
 {
     public function execute(
-        \Phruts\Config\ActionConfig $mapping,
-        \Phruts\Action\AbstractActionForm $form = null,
-        \Symfony\Component\HttpFoundation\Request $request,
-        \Symfony\Component\HttpFoundation\Response $response
+        ActionMapping $mapping,
+        AbstractActionForm $form = null,
+        Request $request,
+        Response $response
     ) {
 
         // Action Config defines the parameter for the forward configuration

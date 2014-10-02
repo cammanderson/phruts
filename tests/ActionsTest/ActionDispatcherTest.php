@@ -49,7 +49,7 @@ class ActionDispatcherTest extends \PHPUnit_Framework_TestCase
         $this->action = new ActionDispatcher();
         $this->action->setActionKernel($this->actionKernel);
 
-        $this->mapping = new ActionConfig();
+        $this->mapping = new ActionMapping();
 
         $this->request = new Request();
         $this->response = new Response();
@@ -58,7 +58,7 @@ class ActionDispatcherTest extends \PHPUnit_Framework_TestCase
     public function testInstantiate()
     {
         $actionDispatcher = new \Phruts\Actions\ActionDispatcher();
-        $this->assertTrue($actionDispatcher instanceof \Phruts\Action);
+        $this->assertTrue($actionDispatcher instanceof \Phruts\Action\Action);
     }
 
     public function testMissingParam()

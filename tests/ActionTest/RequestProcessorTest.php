@@ -65,7 +65,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         // Add a default action mapping
         $this->actionConfig1 = new ActionMapping();
         $this->actionConfig1->setPath('/mypath');
-        $this->actionConfig1->setType('\Phruts\Action');
+        $this->actionConfig1->setType('\Phruts\Action\Action');
         $forwardConfig = new ForwardConfig();
         $forwardConfig->setName('success');
         $forwardConfig->setPath('success.html.twig');
@@ -220,7 +220,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $method = self::getMethod('processActionPerform');
 
         $mapping = $this->actionConfig1;
-        $action = ClassLoader::newInstance($this->actionConfig1->getType(), '\Phruts\Action');
+        $action = ClassLoader::newInstance($this->actionConfig1->getType(), '\Phruts\Action\Action');
         $form = null;
 
         $method->invokeArgs($this->requestProcessor, array($this->request, $this->response, $action, $form, $mapping));
@@ -341,7 +341,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
 class MyInvalidForm extends AbstractActionForm
 {
-    public function validate(\Phruts\Config\ActionConfig $mapping, \Symfony\Component\HttpFoundation\Request $request)
+    public function validate(\Phruts\Action\ActionMapping $mapping, \Symfony\Component\HttpFoundation\Request $request)
     {
         $errors = new ActionErrors();
         $errors->add('property', new ActionError('message'));

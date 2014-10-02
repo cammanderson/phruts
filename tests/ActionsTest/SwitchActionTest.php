@@ -2,6 +2,7 @@
 namespace ActionsTest;
 
 use Phruts\Action\ActionKernel;
+use Phruts\Action\ActionMapping;
 use Phruts\Config\ActionConfig;
 use Phruts\Config\ModuleConfig;
 use Phruts\Util\Globals;
@@ -29,14 +30,14 @@ class SwitchActionTest extends \PHPUnit_Framework_TestCase
 
         $this->action = new \Phruts\Actions\SwitchAction();
         $this->action->setActionKernel($actionKernel);
-        $this->mapping = new ActionConfig();
+        $this->mapping = new ActionMapping();
         $this->request = Request::createFromGlobals();
         $this->response = new Response();
     }
 
     public function testInstantiate()
     {
-        $this->assertTrue($this->action instanceof \Phruts\Action);
+        $this->assertTrue($this->action instanceof \Phruts\Action\Action);
     }
 
     public function testEmptyExecute()
