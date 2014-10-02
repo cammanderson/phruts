@@ -276,7 +276,7 @@ class RequestProcessor
 	 * @exception IOException if an input/output error occurs
 	 * @exception kernelException if a kernel exception occurs
 	 */
-    protected function processException(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Exception $exception, $form, \Phruts\Config\ActionConfig $mapping)
+    protected function processException(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Exception $exception, $form, \Phruts\Action\ActionMapping $mapping)
     {
         // Is there a defined handler for this exception?
         $config = $mapping->findExceptionConfig(get_class($exception)); // ExceptionConfig
@@ -404,11 +404,11 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param \Phruts\Config\ActionConfig $mapping The mapping we are using
+	 * @param \Phruts\Action\ActionMapping $mapping The mapping we are using
 	 * @return boolean
 	 *
 	 */
-    protected function processRoles(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ActionConfig $mapping)
+    protected function processRoles(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\ActionMapping $mapping)
     {
         // Is this action protected by role requirements?
         $roles = $mapping->getRoleNames();
@@ -453,10 +453,10 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param \Phruts\Config\ActionConfig $mapping The mapping we are using
+	 * @param \Phruts\Action\ActionMapping $mapping The mapping we are using
 	 * @return \Phruts\Action\AbstractActionForm
 	 */
-    protected function processActionForm(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ActionConfig $mapping)
+    protected function processActionForm(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\ActionMapping $mapping)
     {
         // Create (if necessary a form bean to use)
         $instance = \Phruts\Util\RequestUtils::createActionForm($request, $mapping, $this->moduleConfig, $this->actionKernel);
@@ -491,10 +491,10 @@ class RequestProcessor
 	 * creating
 	 * @param \Phruts\Action\AbstractActionForm $form The ActionForm instance we are
 	 * populating
-	 * @param \Phruts\Config\ActionConfig $mapping The ActionMapping we are using
+	 * @param \Phruts\Action\ActionMapping $mapping The ActionMapping we are using
 	 * @throws \Phruts\Exception - If thrown by \Phruts\Util\RequestUtils->populate()
 	 */
-    protected function processPopulate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\AbstractActionForm $form = null, \Phruts\Config\ActionConfig $mapping)
+    protected function processPopulate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\AbstractActionForm $form = null, \Phruts\Action\ActionMapping $mapping)
     {
         if (is_null($form)) {
             return;
@@ -537,7 +537,7 @@ class RequestProcessor
 	 * @param \Phruts\Action\ActionMapping $mapping The \Phruts\Config\ActionConfig we are using
 	 * @return boolean
 	 */
-    protected function processValidate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\AbstractActionForm $form = null, \Phruts\Config\ActionConfig $mapping)
+    protected function processValidate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\AbstractActionForm $form = null, \Phruts\Action\ActionMapping $mapping)
     {
         if (is_null($form)) {
             return true;
@@ -609,10 +609,10 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig we are using
+	 * @param \Phruts\Action\ActionMapping $mapping The \Phruts\Config\ActionConfig we are using
 	 * @return boolean
 	 */
-    protected function processForward(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ActionConfig $mapping)
+    protected function processForward(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\ActionMapping $mapping)
     {
         // Are we going to processing this request?
         $forward = $mapping->getForward();
@@ -639,10 +639,10 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig we are using
+	 * @param \Phruts\Action\ActionMapping $mapping The \Phruts\Config\ActionConfig we are using
 	 * @return boolean
 	 */
-    protected function processInclude(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ActionConfig $mapping)
+    protected function processInclude(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\ActionMapping $mapping)
     {
         // Are we going to processing this request?
         $include = $mapping->getInclude();
@@ -667,10 +667,10 @@ class RequestProcessor
 	 * processing
 	 * @param \Symfony\Component\HttpFoundation\Response $response The kernel response we are
 	 * creating
-	 * @param \Phruts\Config\ActionConfig $mapping The mapping we are using
+	 * @param \Phruts\Action\ActionMapping $mapping The mapping we are using
 	 * @return \Phruts\Config\ForwardConfig
 	 */
-    protected function processActionCreate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Config\ActionConfig $mapping)
+    protected function processActionCreate(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\ActionMapping $mapping)
     {
         // Acquire the Action instance we will be using (if there is one)
         $className = $mapping->getType();
@@ -725,12 +725,12 @@ class RequestProcessor
 	 * @param \Phruts\Action $action The Action instance to be used
 	 * @param \Phruts\Action\AbstractActionForm $form The ActionForm instance to pass to
 	 * this Action
-	 * @param \Phruts\Config\ActionConfig $mapping The \Phruts\Config\ActionConfig instance to
+	 * @param \Phruts\Action\ActionMapping $mapping The \Phruts\Config\ActionConfig instance to
 	 * pass to this Action
 	 * @return \Phruts\Config\ForwardConfig
 	 * @throws \Phruts\Exception
 	 */
-    protected function processActionPerform(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\Action $action, $form, \Phruts\Config\ActionConfig $mapping)
+    protected function processActionPerform(\Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response, \Phruts\Action\Action $action, $form, \Phruts\Action\ActionMapping $mapping)
     {
         try {
             return $action->execute($mapping, $form, $request, $response);
