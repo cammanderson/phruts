@@ -199,10 +199,15 @@ class BehavioursTest extends \Silex\WebTestCase
             ->assert('path', '.*')
             ->value('path', '/') // Set the welcome path
             ->before(function(Request $request) {
-                    // Match a "?do=" as context path
                     $do = $request->get('do');
                     if(!empty($do)) {
-                        $request->attributes->set(\Phruts\Action\RequestProcessor::INCLUDE_PATH_INFO, $do);
+                        $rewritePath = $request->attributes->get('_rewrite_path'); // tmp var as attributes
+                        if(empty($rewritePath)) {
+                            $request->attributes->set(\Phruts\Action\RequestProcessor::INCLUDE_PATH_INFO, $do);
+                            $request->attributes->set('_rewrite_path', 1);
+                        } else {
+                            $request->attributes->set(\Phruts\Action\RequestProcessor::INCLUDE_PATH_INFO, null);
+                        }
                     }
                 });
 

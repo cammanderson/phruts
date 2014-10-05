@@ -472,7 +472,8 @@ class RequestProcessor
             $request->attributes->set($mapping->getAttribute(), $instance);
         } else {
             $session = $request->getSession();
-            $session->set($mapping->getAttribute(), $instance);
+            if(!empty($session))
+                $session->set($mapping->getAttribute(), $instance);
         }
 
         return $instance;
@@ -799,12 +800,19 @@ class RequestProcessor
     protected function doForward($uri, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
         $uri = $request->getUriForPath($uri);
-        $subRequest = Request::create($uri, 'GET', array(), $request->cookies->all(), array(), $request->server->all());
+        $subRequest = Request::create($uri, $request->getMethod(), $request->query->all(), $request->cookies->all(), $request->files->all(), $request->server->all());
         if ($request->getSession()) {
             $subRequest->setSession($request->getSession());
         }
 
         // Obtain a new subresponse
+        $attributes = $request->attributes->all();
+        // Remove silex attributes
+        unset($attributes['_controller']);
+        unset($attributes['_route']);
+        unset($attributes['_route_params']);
+        unset($attributes['path']);
+        $subRequest->attributes->add($attributes);
         $subResponse = $this->actionKernel->getApplication()->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
         // Update our current response to bring in the response

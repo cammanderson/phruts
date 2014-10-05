@@ -27,7 +27,7 @@ class ActionKernel implements HttpKernelInterface
     /**
      * @var array
      */
-    protected $dataSourceFactories;
+    protected $dataSourceFactories = array();
 
     protected $init = false;
 

@@ -129,7 +129,9 @@ class RequestUtils
             \Phruts\Util\ClassLoader::loadClass($config->getType());
 
             $session = $request->getSession();
-            $instance = $session->get($attribute);
+            if(!empty($session)) {
+                $instance = $session->get($attribute);
+            }
         }
 
         // Can we recycle the existing form bean instance (if there is one)?
