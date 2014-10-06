@@ -799,20 +799,23 @@ class RequestProcessor
 	 */
     protected function doForward($uri, \Symfony\Component\HttpFoundation\Request $request, \Symfony\Component\HttpFoundation\Response $response)
     {
+        // Create a new URI
         $uri = $request->getUriForPath($uri);
+
+        // Consider using standard $_POST, $_FILES etc.
         $subRequest = Request::create($uri, $request->getMethod(), $request->query->all(), $request->cookies->all(), $request->files->all(), $request->server->all());
         if ($request->getSession()) {
             $subRequest->setSession($request->getSession());
         }
 
-        // Obtain a new subresponse
-        $attributes = $request->attributes->all();
-        // Remove silex attributes
-        unset($attributes['_controller']);
-        unset($attributes['_route']);
-        unset($attributes['_route_params']);
-        unset($attributes['path']);
-        $subRequest->attributes->add($attributes);
+        // Obtain a new subrequest without Silex attributes
+        $allowedKeys = array_filter(array_keys($request->attributes->all()), function($key) {
+                // Filter out silex "_" attributes
+                return substr($key, 0, 1) != '_';
+            });
+        $subRequest->attributes->add(array_intersect_key($request->attributes->all(), array_flip($allowedKeys)));
+
+        // Call for a sub-request (Note: Non-conventionally passes parent query/attributes)
         $subResponse = $this->actionKernel->getApplication()->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
         // Update our current response to bring in the response
@@ -820,6 +823,7 @@ class RequestProcessor
         $response->setStatusCode($subResponse->getStatusCode());
         $response->setCharset($subResponse->getCharset());
         $response->setProtocolVersion($subResponse->getProtocolVersion());
+
         // Determine whether all headers are 'added' or should replace (?)
         $response->headers->add($subResponse->headers->all());
     }
