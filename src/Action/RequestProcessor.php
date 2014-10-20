@@ -803,7 +803,7 @@ class RequestProcessor
         $uri = $request->getUriForPath($uri);
 
         // Consider using standard $_POST, $_FILES etc.
-        $subRequest = Request::create($uri, $request->getMethod(), $request->query->all(), $request->cookies->all(), $request->files->all(), $request->server->all());
+        $subRequest = Request::create($uri, $request->getMethod(), $request->getMethod() == 'POST' ? $request->request->all() : $request->query->all(), $request->cookies->all(), $request->files->all(), $request->server->all());
         if ($request->getSession()) {
             $subRequest->setSession($request->getSession());
         }
