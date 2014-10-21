@@ -184,8 +184,23 @@ class RequestUtils
         $suffixLength = strlen($suffix);
 
         // Build a list of revelant request parameters from this request
-        $properties = array ();
-        $names = $request->query->keys();
+        $properties = self::treatRequestProperties($request, $prefix, $suffix, $request->query->keys());
+        $properties = array_merge($properties, self::treatRequestProperties($request, $prefix, $suffix, $request->request->keys()));
+
+        // Set the corresponding properties of our bean
+        try {
+            \Phruts\Util\BeanUtils::populate($bean, $properties);
+        } catch (\Exception $e) {
+            throw new \Phruts\Exception('\Phruts\Util\BeanUtils->populate() - ' . $e->getMessage());
+        }
+    }
+
+    private static function treatRequestProperties(\Symfony\Component\HttpFoundation\Request $request, $prefix, $suffix, $names)
+    {
+        $prefixLength = strlen($prefix);
+        $suffixLength = strlen($suffix);
+
+        $properties = array();
         foreach ($names as $name) {
             $stripped = $name;
             if ($prefix != '') {
@@ -205,12 +220,7 @@ class RequestUtils
             $properties[$stripped] = $request->get($name);
         }
 
-        // Set the corresponding properties of our bean
-        try {
-            \Phruts\Util\BeanUtils::populate($bean, $properties);
-        } catch (\Exception $e) {
-            throw new \Phruts\Exception('\Phruts\Util\BeanUtils->populate() - ' . $e->getMessage());
-        }
+        return $properties;
     }
 
     /**
