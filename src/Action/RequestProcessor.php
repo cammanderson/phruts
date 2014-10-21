@@ -804,6 +804,12 @@ class RequestProcessor
 
         // Consider using standard $_POST, $_FILES etc.
         $subRequest = Request::create($uri, $request->getMethod(), $request->getMethod() == 'POST' ? $request->request->all() : $request->query->all(), $request->cookies->all(), $request->files->all(), $request->server->all());
+
+        // If it was a POST then ensure it also has any query parameters
+        if ($request->getMethod() == 'POST') {
+            $subRequest->query->add($request->query->all());
+        }
+
         if ($request->getSession()) {
             $subRequest->setSession($request->getSession());
         }
